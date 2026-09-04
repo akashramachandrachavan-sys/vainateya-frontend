@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/auth",
+      "destination": "/auth.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/auth.html?mode=signin"
+    },
+    {
+      "source": "/signup",
+      "destination": "/auth.html?mode=signup"
+    },
+    {
+      "source": "/((?!dashboard|auth|login|signup).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
