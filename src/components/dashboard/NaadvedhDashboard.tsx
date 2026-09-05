@@ -50,7 +50,8 @@ import {
   Target,
   Maximize2,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  Tag
 } from 'lucide-react';
 
 export interface NotificationItem {
@@ -1051,6 +1052,10 @@ export const NaadvedhDashboard: React.FC = () => {
   const [batchZoomLevel, setBatchZoomLevel] = useState<number>(100);
   const [selectedDetectionCardId, setSelectedDetectionCardId] = useState<string>('det-003-1');
   const [batchPaginationPage, setBatchPaginationPage] = useState<number>(1);
+  const [detectionReviewMap, setDetectionReviewMap] = useState<
+    Record<string, { status: 'confirmed' | 'rejected' | 'classified' | 'pending'; category?: string }>
+  >({});
+  const [isClassifyDropdownOpen, setIsClassifyDropdownOpen] = useState<boolean>(false);
 
   // Survey Details State
   const [surveyName, setSurveyName] = useState<string>('Arabian Sea Survey - Sept 2025');
@@ -2872,7 +2877,7 @@ export const NaadvedhDashboard: React.FC = () => {
                   return a.filename.localeCompare(b.filename);
                 });
 
-              const itemsPerPage = 6;
+              const itemsPerPage = 5;
               const totalPages = Math.max(1, Math.ceil(filteredBatchImages.length / itemsPerPage));
               const currentPage = Math.min(batchPaginationPage, totalPages);
               const paginatedImages = filteredBatchImages.slice(
@@ -2883,6 +2888,14 @@ export const NaadvedhDashboard: React.FC = () => {
               const currentBatchImage =
                 allBatchSurveyImages.find(img => img.id === selectedBatchImageId) ||
                 batchSurveyImagesData[0];
+
+              const activeDetection =
+                currentBatchImage.detections.find(d => d.id === selectedDetectionCardId) ||
+                currentBatchImage.detections[0];
+
+              const activeReview = activeDetection
+                ? (detectionReviewMap[activeDetection.id] || { status: 'pending', category: activeDetection.type })
+                : null;
 
               const currentIndex = filteredBatchImages.findIndex(img => img.id === currentBatchImage.id);
 
@@ -3011,190 +3024,192 @@ export const NaadvedhDashboard: React.FC = () => {
                   </div>
 
                   {/* ========================================================= */}
-                  {/* 2. MAIN 3-COLUMN STUDIO SECTION                           */}
+                  {/* 2. MAIN 3-COLUMN STUDIO SECTION (Aligned Heights)         */}
                   {/* ========================================================= */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-start">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch">
                     {/* ------------------------------------------------------- */}
-                    {/* LEFT COLUMN: Images List & Filter (lg:col-span-3)       */}
+                    {/* LEFT COLUMN: Images List (5 items per page) (lg:col-span-3) */}
                     {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 flex flex-col space-y-2">
-                      {/* Header with Title & Options */}
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                          Images ({allBatchSurveyImages.length})
-                        </h3>
-                        <button
-                          type="button"
-                          className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                          title="Options"
-                        >
-                          <MoreHorizontal className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 flex flex-col justify-between space-y-2">
+                      <div className="space-y-2">
+                        {/* Header with Title & Options */}
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                            Images ({allBatchSurveyImages.length})
+                          </h3>
+                          <button
+                            type="button"
+                            className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                            title="Options"
+                          >
+                            <MoreHorizontal className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
 
-                      {/* Filter Tabs: All / Detections / No Detections */}
-                      <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[10.5px] font-semibold">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setBatchFilterTab('all');
-                            setBatchPaginationPage(1);
-                          }}
-                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'all'
-                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
-                            : 'text-slate-600 hover:text-slate-900'
-                            }`}
-                        >
-                          All (100)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setBatchFilterTab('detections');
-                            setBatchPaginationPage(1);
-                          }}
-                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'detections'
-                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
-                            : 'text-slate-600 hover:text-slate-900'
-                            }`}
-                        >
-                          Detections (10)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setBatchFilterTab('no_detections');
-                            setBatchPaginationPage(1);
-                          }}
-                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'no_detections'
-                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
-                            : 'text-slate-600 hover:text-slate-900'
-                            }`}
-                        >
-                          No Detections (90)
-                        </button>
-                      </div>
-
-                      {/* Search Bar & Sort Dropdown */}
-                      <div className="flex items-center gap-1.5">
-                        <div className="relative flex-1">
-                          <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="text"
-                            placeholder="Search images..."
-                            value={batchSearchQuery}
-                            onChange={e => {
-                              setBatchSearchQuery(e.target.value);
+                        {/* Filter Tabs: All / Detections / No Detections */}
+                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[10.5px] font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBatchFilterTab('all');
                               setBatchPaginationPage(1);
                             }}
-                            className="w-full pl-7 pr-2 py-1 rounded-lg border border-slate-200 text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 bg-slate-50/50"
-                          />
-                        </div>
-
-                        <div className="relative">
-                          <select
-                            value={batchSortBy}
-                            onChange={e => setBatchSortBy(e.target.value as any)}
-                            className="appearance-none pl-2 pr-5 py-1 rounded-lg border border-slate-200 text-[10.5px] font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                            className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'all'
+                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                              : 'text-slate-600 hover:text-slate-900'
+                              }`}
                           >
-                            <option value="priority">Sort: Priority</option>
-                            <option value="objects">Sort: Objects</option>
-                            <option value="time">Sort: Name</option>
-                          </select>
-                          <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            All (100)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBatchFilterTab('detections');
+                              setBatchPaginationPage(1);
+                            }}
+                            className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'detections'
+                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                              : 'text-slate-600 hover:text-slate-900'
+                              }`}
+                          >
+                            Detections (10)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBatchFilterTab('no_detections');
+                              setBatchPaginationPage(1);
+                            }}
+                            className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'no_detections'
+                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                              : 'text-slate-600 hover:text-slate-900'
+                              }`}
+                          >
+                            No Detections (90)
+                          </button>
+                        </div>
+
+                        {/* Search Bar & Sort Dropdown */}
+                        <div className="flex items-center gap-1.5">
+                          <div className="relative flex-1">
+                            <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                              type="text"
+                              placeholder="Search images..."
+                              value={batchSearchQuery}
+                              onChange={e => {
+                                setBatchSearchQuery(e.target.value);
+                                setBatchPaginationPage(1);
+                              }}
+                              className="w-full pl-7 pr-2 py-1 rounded-lg border border-slate-200 text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 bg-slate-50/50"
+                            />
+                          </div>
+
+                          <div className="relative">
+                            <select
+                              value={batchSortBy}
+                              onChange={e => setBatchSortBy(e.target.value as any)}
+                              className="appearance-none pl-2 pr-5 py-1 rounded-lg border border-slate-200 text-[10.5px] font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                            >
+                              <option value="priority">Sort: Priority</option>
+                              <option value="objects">Sort: Objects</option>
+                              <option value="time">Sort: Name</option>
+                            </select>
+                            <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Image Items List (5 items max per page) */}
+                        <div className="space-y-1">
+                          {paginatedImages.length === 0 ? (
+                            <div className="py-6 text-center text-xs text-slate-400">
+                              No images match your filter.
+                            </div>
+                          ) : (
+                            paginatedImages.map(item => {
+                              const isSelected = selectedBatchImageId === item.id;
+                              const isChecked = batchSelectedImageIds.includes(item.id);
+
+                              return (
+                                <div
+                                  key={item.id}
+                                  onClick={() => {
+                                    setSelectedBatchImageId(item.id);
+                                    if (item.detections.length > 0) {
+                                      setSelectedDetectionCardId(item.detections[0].id);
+                                    }
+                                  }}
+                                  className={`flex items-center gap-2 p-1.5 rounded-lg transition-all cursor-pointer border ${isSelected
+                                    ? 'border-rose-400 bg-rose-50/40 shadow-2xs ring-1 ring-rose-300'
+                                    : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/60'
+                                    }`}
+                                >
+                                  {/* Checkbox */}
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={e => toggleImageSelect(item.id, e as any)}
+                                    className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                  />
+
+                                  {/* Thumbnail */}
+                                  <div className="w-10 h-8 rounded overflow-hidden bg-slate-900 border border-slate-200 shrink-0">
+                                    <img
+                                      src={item.thumb}
+                                      alt={item.filename}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+
+                                  {/* Content Details */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between">
+                                      <span className={`text-[11.5px] truncate ${isSelected ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'}`}>
+                                        {item.filename}
+                                      </span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-0.5">
+                                      <span className="text-[10px] font-mono text-slate-500">
+                                        {item.objectsCount > 0 ? `${item.objectsCount} objects` : '0 objects'}
+                                      </span>
+
+                                      {item.priority === 'High' && (
+                                        <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-rose-100/80 text-rose-700 border border-rose-200/80">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                          <span>High</span>
+                                        </span>
+                                      )}
+                                      {item.priority === 'Medium' && (
+                                        <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                          <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
+                                          <span>Medium</span>
+                                        </span>
+                                      )}
+                                      {item.priority === 'Low' && (
+                                        <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
+                                          <span>Low</span>
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Timestamp */}
+                                    {item.timeShort && (
+                                      <div className="text-[9px] text-slate-400 font-mono text-right">
+                                        {item.timeShort}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })
+                          )}
                         </div>
                       </div>
 
-                      {/* Image Items List */}
-                      <div className="space-y-1">
-                        {paginatedImages.length === 0 ? (
-                          <div className="py-6 text-center text-xs text-slate-400">
-                            No images match your filter.
-                          </div>
-                        ) : (
-                          paginatedImages.map(item => {
-                            const isSelected = selectedBatchImageId === item.id;
-                            const isChecked = batchSelectedImageIds.includes(item.id);
-
-                            return (
-                              <div
-                                key={item.id}
-                                onClick={() => {
-                                  setSelectedBatchImageId(item.id);
-                                  if (item.detections.length > 0) {
-                                    setSelectedDetectionCardId(item.detections[0].id);
-                                  }
-                                }}
-                                className={`flex items-center gap-2 p-1.5 rounded-lg transition-all cursor-pointer border ${isSelected
-                                  ? 'border-rose-400 bg-rose-50/40 shadow-2xs ring-1 ring-rose-300'
-                                  : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/60'
-                                  }`}
-                              >
-                                {/* Checkbox */}
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={e => toggleImageSelect(item.id, e as any)}
-                                  className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                />
-
-                                {/* Thumbnail */}
-                                <div className="w-10 h-8 rounded overflow-hidden bg-slate-900 border border-slate-200 shrink-0">
-                                  <img
-                                    src={item.thumb}
-                                    alt={item.filename}
-                                    className="w-full h-full object-cover"
-                                  />
-                                </div>
-
-                                {/* Content Details */}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between">
-                                    <span className={`text-[11.5px] truncate ${isSelected ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'}`}>
-                                      {item.filename}
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between mt-0.5">
-                                    <span className="text-[10px] font-mono text-slate-500">
-                                      {item.objectsCount > 0 ? `${item.objectsCount} objects` : '0 objects'}
-                                    </span>
-
-                                    {item.priority === 'High' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-rose-100/80 text-rose-700 border border-rose-200/80">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                                        <span>High</span>
-                                      </span>
-                                    )}
-                                    {item.priority === 'Medium' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
-                                        <span>Medium</span>
-                                      </span>
-                                    )}
-                                    {item.priority === 'Low' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
-                                        <span>Low</span>
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  {/* Timestamp */}
-                                  {item.timeShort && (
-                                    <div className="text-[9px] text-slate-400 font-mono text-right">
-                                      {item.timeShort}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-
-                      {/* Pagination Controls */}
-                      <div className="flex items-center justify-center gap-1 pt-1 border-t border-slate-100 text-xs">
+                      {/* Dynamic Pagination Controls */}
+                      <div className="flex items-center justify-center gap-1 pt-1.5 border-t border-slate-100 text-xs">
                         <button
                           type="button"
                           onClick={() => setBatchPaginationPage(p => Math.max(1, p - 1))}
@@ -3204,37 +3219,53 @@ export const NaadvedhDashboard: React.FC = () => {
                           <ChevronLeft className="w-3 h-3" />
                         </button>
 
-                        {[1, 2, 3].map(pageNum => (
-                          <button
-                            key={pageNum}
-                            type="button"
-                            onClick={() => setBatchPaginationPage(pageNum)}
-                            className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === pageNum
-                              ? 'bg-blue-600 text-white font-bold shadow-2xs'
-                              : 'text-slate-600 hover:bg-slate-100'
-                              }`}
-                          >
-                            {pageNum}
-                          </button>
-                        ))}
-
-                        <span className="text-slate-400 px-0.5 text-xs">...</span>
+                        {totalPages <= 4 ? (
+                          Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                            <button
+                              key={pageNum}
+                              type="button"
+                              onClick={() => setBatchPaginationPage(pageNum)}
+                              className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === pageNum
+                                ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                                : 'text-slate-600 hover:bg-slate-100'
+                                }`}
+                            >
+                              {pageNum}
+                            </button>
+                          ))
+                        ) : (
+                          <>
+                            {[1, 2, 3].map(pageNum => (
+                              <button
+                                key={pageNum}
+                                type="button"
+                                onClick={() => setBatchPaginationPage(pageNum)}
+                                className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === pageNum
+                                  ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                                  : 'text-slate-600 hover:bg-slate-100'
+                                  }`}
+                              >
+                                {pageNum}
+                              </button>
+                            ))}
+                            <span className="text-slate-400 px-0.5 text-xs">...</span>
+                            <button
+                              type="button"
+                              onClick={() => setBatchPaginationPage(totalPages)}
+                              className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === totalPages
+                                ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                                : 'text-slate-600 hover:bg-slate-100'
+                                }`}
+                            >
+                              {totalPages}
+                            </button>
+                          </>
+                        )}
 
                         <button
                           type="button"
-                          onClick={() => setBatchPaginationPage(10)}
-                          className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === 10
-                            ? 'bg-blue-600 text-white font-bold shadow-2xs'
-                            : 'text-slate-600 hover:bg-slate-100'
-                            }`}
-                        >
-                          10
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setBatchPaginationPage(p => Math.min(10, p + 1))}
-                          disabled={currentPage === 10}
+                          onClick={() => setBatchPaginationPage(p => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages}
                           className="w-6 h-6 flex items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
                         >
                           <ChevronRight className="w-3 h-3" />
@@ -3243,349 +3274,536 @@ export const NaadvedhDashboard: React.FC = () => {
                     </div>
 
                     {/* ------------------------------------------------------- */}
-                    {/* CENTER COLUMN: Sonar Canvas & Viewport (lg:col-span-6)  */}
+                    {/* CENTER COLUMN: Sonar Canvas + Verification Actions      */}
                     {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-6 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2">
-                      {/* Top Action & Navigation Row */}
-                      <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                            {currentBatchImage.filename}
-                          </h3>
-                          {currentBatchImage.priority === 'High' && (
-                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
-                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                              <span>High Priority</span>
-                            </span>
-                          )}
-                          {currentBatchImage.priority === 'Medium' && (
-                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                              <span>Medium Priority</span>
-                            </span>
-                          )}
-                          {currentBatchImage.priority === 'Low' && (
-                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <span>Low Priority</span>
-                            </span>
+                    <div className="lg:col-span-6 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col justify-between space-y-2">
+                      <div className="space-y-2">
+                        {/* Top Action & Navigation Row */}
+                        <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                          <div className="flex items-center space-x-2">
+                            <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                              {currentBatchImage.filename}
+                            </h3>
+                            {currentBatchImage.priority === 'High' && (
+                              <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                <span>High Priority</span>
+                              </span>
+                            )}
+                            {currentBatchImage.priority === 'Medium' && (
+                              <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                <span>Medium Priority</span>
+                              </span>
+                            )}
+                            {currentBatchImage.priority === 'Low' && (
+                              <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span>Low Priority</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Prev / Next Nav Buttons */}
+                          <div className="flex items-center space-x-1">
+                            <button
+                              type="button"
+                              onClick={handlePrevImage}
+                              disabled={currentIndex <= 0}
+                              className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                            >
+                              <ChevronLeft className="w-3 h-3" />
+                              <span>Previous</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleNextImage}
+                              disabled={currentIndex >= filteredBatchImages.length - 1}
+                              className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                            >
+                              <span>Next</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Image Sub-Metadata Row */}
+                        <div className="flex flex-wrap items-center gap-2.5 text-slate-500 text-[10.5px]">
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="w-3 h-3 text-slate-400" />
+                            <span>{currentBatchImage.timestamp}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Database className="w-3 h-3 text-slate-400" />
+                            <span>{currentBatchImage.size}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <MapPin className="w-3 h-3 text-slate-400" />
+                            <span>{currentBatchImage.location}</span>
+                          </div>
+                        </div>
+
+                        {/* Main Sonar Viewport Canvas with Controlled Height */}
+                        <div className="relative rounded-xl overflow-hidden border border-slate-900 bg-slate-950 w-full h-[195px] sm:h-[210px] shadow-inner select-none">
+                          <img
+                            src={currentBatchImage.sonarImg}
+                            alt="Side-Scan Sonar Analysis"
+                            className="w-full h-full object-cover select-none transition-transform duration-200"
+                            style={{
+                              transform: `scale(${batchZoomLevel / 100})`,
+                            }}
+                          />
+
+                          {/* Depth Gauge on Left Side (0m, 10m, 20m, 30m, 40m) */}
+                          <div className="absolute left-1.5 top-1.5 bottom-1.5 flex flex-col justify-between text-[9px] font-mono font-bold text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] pointer-events-none z-10">
+                            <span>0m</span>
+                            <span>10m</span>
+                            <span>20m</span>
+                            <span>30m</span>
+                            <span>40m</span>
+                          </div>
+
+                          {/* Acoustic Nadir Line & Track Label */}
+                          <div className="absolute top-0 bottom-0 left-9 w-px bg-cyan-400/40 border-r border-dashed border-cyan-300/60 pointer-events-none"></div>
+                          <div className="absolute top-1.5 left-11 px-1.5 py-0.2 rounded bg-black/80 text-cyan-300 font-mono text-[8.5px] font-semibold border border-cyan-500/30 backdrop-blur-xs pointer-events-none z-10">
+                            NADIR TRACK - SSS 900 kHz
+                          </div>
+
+                          {/* Top-Right HUD Telemetry Overlay */}
+                          <div className="absolute top-1.5 right-1.5 px-2 py-1 rounded bg-black/85 border border-slate-700 text-slate-200 font-mono text-[8.5px] leading-tight backdrop-blur-xs text-right shadow-xs pointer-events-none z-10">
+                            <div>Time: {currentBatchImage.timeHud}</div>
+                            <div>Freq: {currentBatchImage.frequency}</div>
+                            <div>Swath: {currentBatchImage.swath}</div>
+                            <div>Speed: {currentBatchImage.speed}</div>
+                          </div>
+
+                          {/* Scale Bar at Bottom Right: [ 50 m ] */}
+                          <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 border border-slate-700 text-white font-mono text-[8.5px] flex items-center justify-center space-x-1 pointer-events-none z-10">
+                            <span className="w-1 h-1 border-l border-white inline-block"></span>
+                            <span className="w-10 h-0.5 bg-white inline-block"></span>
+                            <span className="px-1 text-slate-200 font-bold">50 m</span>
+                            <span className="w-10 h-0.5 bg-white inline-block"></span>
+                            <span className="w-1 h-1 border-r border-white inline-block"></span>
+                          </div>
+
+                          {/* Bounding Boxes for Detections */}
+                          {batchImageDisplayMode === 'detected' && (
+                            <>
+                              {currentBatchImage.detections.map(det => {
+                                const isCardSelected = selectedDetectionCardId === det.id;
+
+                                let boxStyle: React.CSSProperties = {
+                                  top: '55%',
+                                  left: '16%',
+                                  width: '28%',
+                                  height: '24%',
+                                };
+
+                                if (det.orderNumber === 1) {
+                                  boxStyle = { top: '55%', left: '16%', width: '28%', height: '25%' };
+                                } else if (det.orderNumber === 2) {
+                                  boxStyle = { top: '22%', left: '38%', width: '28%', height: '28%' };
+                                } else if (det.orderNumber === 3) {
+                                  boxStyle = { top: '46%', left: '68%', width: '20%', height: '28%' };
+                                }
+
+                                const boxBorderColor =
+                                  det.color === 'red'
+                                    ? 'border-rose-500'
+                                    : det.color === 'blue'
+                                      ? 'border-blue-500'
+                                      : 'border-amber-500';
+
+                                const boxBgColor =
+                                  det.color === 'red'
+                                    ? 'bg-rose-500/15'
+                                    : det.color === 'blue'
+                                      ? 'bg-blue-500/15'
+                                      : 'bg-amber-500/15';
+
+                                const tagBg =
+                                  det.color === 'red'
+                                    ? 'bg-rose-500 text-white'
+                                    : det.color === 'blue'
+                                      ? 'bg-blue-600 text-white'
+                                      : 'bg-amber-500 text-white';
+
+                                return (
+                                  <div
+                                    key={det.id}
+                                    onClick={() => setSelectedDetectionCardId(det.id)}
+                                    className={`absolute border-2 transition-all cursor-pointer ${boxBorderColor} ${boxBgColor} ${isCardSelected ? 'ring-2 ring-white shadow-lg' : ''
+                                      }`}
+                                    style={boxStyle}
+                                  >
+                                    <span
+                                      className={`absolute -top-4.5 left-0 px-1.5 py-0.2 rounded text-[8.5px] font-mono font-bold shadow-xs whitespace-nowrap ${tagBg}`}
+                                    >
+                                      {det.orderNumber}. {detectionReviewMap[det.id]?.category || det.name} ({det.confidence}%)
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </>
                           )}
                         </div>
 
-                        {/* Prev / Next Nav Buttons */}
-                        <div className="flex items-center space-x-1">
-                          <button
-                            type="button"
-                            onClick={handlePrevImage}
-                            disabled={currentIndex <= 0}
-                            className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
-                          >
-                            <ChevronLeft className="w-3 h-3" />
-                            <span>Previous</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleNextImage}
-                            disabled={currentIndex >= filteredBatchImages.length - 1}
-                            className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
-                          >
-                            <span>Next</span>
-                            <ChevronRight className="w-3 h-3" />
-                          </button>
+                        {/* Toolbar: Mode Switcher & Zoom Controls */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-1.5 pt-0.5">
+                          {/* Mode Switcher */}
+                          <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[11px] font-semibold">
+                            <button
+                              type="button"
+                              onClick={() => setBatchImageDisplayMode('original')}
+                              className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'original'
+                                ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                                : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                              Original Image
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setBatchImageDisplayMode('detected')}
+                              className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'detected'
+                                ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                                : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                              Detected Objects
+                            </button>
+                          </div>
+
+                          {/* Zoom & Inspect Tools */}
+                          <div className="flex items-center space-x-1 text-slate-600">
+                            <button
+                              type="button"
+                              className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                              title="Inspect"
+                            >
+                              <Search className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setBatchZoomLevel(z => Math.max(50, z - 10))}
+                              className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                              title="Zoom Out"
+                            >
+                              <ZoomOut className="w-3 h-3" />
+                            </button>
+                            <span className="text-[11px] font-mono font-bold px-1 text-slate-700">
+                              {batchZoomLevel}%
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setBatchZoomLevel(z => Math.min(200, z + 10))}
+                              className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                              title="Zoom In"
+                            >
+                              <ZoomIn className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setBatchZoomLevel(100)}
+                              className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                              title="Reset"
+                            >
+                              <Maximize2 className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Image Sub-Metadata Row */}
-                      <div className="flex flex-wrap items-center gap-2.5 text-slate-500 text-[10.5px]">
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="w-3 h-3 text-slate-400" />
-                          <span>{currentBatchImage.timestamp}</span>
+                      {/* Operator Verification & Classification Action Box (Fills remaining vertical space below sonar) */}
+                      {activeDetection ? (
+                        <div className="p-2 sm:p-2.5 rounded-xl border border-slate-200/90 bg-slate-50/80 shadow-2xs space-y-1.5 relative">
+                          {/* Header: Target Identification & Review Status */}
+                          <div className="flex items-center justify-between gap-1 border-b border-slate-200/60 pb-1">
+                            <div className="flex items-center space-x-1.5 min-w-0">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                              <span className="text-[11px] font-bold text-slate-900 truncate">
+                                Target #{activeDetection.orderNumber}: {activeReview?.category || activeDetection.name}
+                              </span>
+                              <span className="text-[9.5px] font-mono text-slate-500 shrink-0">
+                                ({activeDetection.confidence}%)
+                              </span>
+                            </div>
+
+                            {/* Status badge */}
+                            <div className="shrink-0">
+                              {activeReview?.status === 'confirmed' && (
+                                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                  <span>Confirmed Debris</span>
+                                </span>
+                              )}
+                              {activeReview?.status === 'rejected' && (
+                                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                  <X className="w-2.5 h-2.5 stroke-[3]" />
+                                  <span>False Alarm (Rejected)</span>
+                                </span>
+                              )}
+                              {activeReview?.status === 'classified' && (
+                                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                                  <Tag className="w-2.5 h-2.5" />
+                                  <span>Reclassified</span>
+                                </span>
+                              )}
+                              {(!activeReview?.status || activeReview.status === 'pending') && (
+                                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                  <Clock className="w-2.5 h-2.5" />
+                                  <span>Pending Review</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Quick description & coordinates */}
+                          <div className="flex items-center justify-between text-[9.5px] font-mono text-slate-500">
+                            <span>Pos: {activeDetection.coordinates}</span>
+                            <span>Size: {activeDetection.size}m</span>
+                          </div>
+
+                          {/* 3 Operator Buttons: Confirm, Reject, Classify */}
+                          <div className="flex items-center gap-1.5 pt-0.5">
+                            {/* 1. Confirm */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDetectionReviewMap(prev => ({
+                                  ...prev,
+                                  [activeDetection.id]: {
+                                    status: 'confirmed',
+                                    category: prev[activeDetection.id]?.category || activeDetection.name
+                                  }
+                                }));
+                              }}
+                              className={`flex-1 flex items-center justify-center space-x-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer shadow-2xs ${activeReview?.status === 'confirmed'
+                                ? 'bg-emerald-600 text-white ring-1 ring-emerald-400'
+                                : 'bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 hover:border-emerald-300'
+                                }`}
+                            >
+                              <Check className="w-3 h-3 stroke-[2.5]" />
+                              <span>Confirm</span>
+                            </button>
+
+                            {/* 2. Reject */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDetectionReviewMap(prev => ({
+                                  ...prev,
+                                  [activeDetection.id]: {
+                                    status: 'rejected',
+                                    category: prev[activeDetection.id]?.category || activeDetection.name
+                                  }
+                                }));
+                              }}
+                              className={`flex-1 flex items-center justify-center space-x-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer shadow-2xs ${activeReview?.status === 'rejected'
+                                ? 'bg-rose-600 text-white ring-1 ring-rose-400'
+                                : 'bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 hover:border-rose-300'
+                                }`}
+                            >
+                              <X className="w-3 h-3 stroke-[2.5]" />
+                              <span>Reject</span>
+                            </button>
+
+                            {/* 3. Classify */}
+                            <div className="relative flex-1">
+                              <button
+                                type="button"
+                                onClick={() => setIsClassifyDropdownOpen(!isClassifyDropdownOpen)}
+                                className={`w-full flex items-center justify-center space-x-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer shadow-2xs ${activeReview?.status === 'classified'
+                                  ? 'bg-blue-600 text-white ring-1 ring-blue-400'
+                                  : 'bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 hover:border-blue-300'
+                                  }`}
+                              >
+                                <Tag className="w-3 h-3" />
+                                <span>Classify</span>
+                                <ChevronDown className="w-2.5 h-2.5 ml-0.5" />
+                              </button>
+
+                              {/* Classification Dropdown */}
+                              {isClassifyDropdownOpen && (
+                                <div className="absolute right-0 bottom-full mb-1.5 w-60 bg-white rounded-xl shadow-xl border border-slate-200 p-1.5 z-40 space-y-0.5">
+                                  <div className="px-2 py-1 text-[9.5px] font-mono uppercase font-bold text-slate-400 border-b border-slate-100 flex items-center justify-between">
+                                    <span>Correct Object Class</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setIsClassifyDropdownOpen(false)}
+                                      className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                  {[
+                                    { label: 'Sunken Container', icon: '📦' },
+                                    { label: 'Fishing Gear / Ghost Net', icon: '🕸️' },
+                                    { label: 'Marine Debris (Plastic/Metal)', icon: '🛢️' },
+                                    { label: 'Rock Outcrop / Natural Feature', icon: '🪨' },
+                                    { label: 'Shipwreck / Structural Hull', icon: '🚢' },
+                                    { label: 'Subsea Cable / Pipeline', icon: '⚡' },
+                                    { label: 'Unknown Anomaly', icon: '❓' },
+                                  ].map(cat => (
+                                    <button
+                                      key={cat.label}
+                                      type="button"
+                                      onClick={() => {
+                                        setDetectionReviewMap(prev => ({
+                                          ...prev,
+                                          [activeDetection.id]: { status: 'classified', category: cat.label }
+                                        }));
+                                        setIsClassifyDropdownOpen(false);
+                                      }}
+                                      className="w-full text-left px-2 py-1 rounded-md text-[10.5px] font-medium hover:bg-blue-50 hover:text-blue-700 flex items-center justify-between transition-colors cursor-pointer"
+                                    >
+                                      <span>{cat.icon} {cat.label}</span>
+                                      {activeReview?.category === cat.label && (
+                                        <Check className="w-3 h-3 text-blue-600 stroke-[3]" />
+                                      )}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Database className="w-3 h-3 text-slate-400" />
-                          <span>{currentBatchImage.size}</span>
+                      ) : (
+                        <div className="p-2.5 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 text-center text-[10.5px] text-slate-400">
+                          Select a detected object to review and classify.
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="w-3 h-3 text-slate-400" />
-                          <span>{currentBatchImage.location}</span>
-                        </div>
-                      </div>
+                      )}
+                    </div>
 
-                      {/* Main Sonar Viewport Canvas with Controlled Height */}
-                      <div className="relative rounded-xl overflow-hidden border border-slate-900 bg-slate-950 w-full h-[225px] sm:h-[245px] shadow-inner select-none">
-                        <img
-                          src={currentBatchImage.sonarImg}
-                          alt="Side-Scan Sonar Analysis"
-                          className="w-full h-full object-cover select-none transition-transform duration-200"
-                          style={{
-                            transform: `scale(${batchZoomLevel / 100})`,
-                          }}
-                        />
+                    {/* ------------------------------------------------------- */}
+                    {/* RIGHT COLUMN: Detections in This Image (Max 4 Items)    */}
+                    {/* ------------------------------------------------------- */}
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col justify-between space-y-2">
+                      <div className="space-y-2">
+                        {/* Header */}
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                          Detections in This Image ({currentBatchImage.detections.length})
+                        </h3>
 
-                        {/* Depth Gauge on Left Side (0m, 10m, 20m, 30m, 40m) */}
-                        <div className="absolute left-1.5 top-1.5 bottom-1.5 flex flex-col justify-between text-[9px] font-mono font-bold text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] pointer-events-none z-10">
-                          <span>0m</span>
-                          <span>10m</span>
-                          <span>20m</span>
-                          <span>30m</span>
-                          <span>40m</span>
-                        </div>
+                        {/* List of Detection Cards (Max 4 items) */}
+                        <div className="space-y-2">
+                          {currentBatchImage.detections.length === 0 ? (
+                            <div className="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-lg border border-slate-200/60">
+                              No objects detected in this image.
+                            </div>
+                          ) : (
+                            currentBatchImage.detections.slice(0, 4).map(det => {
+                              const isSelected = selectedDetectionCardId === det.id;
+                              const reviewInfo = detectionReviewMap[det.id];
 
-                        {/* Acoustic Nadir Line & Track Label */}
-                        <div className="absolute top-0 bottom-0 left-9 w-px bg-cyan-400/40 border-r border-dashed border-cyan-300/60 pointer-events-none"></div>
-                        <div className="absolute top-1.5 left-11 px-1.5 py-0.2 rounded bg-black/80 text-cyan-300 font-mono text-[8.5px] font-semibold border border-cyan-500/30 backdrop-blur-xs pointer-events-none z-10">
-                          NADIR TRACK - SSS 900 kHz
-                        </div>
-
-                        {/* Top-Right HUD Telemetry Overlay */}
-                        <div className="absolute top-1.5 right-1.5 px-2 py-1 rounded bg-black/85 border border-slate-700 text-slate-200 font-mono text-[8.5px] leading-tight backdrop-blur-xs text-right shadow-xs pointer-events-none z-10">
-                          <div>Time: {currentBatchImage.timeHud}</div>
-                          <div>Freq: {currentBatchImage.frequency}</div>
-                          <div>Swath: {currentBatchImage.swath}</div>
-                          <div>Speed: {currentBatchImage.speed}</div>
-                        </div>
-
-                        {/* Scale Bar at Bottom Right: [ 50 m ] */}
-                        <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 border border-slate-700 text-white font-mono text-[8.5px] flex items-center justify-center space-x-1 pointer-events-none z-10">
-                          <span className="w-1 h-1 border-l border-white inline-block"></span>
-                          <span className="w-10 h-0.5 bg-white inline-block"></span>
-                          <span className="px-1 text-slate-200 font-bold">50 m</span>
-                          <span className="w-10 h-0.5 bg-white inline-block"></span>
-                          <span className="w-1 h-1 border-r border-white inline-block"></span>
-                        </div>
-
-                        {/* Bounding Boxes for Detections */}
-                        {batchImageDisplayMode === 'detected' && (
-                          <>
-                            {currentBatchImage.detections.map(det => {
-                              const isCardSelected = selectedDetectionCardId === det.id;
-
-                              let boxStyle: React.CSSProperties = {
-                                top: '55%',
-                                left: '16%',
-                                width: '28%',
-                                height: '24%',
-                              };
-
-                              if (det.orderNumber === 1) {
-                                boxStyle = { top: '55%', left: '16%', width: '28%', height: '25%' };
-                              } else if (det.orderNumber === 2) {
-                                boxStyle = { top: '22%', left: '38%', width: '28%', height: '28%' };
-                              } else if (det.orderNumber === 3) {
-                                boxStyle = { top: '46%', left: '68%', width: '20%', height: '28%' };
-                              }
-
-                              const boxBorderColor =
+                              const accentStripeColor =
                                 det.color === 'red'
-                                  ? 'border-rose-500'
+                                  ? 'bg-rose-500'
                                   : det.color === 'blue'
-                                    ? 'border-blue-500'
-                                    : 'border-amber-500';
+                                    ? 'bg-blue-500'
+                                    : 'bg-amber-500';
 
-                              const boxBgColor =
+                              const confidenceTextColor =
                                 det.color === 'red'
-                                  ? 'bg-rose-500/15'
+                                  ? 'text-rose-600'
                                   : det.color === 'blue'
-                                    ? 'bg-blue-500/15'
-                                    : 'bg-amber-500/15';
-
-                              const tagBg =
-                                det.color === 'red'
-                                  ? 'bg-rose-500 text-white'
-                                  : det.color === 'blue'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-amber-500 text-white';
+                                    ? 'text-blue-600'
+                                    : 'text-amber-600';
 
                               return (
                                 <div
                                   key={det.id}
                                   onClick={() => setSelectedDetectionCardId(det.id)}
-                                  className={`absolute border-2 transition-all cursor-pointer ${boxBorderColor} ${boxBgColor} ${isCardSelected ? 'ring-2 ring-white shadow-lg' : ''
+                                  className={`rounded-lg border transition-all cursor-pointer overflow-hidden p-2 ${isSelected
+                                    ? 'border-blue-300 bg-blue-50/30 shadow-2xs ring-1 ring-blue-200'
+                                    : 'border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50/50'
                                     }`}
-                                  style={boxStyle}
                                 >
-                                  <span
-                                    className={`absolute -top-4.5 left-0 px-1.5 py-0.2 rounded text-[8.5px] font-mono font-bold shadow-xs whitespace-nowrap ${tagBg}`}
-                                  >
-                                    {det.orderNumber}. {det.name} ({det.confidence}%)
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </>
-                        )}
-                      </div>
-
-                      {/* Bottom Toolbar: Mode Switcher & Zoom Controls */}
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-1.5 pt-0.5">
-                        {/* Mode Switcher */}
-                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[11px] font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => setBatchImageDisplayMode('original')}
-                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'original'
-                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
-                              : 'text-slate-600 hover:text-slate-900'
-                              }`}
-                          >
-                            Original Image
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setBatchImageDisplayMode('detected')}
-                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'detected'
-                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
-                              : 'text-slate-600 hover:text-slate-900'
-                              }`}
-                          >
-                            Detected Objects
-                          </button>
-                        </div>
-
-                        {/* Zoom & Inspect Tools */}
-                        <div className="flex items-center space-x-1 text-slate-600">
-                          <button
-                            type="button"
-                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                            title="Inspect"
-                          >
-                            <Search className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setBatchZoomLevel(z => Math.max(50, z - 10))}
-                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                            title="Zoom Out"
-                          >
-                            <ZoomOut className="w-3 h-3" />
-                          </button>
-                          <span className="text-[11px] font-mono font-bold px-1 text-slate-700">
-                            {batchZoomLevel}%
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setBatchZoomLevel(z => Math.min(200, z + 10))}
-                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                            title="Zoom In"
-                          >
-                            <ZoomIn className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setBatchZoomLevel(100)}
-                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                            title="Reset"
-                          >
-                            <Maximize2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ------------------------------------------------------- */}
-                    {/* RIGHT COLUMN: Detections in This Image (lg:col-span-3)  */}
-                    {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2">
-                      {/* Header */}
-                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                        Detections in This Image ({currentBatchImage.detections.length})
-                      </h3>
-
-                      {/* List of Detection Cards */}
-                      <div className="space-y-2">
-                        {currentBatchImage.detections.length === 0 ? (
-                          <div className="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-lg border border-slate-200/60">
-                            No objects detected in this image.
-                          </div>
-                        ) : (
-                          currentBatchImage.detections.map(det => {
-                            const isSelected = selectedDetectionCardId === det.id;
-
-                            const accentStripeColor =
-                              det.color === 'red'
-                                ? 'bg-rose-500'
-                                : det.color === 'blue'
-                                  ? 'bg-blue-500'
-                                  : 'bg-amber-500';
-
-                            const confidenceTextColor =
-                              det.color === 'red'
-                                ? 'text-rose-600'
-                                : det.color === 'blue'
-                                  ? 'text-blue-600'
-                                  : 'text-amber-600';
-
-                            return (
-                              <div
-                                key={det.id}
-                                onClick={() => setSelectedDetectionCardId(det.id)}
-                                className={`rounded-lg border transition-all cursor-pointer overflow-hidden p-2 ${isSelected
-                                  ? 'border-blue-300 bg-blue-50/30 shadow-2xs ring-1 ring-blue-200'
-                                  : 'border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50/50'
-                                  }`}
-                              >
-                                {/* Card Title */}
-                                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-                                  <div className="flex items-center space-x-1.5">
-                                    <span className={`w-1 h-3 rounded-full ${accentStripeColor}`}></span>
-                                    <h4 className="text-[11px] font-bold text-slate-900">
-                                      {det.orderNumber}. {det.name}
-                                    </h4>
-                                  </div>
-                                  <span className={`text-[11px] font-black font-mono ${confidenceTextColor}`}>
-                                    {det.confidence}%
-                                  </span>
-                                </div>
-
-                                {/* Body with Thumbnail and Metadata */}
-                                <div className="flex items-center gap-2 pt-1.5">
-                                  {/* Thumbnail */}
-                                  <div className="w-11 h-11 rounded-md bg-black border border-slate-200 overflow-hidden shrink-0">
-                                    <img
-                                      src={
-                                        det.orderNumber === 1
-                                          ? '/sonar-tile-2.jpg'
-                                          : det.orderNumber === 2
-                                            ? '/sonar-tile-3.jpg'
-                                            : '/sonar-tile-1.jpg'
-                                      }
-                                      alt={det.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-
-                                  {/* Details */}
-                                  <div className="flex-1 min-w-0 space-y-0.5 text-[10px]">
-                                    <div className="flex items-center justify-between text-slate-500">
-                                      <span>Type</span>
-                                      <span className="font-semibold text-slate-800 truncate max-w-[95px]">
-                                        {det.type}
-                                      </span>
+                                  {/* Card Title & Review Pill */}
+                                  <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                                    <div className="flex items-center space-x-1.5 min-w-0">
+                                      <span className={`w-1 h-3 rounded-full ${accentStripeColor} shrink-0`}></span>
+                                      <h4 className="text-[11px] font-bold text-slate-900 truncate">
+                                        {det.orderNumber}. {reviewInfo?.category || det.name}
+                                      </h4>
                                     </div>
-                                    <div className="flex items-center justify-between text-slate-500">
-                                      <span>Coordinates</span>
-                                      <span className="font-mono text-[9px] text-slate-700 truncate max-w-[95px]">
-                                        {det.coordinates}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-slate-500">
-                                      <span>Size (m)</span>
-                                      <span className="font-mono text-slate-700">
-                                        {det.size}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-slate-500">
-                                      <span>Confidence</span>
-                                      <span className="font-mono font-bold text-emerald-600">
+                                    <div className="flex items-center space-x-1 shrink-0">
+                                      {reviewInfo?.status === 'confirmed' && (
+                                        <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
+                                          ✓ Confirmed
+                                        </span>
+                                      )}
+                                      {reviewInfo?.status === 'rejected' && (
+                                        <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded border border-rose-200">
+                                          ✗ Rejected
+                                        </span>
+                                      )}
+                                      {reviewInfo?.status === 'classified' && (
+                                        <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-1 py-0.2 rounded border border-blue-200">
+                                          ✎ Tagged
+                                        </span>
+                                      )}
+                                      <span className={`text-[11px] font-black font-mono ${confidenceTextColor}`}>
                                         {det.confidence}%
                                       </span>
                                     </div>
                                   </div>
 
-                                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  {/* Body with Thumbnail and Metadata */}
+                                  <div className="flex items-center gap-2 pt-1.5">
+                                    {/* Thumbnail */}
+                                    <div className="w-11 h-11 rounded-md bg-black border border-slate-200 overflow-hidden shrink-0">
+                                      <img
+                                        src={
+                                          det.orderNumber === 1
+                                            ? '/sonar-tile-2.jpg'
+                                            : det.orderNumber === 2
+                                              ? '/sonar-tile-3.jpg'
+                                              : '/sonar-tile-1.jpg'
+                                        }
+                                        alt={det.name}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+
+                                    {/* Details */}
+                                    <div className="flex-1 min-w-0 space-y-0.5 text-[10px]">
+                                      <div className="flex items-center justify-between text-slate-500">
+                                        <span>Type</span>
+                                        <span className="font-semibold text-slate-800 truncate max-w-[95px]">
+                                          {reviewInfo?.category || det.type}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center justify-between text-slate-500">
+                                        <span>Coordinates</span>
+                                        <span className="font-mono text-[9px] text-slate-700 truncate max-w-[95px]">
+                                          {det.coordinates}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center justify-between text-slate-500">
+                                        <span>Size (m)</span>
+                                        <span className="font-mono text-slate-700">
+                                          {det.size}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center justify-between text-slate-500">
+                                        <span>Confidence</span>
+                                        <span className="font-mono font-bold text-emerald-600">
+                                          {det.confidence}%
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })
-                        )}
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Footer Tip */}
+                      <div className="pt-1 text-[9.5px] font-mono text-slate-400 text-center border-t border-slate-100">
+                        Click any detection to view & classify
                       </div>
                     </div>
                   </div>
