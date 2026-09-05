@@ -11,7 +11,6 @@ import {
   Shield,
   Leaf,
   IndianRupee,
-  Target,
   BarChart2,
   CheckCircle2,
 } from 'lucide-react';
@@ -221,20 +220,7 @@ export function ProblemAndSolutionSection() {
               </div>
             </div>
 
-            {/* Bottom Target Goal Card - positioned at bottom in the same row as Economic Losses */}
-            <div className="bg-blue-50/80 border border-blue-200/80 rounded-2xl p-3.5 sm:p-4 flex items-start sm:items-center space-x-3.5 shadow-xs mt-auto">
-              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200">
-                <Target className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono font-bold text-blue-600 tracking-widest uppercase">
-                  OUR GOAL
-                </div>
-                <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed mt-0.5">
-                  Automate the <span className="text-blue-700 font-bold">detection and localization</span> of underwater debris and anomalies from Side-Scan Sonar imagery.
-                </p>
-              </div>
-            </div>
+
           </div>
         </div>
 

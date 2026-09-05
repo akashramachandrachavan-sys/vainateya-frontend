@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import type { UserRole } from '../../types';
-import confetti from 'canvas-confetti';
 import {
   Anchor,
   ArrowLeft,
@@ -70,16 +69,10 @@ export const AuthPage: React.FC = () => {
       setIsLoading(false);
       setSuccessMessage(isSignUp ? 'Account registered successfully! Redirecting...' : 'Authenticated successfully! Redirecting...');
 
-      confetti({
-        particleCount: 70,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-
       // Redirect to Naadvedh dashboard
       setTimeout(() => {
         window.location.href = '/dashboard.html';
-      }, 1000);
+      }, 700);
     }, 700);
   };
 
@@ -352,7 +345,7 @@ export const AuthPage: React.FC = () => {
                     ? 'Processing...'
                     : isSignUp
                       ? 'Complete Registration & Enter'
-                      : 'Sign In to Hydrographic Dashboard'}
+                      : 'Sign In'}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
