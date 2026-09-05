@@ -33,7 +33,6 @@ import {
   Activity,
   Image as ImageIcon,
   Folder,
-  BarChart3,
   FilePlus2,
   Locate,
   Filter,
@@ -42,7 +41,6 @@ import {
   Database,
   HelpCircle,
   Code,
-  Waves,
   MoreHorizontal,
   AlertCircle,
   Target,
@@ -69,7 +67,7 @@ export interface NotificationItem {
   category: 'alert' | 'success' | 'info';
 }
 
-export type DashboardScreen = 'dashboard' | 'new-survey' | 'surveys' | 'map' | 'reports' | 'settings';
+export type DashboardScreen = 'dashboard' | 'new-survey' | 'surveys' | 'map' | 'settings';
 
 export interface DetectionItem {
   id: string;
@@ -236,8 +234,6 @@ export const NaadvedhDashboard: React.FC = () => {
   const dashMapInstance = useRef<L.Map | null>(null);
   const fullMapRef = useRef<HTMLDivElement | null>(null);
   const fullMapInstance = useRef<L.Map | null>(null);
-  const reportMapRef = useRef<HTMLDivElement | null>(null);
-  const reportMapInstance = useRef<L.Map | null>(null);
 
   // Load real surveys, metrics, and detections from backend on mount
   const loadBackendData = async () => {
@@ -652,65 +648,6 @@ export const NaadvedhDashboard: React.FC = () => {
     };
   }, [currentScreen, mapLayerMode]);
 
-  // Initialize Report Screen mini-map
-  useEffect(() => {
-    if (currentScreen !== 'reports') {
-      if (reportMapInstance.current) {
-        reportMapInstance.current.remove();
-        reportMapInstance.current = null;
-      }
-      return;
-    }
-
-    if (!reportMapRef.current) return;
-
-    if (reportMapInstance.current) {
-      reportMapInstance.current.remove();
-      reportMapInstance.current = null;
-    }
-
-    const map = L.map(reportMapRef.current, {
-      center: [16.8, 72.8],
-      zoom: 6,
-      zoomControl: false,
-    });
-
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-    }).addTo(map);
-
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-    }).addTo(map);
-
-    const reportPoints: [number, number, string, string][] = [
-      [17.4, 72.4, 'Pipeline/Pipe', '#10b981'],
-      [17.8, 72.7, 'Unknown Anomaly', '#ef4444'],
-      [16.2, 73.1, 'Possible Fishing Gear', '#3b82f6'],
-      [16.9, 72.9, 'Unverified Target', '#f59e0b'],
-      [15.8, 73.3, 'Debris/Container', '#10b981'],
-    ];
-
-    reportPoints.forEach(([lat, lng, name, color]) => {
-      const icon = L.divIcon({
-        className: 'report-map-dot',
-        html: `<div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${color}; border: 1.5px solid white; box-shadow: 0 0 6px ${color};"></div>`,
-        iconSize: [10, 10],
-        iconAnchor: [5, 5],
-      });
-      L.marker([lat, lng], { icon }).bindPopup(`<b>${name}</b>`).addTo(map);
-    });
-
-    reportMapInstance.current = map;
-
-    return () => {
-      if (reportMapInstance.current) {
-        reportMapInstance.current.remove();
-        reportMapInstance.current = null;
-      }
-    };
-  }, [currentScreen]);
-
   const handleRemoveFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     setUploadedRawFiles(prev => prev.filter((_, i) => i !== index));
@@ -931,16 +868,7 @@ export const NaadvedhDashboard: React.FC = () => {
               <span>Map</span>
             </button>
 
-            <button
-              onClick={() => setCurrentScreen('reports')}
-              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${currentScreen === 'reports'
-                ? 'bg-blue-50 text-blue-600 font-bold border border-blue-200/80 shadow-xs'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>Reports</span>
-            </button>
+
 
             <button
               onClick={() => setCurrentScreen('settings')}
@@ -1477,11 +1405,11 @@ export const NaadvedhDashboard: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => setCurrentScreen('reports')}
+                    onClick={() => setIsReportModalOpen(true)}
                     className="flex items-center space-x-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
                   >
                     <FileText className="w-3 h-3 text-slate-500" />
-                    <span>View Report</span>
+                    <span>Generate Report</span>
                   </button>
 
                   <button
@@ -3592,299 +3520,7 @@ export const NaadvedhDashboard: React.FC = () => {
           </main>
         )}
 
-        {/* ========================================================= */}
-        {/* SCREEN 2: SURVEY REPORT (Image 2) */}
-        {/* ========================================================= */}
-        {currentScreen === 'reports' && (
-          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full">
-            {/* Header: Title on left, Action Buttons aligned on the same line */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <div>
-                <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
-                  Survey Report
-                </h1>
-                <p className="text-xs text-slate-500">
-                  Detailed analysis results and insights from your sonar survey.
-                </p>
-              </div>
 
-              <div className="flex items-center space-x-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setCurrentScreen('map')}
-                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer transition-colors"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                  <span>View on Map</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download Report</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Survey Overview Card */}
-            <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                    Arabian Sea Survey - Sept 2025
-                  </h3>
-                  <span className="px-2 py-0.2 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Completed
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
-                  <span className="flex items-center space-x-1">
-                    <Calendar className="w-3 h-3 text-slate-400" />
-                    <span>23 Sep 2025</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <MapPin className="w-3 h-3 text-slate-400" />
-                    <span>Arabian Sea (West Coast)</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <ImageIcon className="w-3 h-3 text-slate-400" />
-                    <span>5 images processed</span>
-                  </span>
-                </div>
-                <p className="text-[10.5px] text-slate-500 pt-0.5">
-                  Routine survey to detect potential marine debris in the designated area.
-                </p>
-              </div>
-
-              {/* Right decorative slogan badge */}
-              <div className="bg-blue-50/80 border border-blue-100 rounded-xl p-2.5 sm:p-3 flex items-center space-x-2.5 shrink-0">
-                <div className="w-8 h-8 rounded-lg bg-blue-100/80 text-blue-600 flex items-center justify-center shrink-0">
-                  <Waves className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-blue-900">Cleaner Oceans</div>
-                  <div className="text-[10.5px] text-blue-700 font-medium">Safer Tomorrow.</div>
-                </div>
-              </div>
-            </div>
-
-            {/* 5 KPI Stat Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <ImageIcon className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900 font-mono">5</div>
-                  <div className="text-[10px] text-slate-500">Images Processed</div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                  <Crosshair className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900 font-mono">12</div>
-                  <div className="text-[10px] text-slate-500">Total Detections</div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900 font-mono">2</div>
-                  <div className="text-[10px] text-slate-500">High Priority</div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900 font-mono">9</div>
-                  <div className="text-[10px] text-slate-500">Verified</div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                  <HelpCircle className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900 font-mono">2</div>
-                  <div className="text-[10px] text-slate-500">Unclassified</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main Section: Detections Table (Left) + Survey Area & Notes (Right) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
-              {/* Left Column (7 cols): Detections Table */}
-              <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3 space-y-2">
-                <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                    Detections
-                  </h3>
-                  <button
-                    type="button"
-                    className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg border border-slate-200 text-[10.5px] font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
-                  >
-                    <Filter className="w-3 h-3 text-slate-500" />
-                    <span>Filter</span>
-                  </button>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 border-b border-slate-200 font-mono text-slate-500 uppercase text-[9.5px]">
-                      <tr>
-                        <th className="py-1.5 px-2">ID</th>
-                        <th className="py-1.5 px-2">Thumbnail</th>
-                        <th className="py-1.5 px-2">Classification</th>
-                        <th className="py-1.5 px-2">Confidence</th>
-                        <th className="py-1.5 px-2">Location (Lat, Lon)</th>
-                        <th className="py-1.5 px-2">Status</th>
-                        <th className="py-1.5 px-2 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 text-[11px]">
-                      {detailedDetections.map((d) => (
-                        <tr key={d.id} className="hover:bg-slate-50">
-                          <td className="py-1 px-2 font-mono font-bold text-slate-500">{d.number}</td>
-                          <td className="py-1 px-2">
-                            <img
-                              src={d.thumb}
-                              alt={d.name}
-                              className="w-7 h-7 rounded object-cover border border-slate-200 bg-black"
-                            />
-                          </td>
-                          <td className="py-1 px-2 font-bold text-slate-900">{d.name}</td>
-                          <td className="py-1 px-2 font-mono font-bold text-emerald-600">
-                            {d.confidence}%
-                          </td>
-                          <td className="py-1 px-2 font-mono text-slate-500 text-[10px]">
-                            {d.lat}, {d.lng}
-                          </td>
-                          <td className="py-1 px-2">
-                            <span
-                              className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold border ${d.status === 'Verified'
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : 'bg-amber-50 text-amber-700 border-amber-200'
-                                }`}
-                            >
-                              {d.status}
-                            </span>
-                          </td>
-                          <td className="py-1 px-2 text-right text-slate-400">
-                            <button type="button" className="p-1 hover:text-slate-700 cursor-pointer">
-                              <MoreHorizontal className="w-3.5 h-3.5" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Right Column (5 cols): Survey Area Map + Notes */}
-              <div className="lg:col-span-5 space-y-2.5">
-                {/* Survey Area Mini Map */}
-                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 space-y-1.5">
-                  <h4 className="text-xs font-bold text-slate-900 font-['Space_Grotesk']">
-                    Survey Area
-                  </h4>
-
-                  <div className="relative h-28 rounded-lg overflow-hidden border border-slate-200 bg-slate-900">
-                    <div ref={reportMapRef} className="w-full h-full z-0"></div>
-
-                    {/* Bottom Legend */}
-                    <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center space-x-2 bg-slate-950/80 backdrop-blur-xs px-2 py-0.5 rounded text-[8.5px] text-slate-200">
-                      <span className="flex items-center space-x-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Verified</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                        <span>Unverified</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                        <span>High Priority</span>
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-1.5 right-1.5 z-10 text-[8.5px] font-mono text-white bg-black/60 px-1.5 py-0.2 rounded">
-                      50 km
-                    </div>
-                  </div>
-                </div>
-
-                {/* Notes & Observations */}
-                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 space-y-1">
-                  <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 font-['Space_Grotesk']">
-                    <FileText className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Notes &amp; Observations</span>
-                  </div>
-
-                  <ul className="text-[10px] text-slate-600 space-y-0.5 list-disc pl-4 leading-relaxed">
-                    <li>One pipeline-like structure detected with high confidence.</li>
-                    <li>Two unknown anomalies require manual verification.</li>
-                    <li>Possible fishing gear detected near the survey area.</li>
-                    <li>No significant natural formation misclassifications observed.</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Row Actions */}
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setCurrentScreen('dashboard')}
-                className="text-xs font-bold text-slate-600 hover:text-blue-600 flex items-center space-x-1.5 cursor-pointer"
-              >
-                <span>&larr; Back to Dashboard</span>
-              </button>
-
-              <div className="flex items-center space-x-2">
-                <button
-                  type="button"
-                  onClick={handleExportCSV}
-                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                >
-                  <Code className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Export JSON</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleExportCSV}
-                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Export CSV</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                >
-                  <Printer className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Download PDF</span>
-                </button>
-              </div>
-            </div>
-          </main>
-        )}
 
         {/* ========================================================= */}
         {/* SCREEN 3: SURVEY HISTORY (Image 3) */}
@@ -4151,11 +3787,11 @@ export const NaadvedhDashboard: React.FC = () => {
                 <div className="space-y-1.5 pt-1">
                   <button
                     type="button"
-                    onClick={() => setCurrentScreen('reports')}
+                    onClick={() => setIsReportModalOpen(true)}
                     className="w-full py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                   >
-                    <BarChart3 className="w-3.5 h-3.5" />
-                    <span>View Full Report</span>
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Generate Report</span>
                   </button>
 
                   <button
