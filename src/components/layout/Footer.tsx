@@ -27,8 +27,15 @@ export const Footer: React.FC<Props> = () => {
           </div>
         </div>
 
+        {/* Legal Disclaimer: Reference and Non-Endorsement Notice */}
+        <div className="pt-6 pb-2 border-t border-slate-200">
+          <p className="text-[11px] font-sans text-slate-500 leading-relaxed">
+            <strong className="font-semibold text-slate-700 font-mono">Disclaimer:</strong> All organizational logos, emblems, and agency names (including the Ministry of Earth Sciences, Government of India, and Smart India Hackathon) displayed on this platform are used solely for academic reference, hackathon prototype context (Problem Statement PS 26057), and educational demonstration. Their presentation does not imply official government endorsement, affiliation, or formal partnership with the respective organizations.
+          </p>
+        </div>
+
         {/* Bottom Bar: Copyright on left, Developed with ❤️ prominently covering from PS 26057 to the right edge */}
-        <div className="pt-6 border-t border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="pt-4 border-t border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p className="text-slate-500 text-xs font-mono text-left shrink-0">
             &copy; 2026 VAINATEYA &bull; Smart India Hackathon Prototype (PS 26057).
           </p>

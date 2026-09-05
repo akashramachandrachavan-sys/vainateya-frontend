@@ -28,7 +28,7 @@ interface TechItem {
 
 export function TechStackShowcase() {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Frontend' | 'Backend' | 'AI Tools'>('All');
-  const [viewMode, setViewMode] = useState<'grid' | 'columns' | 'table'>('grid');
+  const [viewMode, setViewMode] = useState<'columns' | 'grid' | 'table'>('columns');
 
   const stackItems: TechItem[] = [
     // Frontend Tools
@@ -206,30 +206,30 @@ export function TechStackShowcase() {
   const aiItems = stackItems.filter(i => i.category === 'AI Tools');
 
   return (
-    <section className="py-12 bg-white border-t border-slate-200 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center max-w-3xl mx-auto space-y-1.5">
-          <div className="inline-flex items-center space-x-2 text-xs font-mono text-blue-700 bg-blue-50 px-3 py-0.5 rounded-full border border-blue-200">
-            <Layers className="w-3.5 h-3.5 text-blue-600" />
+    <section className="py-7 sm:py-9 bg-white border-t border-slate-200 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-5">
+        <div className="text-center max-w-3xl mx-auto space-y-1">
+          <div className="inline-flex items-center space-x-2 text-[11px] font-mono text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+            <Layers className="w-3 h-3 text-blue-600" />
             <span>Smart India Hackathon Technical Specification</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
             Engineered Full-Stack Architecture
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600">
+          <p className="text-xs text-slate-500">
             All 19 approved layers &amp; tools for autonomous marine debris classification, acoustic shadow relief, and geospatial mapping.
           </p>
         </div>
 
         {/* Filter Controls & View Switcher */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 border-b border-slate-200 pb-2.5">
           <div className="flex flex-wrap items-center gap-1.5">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${selectedCategory === cat.id
-                  ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${selectedCategory === cat.id
+                  ? 'bg-blue-600 text-white shadow-xs font-semibold'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                   }`}
               >
@@ -238,75 +238,68 @@ export function TechStackShowcase() {
             ))}
           </div>
 
-          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-blue-700 shadow-sm font-semibold' : 'text-slate-600 hover:text-slate-900'
-                }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Compact Cards ({filteredItems.length})</span>
-            </button>
+          <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
             <button
               onClick={() => setViewMode('columns')}
-              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'columns' ? 'bg-white text-blue-700 shadow-sm font-semibold' : 'text-slate-600 hover:text-slate-900'
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'columns' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
             >
-              <Layers className="w-3.5 h-3.5" />
+              <Layers className="w-3 h-3" />
               <span>3-Column Stack</span>
             </button>
             <button
-              onClick={() => setViewMode('table')}
-              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-blue-700 shadow-sm font-semibold' : 'text-slate-600 hover:text-slate-900'
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
             >
-              <TableIcon className="w-3.5 h-3.5" />
+              <LayoutGrid className="w-3 h-3" />
+              <span>Compact Cards ({filteredItems.length})</span>
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
+                }`}
+            >
+              <TableIcon className="w-3 h-3" />
               <span>Table</span>
             </button>
           </div>
         </div>
 
-        {/* View Mode: Compact Grid Cards (All 19 fit in ~320px height) */}
+        {/* View Mode: Compact Grid Cards (Ultra-compact 1-row chips) */}
         {viewMode === 'grid' && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {filteredItems.map((item, index) => {
               const Icon = item.icon;
               return (
                 <div
                   key={index}
                   title={`${item.layer}: ${item.finalTool} • ${item.description}`}
-                  className="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all group relative flex flex-col justify-between"
+                  className="bg-white p-2 px-2.5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-xs transition-all group flex items-center justify-between gap-2"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5 gap-1">
-                      <div className="flex items-center space-x-1.5 min-w-0">
-                        <div className={`p-1 rounded-md border transition-colors shrink-0 ${item.category === 'Frontend' ? 'bg-blue-50 border-blue-200 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' :
-                          item.category === 'Backend' ? 'bg-emerald-50 border-emerald-200 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' :
-                            'bg-purple-50 border-purple-200 text-purple-600 group-hover:bg-purple-600 group-hover:text-white'
-                          }`}>
-                          <Icon className="w-3 h-3" />
-                        </div>
-                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold truncate">
-                          {item.layer}
-                        </span>
-                      </div>
-
-                      <span className={`text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded border shrink-0 ${item.category === 'Frontend' ? 'bg-blue-50 border-blue-200 text-blue-700' :
-                        item.category === 'Backend' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
-                          'bg-purple-50 border-purple-200 text-purple-700'
-                        }`}>
-                        {item.badge}
-                      </span>
+                  <div className="flex items-center space-x-2 min-w-0">
+                    <div className={`p-1 rounded-md border transition-colors shrink-0 ${item.category === 'Frontend' ? 'bg-blue-50 border-blue-200 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' :
+                      item.category === 'Backend' ? 'bg-emerald-50 border-emerald-200 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white' :
+                        'bg-purple-50 border-purple-200 text-purple-600 group-hover:bg-purple-600 group-hover:text-white'
+                      }`}>
+                      <Icon className="w-3 h-3" />
                     </div>
-
-                    <h3 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
-                      {item.finalTool}
-                    </h3>
+                    <div className="min-w-0">
+                      <div className="text-[9px] font-mono text-slate-400 uppercase truncate leading-tight">
+                        {item.layer}
+                      </div>
+                      <h3 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate leading-tight">
+                        {item.finalTool}
+                      </h3>
+                    </div>
                   </div>
 
-                  <p className="text-[10.5px] text-slate-500 truncate mt-1">
-                    {item.description}
-                  </p>
+                  <span className={`text-[8.5px] font-mono font-bold px-1.5 py-0.5 rounded border shrink-0 ${item.category === 'Frontend' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                    item.category === 'Backend' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                      'bg-purple-50 border-purple-200 text-purple-700'
+                    }`}>
+                    {item.badge}
+                  </span>
                 </div>
               );
             })}
@@ -315,87 +308,96 @@ export function TechStackShowcase() {
 
         {/* View Mode: 3-Column Stack (Frontend, Backend, AI Tools side by side) */}
         {viewMode === 'columns' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`grid gap-3 ${selectedCategory === 'All'
+            ? 'grid-cols-1 md:grid-cols-3'
+            : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            }`}>
             {/* Frontend Column */}
-            <div className="bg-slate-50/70 p-3.5 rounded-2xl border border-blue-200/80 flex flex-col space-y-2">
-              <div className="flex items-center justify-between pb-2 border-b border-blue-100">
-                <span className="text-xs font-mono font-bold text-blue-700 uppercase tracking-wider">Frontend Tools</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">6 Layers</span>
-              </div>
-              <div className="space-y-1.5">
-                {frontendItems.map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={idx} className="bg-white p-2 rounded-lg border border-slate-200 hover:border-blue-400 transition-colors flex items-center justify-between gap-2">
-                      <div className="flex items-center space-x-2 min-w-0">
-                        <div className="p-1 rounded bg-blue-50 text-blue-600 shrink-0">
-                          <Icon className="w-3 h-3" />
+            {(selectedCategory === 'All' || selectedCategory === 'Frontend') && (
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-blue-200/80 flex flex-col space-y-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-blue-100">
+                  <span className="text-xs font-mono font-bold text-blue-700 uppercase tracking-wider">Frontend Tools</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">6 Layers</span>
+                </div>
+                <div className="space-y-1">
+                  {frontendItems.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} title={item.description} className="bg-white p-1.5 px-2 rounded-lg border border-slate-200 hover:border-blue-400 transition-colors flex items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2 min-w-0">
+                          <div className="p-1 rounded bg-blue-50 text-blue-600 shrink-0">
+                            <Icon className="w-3 h-3" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[9px] font-mono text-slate-400 uppercase leading-tight">{item.layer}</div>
+                            <div className="text-xs font-bold text-slate-900 truncate leading-tight">{item.finalTool}</div>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <div className="text-[9.5px] font-mono text-slate-400 uppercase">{item.layer}</div>
-                          <div className="text-xs font-bold text-slate-900 truncate">{item.finalTool}</div>
-                        </div>
+                        <span className="text-[8.5px] font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 shrink-0">{item.badge}</span>
                       </div>
-                      <span className="text-[9px] font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 shrink-0">{item.badge}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Backend Column */}
-            <div className="bg-slate-50/70 p-3.5 rounded-2xl border border-emerald-200/80 flex flex-col space-y-2">
-              <div className="flex items-center justify-between pb-2 border-b border-emerald-100">
-                <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">Backend Tools</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">8 Layers</span>
-              </div>
-              <div className="space-y-1.5">
-                {backendItems.map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={idx} className="bg-white p-2 rounded-lg border border-slate-200 hover:border-emerald-400 transition-colors flex items-center justify-between gap-2">
-                      <div className="flex items-center space-x-2 min-w-0">
-                        <div className="p-1 rounded bg-emerald-50 text-emerald-600 shrink-0">
-                          <Icon className="w-3 h-3" />
+            {(selectedCategory === 'All' || selectedCategory === 'Backend') && (
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-emerald-200/80 flex flex-col space-y-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-emerald-100">
+                  <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">Backend Tools</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">8 Layers</span>
+                </div>
+                <div className="space-y-1">
+                  {backendItems.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} title={item.description} className="bg-white p-1.5 px-2 rounded-lg border border-slate-200 hover:border-emerald-400 transition-colors flex items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2 min-w-0">
+                          <div className="p-1 rounded bg-emerald-50 text-emerald-600 shrink-0">
+                            <Icon className="w-3 h-3" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[9px] font-mono text-slate-400 uppercase leading-tight">{item.layer}</div>
+                            <div className="text-xs font-bold text-slate-900 truncate leading-tight">{item.finalTool}</div>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <div className="text-[9.5px] font-mono text-slate-400 uppercase">{item.layer}</div>
-                          <div className="text-xs font-bold text-slate-900 truncate">{item.finalTool}</div>
-                        </div>
+                        <span className="text-[8.5px] font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 shrink-0">{item.badge}</span>
                       </div>
-                      <span className="text-[9px] font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 shrink-0">{item.badge}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* AI Tools Column */}
-            <div className="bg-slate-50/70 p-3.5 rounded-2xl border border-purple-200/80 flex flex-col space-y-2">
-              <div className="flex items-center justify-between pb-2 border-b border-purple-100">
-                <span className="text-xs font-mono font-bold text-purple-700 uppercase tracking-wider">AI Tools</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">5 Layers</span>
-              </div>
-              <div className="space-y-1.5">
-                {aiItems.map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={idx} className="bg-white p-2 rounded-lg border border-slate-200 hover:border-purple-400 transition-colors flex items-center justify-between gap-2">
-                      <div className="flex items-center space-x-2 min-w-0">
-                        <div className="p-1 rounded bg-purple-50 text-purple-600 shrink-0">
-                          <Icon className="w-3 h-3" />
+            {(selectedCategory === 'All' || selectedCategory === 'AI Tools') && (
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-purple-200/80 flex flex-col space-y-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-purple-100">
+                  <span className="text-xs font-mono font-bold text-purple-700 uppercase tracking-wider">AI Tools</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">5 Layers</span>
+                </div>
+                <div className="space-y-1">
+                  {aiItems.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} title={item.description} className="bg-white p-1.5 px-2 rounded-lg border border-slate-200 hover:border-purple-400 transition-colors flex items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2 min-w-0">
+                          <div className="p-1 rounded bg-purple-50 text-purple-600 shrink-0">
+                            <Icon className="w-3 h-3" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[9px] font-mono text-slate-400 uppercase leading-tight">{item.layer}</div>
+                            <div className="text-xs font-bold text-slate-900 truncate leading-tight">{item.finalTool}</div>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <div className="text-[9.5px] font-mono text-slate-400 uppercase">{item.layer}</div>
-                          <div className="text-xs font-bold text-slate-900 truncate">{item.finalTool}</div>
-                        </div>
+                        <span className="text-[8.5px] font-mono text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 shrink-0">{item.badge}</span>
                       </div>
-                      <span className="text-[9px] font-mono text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 shrink-0">{item.badge}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
