@@ -1,8 +1,8 @@
-import { ArrowRight, Waves, ShieldCheck, Anchor, Cpu } from 'lucide-react';
+import { Waves, ShieldCheck, Anchor, Cpu } from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <div className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-sky-50/40 to-slate-50">
+    <div className="relative overflow-hidden pt-12 pb-16 lg:pt-16 lg:pb-20 bg-gradient-to-b from-white via-sky-50/40 to-slate-50">
       {/* Background Radar Rings Graphic (Light Subtle Blue) */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none opacity-40">
         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full border border-blue-200/60 animate-pulse-glow"></div>
@@ -12,43 +12,18 @@ export function HeroSection() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        {/* VAINATEYA Identity Pill */}
-        <div className="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-mono">
-          <img src="/vainateya-symbol.png" alt="VAINATEYA" className="w-4 h-4 object-contain" />
-          <span className="font-bold text-slate-900 tracking-wider">VAINATEYA</span>
-          <span className="text-slate-300">&bull;</span>
-          <span className="text-blue-600 font-semibold italic">"When human vision ends, perception must continue."</span>
-        </div>
 
-        {/* Main Headline */}
-        <div className="space-y-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-[1.1]">
-            Autonomous Underwater <br />
+        {/* Main Headline in one line */}
+        <div className="space-y-4 max-w-5xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
+            AI-Powered{' '}
             <span className="bg-gradient-to-r from-blue-700 via-sky-600 to-teal-600 bg-clip-text text-transparent">
               Marine Debris Detection
             </span>
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-slate-600 font-normal max-w-3xl mx-auto leading-relaxed">
-            Harnessing high-frequency <b>Side-Scan Sonar (SSS) imagery</b>, deep-learning <b>YOLOv12 detection</b>, and rigorous <b>acoustic shadow geometry verification</b> to classify ghost nets, chemical containers, and submerged debris with precise GPS geotagging.
+            Detect and locate underwater debris from Side-Scan Sonar imagery to support cleaner oceans and safer coastal communities.
           </p>
-        </div>
-
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-          <a
-            href="/dashboard.html"
-            className="w-full sm:w-auto flex items-center justify-center space-x-2.5 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base tracking-wide transition-all shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5"
-          >
-            <span>Launch Sonar Detection Studio</span>
-            <ArrowRight className="w-5 h-5" />
-          </a>
-
-          <a
-            href="/auth.html?mode=signin"
-            className="w-full sm:w-auto flex items-center justify-center space-x-2.5 px-7 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm sm:text-base border border-slate-300 hover:border-blue-400 transition-all shadow-sm"
-          >
-            <span>Sign In / Register</span>
-          </a>
         </div>
 
         {/* Live Survey Telemetry Ticker Strip */}

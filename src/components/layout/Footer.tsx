@@ -18,7 +18,7 @@ export const Footer: React.FC<Props> = () => {
               />
               <span className="tracking-wider">VAINATEYA</span>
               <span className="text-[10px] font-mono font-normal text-slate-500 italic hidden sm:inline">
-                &mdash; "When human vision ends, perception must continue."
+                &mdash; "When human vision ends, perception continues."
               </span>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed font-sans">

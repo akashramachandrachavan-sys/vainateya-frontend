@@ -1,146 +1,319 @@
-import { Waves, ShieldAlert, Cpu, MapPin, Eye, CheckCircle2 } from 'lucide-react';
+import {
+  Upload,
+  Settings,
+  Brain,
+  ShieldCheck,
+  MapPin,
+  FileText,
+  Clock,
+  UserCheck,
+  AlertTriangle,
+  Shield,
+  Leaf,
+  IndianRupee,
+  Target,
+  BarChart2,
+  CheckCircle2,
+} from 'lucide-react';
 
 export function ProblemAndSolutionSection() {
   const steps = [
     {
       num: '01',
-      title: 'Acoustic Waterfall Ingestion',
-      desc: 'Ingestion of raw Side-Scan Sonar (SSS) acoustic returns from towfish, AUVs, or hydrographic survey vessels operating at 455/900 kHz.',
-      icon: Waves,
-      tag: 'Zero-Visibility Penetration',
-      badgeColor: 'text-blue-700 border-blue-200 bg-blue-50'
+      title: 'Upload Sonar Data',
+      desc: 'Upload SSS files (.xtf, .jsf, .tif, .png) with survey details.',
+      icon: Upload,
+      bottomTag: 'Your Survey Data',
+      badgeStyle: 'bg-blue-50 text-blue-600 border-blue-200',
+      iconStyle: 'bg-blue-50/80 text-blue-600 border-blue-100',
+      tagStyle: 'bg-blue-50/90 text-blue-600 border-blue-200/70',
     },
     {
       num: '02',
-      title: 'Acoustic Shadow Geometry',
-      desc: 'Applies trigonometric shadow relief calculation: H = (L * H_sensor) / (R + L). Rejects 38%+ false positives caused by natural seabed sand ripples.',
-      icon: Cpu,
-      tag: 'False Positive Reducer',
-      badgeColor: 'text-emerald-700 border-emerald-200 bg-emerald-50'
+      title: 'Preprocessing',
+      desc: 'Enhance sonar imagery for better analysis (e.g., noise reduction, normalization).',
+      icon: Settings,
+      bottomTag: 'Processed Sonar Image',
+      badgeStyle: 'bg-purple-50 text-purple-600 border-purple-200',
+      iconStyle: 'bg-purple-50/80 text-purple-600 border-purple-100',
+      tagStyle: 'bg-purple-50/90 text-purple-600 border-purple-200/70',
     },
     {
       num: '03',
-      title: 'YOLOv12 Target Inference',
-      desc: 'Fine-tuned deep neural network identifies ghost nets, intermodal cargo containers, chemical drums, and tire dumps with 94.8% mAP confidence.',
-      icon: Eye,
-      tag: 'Real-Time Edge Inference',
-      badgeColor: 'text-amber-700 border-amber-200 bg-amber-50'
+      title: 'AI Detection',
+      desc: 'Detect potential marine debris and anomalies using deep learning.',
+      icon: Brain,
+      bottomTag: 'Detected Targets',
+      badgeStyle: 'bg-rose-50 text-rose-600 border-rose-200',
+      iconStyle: 'bg-rose-50/80 text-rose-600 border-rose-100',
+      tagStyle: 'bg-rose-50/90 text-rose-600 border-rose-200/70',
     },
     {
       num: '04',
-      title: 'Geotagged Fleet Recovery',
-      desc: 'Automated GPS extraction (WGS 84), depth calculation, and dynamic dispatch routing for coast guard, salvage vessels, and cleanup NGOs.',
+      title: 'Review & Verification',
+      desc: 'Human-in-the-loop review to confirm, reject or reclassify detections.',
+      icon: ShieldCheck,
+      bottomTag: 'Verified Results',
+      badgeStyle: 'bg-amber-50 text-amber-600 border-amber-200',
+      iconStyle: 'bg-amber-50/80 text-amber-600 border-amber-100',
+      tagStyle: 'bg-amber-50/90 text-amber-600 border-amber-200/70',
+    },
+    {
+      num: '05',
+      title: 'Map & Visualize',
+      desc: 'View detections on an interactive map with available survey coordinates.',
       icon: MapPin,
-      tag: 'Actionable Coordinates',
-      badgeColor: 'text-purple-700 border-purple-200 bg-purple-50'
+      bottomTag: 'Geospatial View',
+      badgeStyle: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+      iconStyle: 'bg-emerald-50/80 text-emerald-600 border-emerald-100',
+      tagStyle: 'bg-emerald-50/90 text-emerald-600 border-emerald-200/70',
+    },
+    {
+      num: '06',
+      title: 'Generate Report',
+      desc: 'Export detection summaries (PDF, CSV, GeoJSON) for further action.',
+      icon: FileText,
+      bottomTag: 'Actionable Output',
+      badgeStyle: 'bg-sky-50 text-sky-600 border-sky-200',
+      iconStyle: 'bg-sky-50/80 text-sky-600 border-sky-100',
+      tagStyle: 'bg-sky-50/90 text-sky-600 border-sky-200/70',
     },
   ];
 
   return (
     <section className="py-20 bg-slate-50/70 border-b border-slate-200 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        {/* Problem Statement Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-6 space-y-4">
-            <div className="inline-flex items-center space-x-2 text-xs font-mono text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span>The Benthic Marine Crisis</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
-              Why Traditional Optical Cameras Fail Underwater
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Standard optical cameras are rendered completely blind beyond 5-10 meters depth due to turbidity, light absorption, and suspended particulate matter.
-            </p>
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-              Over <b>640,000 tons of ghost fishing gear</b> and hazardous cargo containers are abandoned on the seabed every year, silently trapping marine life and obstructing vital commercial shipping channels.
-            </p>
+        {/* Problem Statement Grid: Underwater Debris is a Serious Challenge */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Left Column: Headline, Checkpoints, and 6 Impact Mini Cards */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <div className="space-y-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-[1.15]">
+                Underwater Debris is a <br />
+                Serious Challenge for <br />
+                <span className="text-blue-600">Safe and Sustainable Oceans.</span>
+              </h2>
 
-            <div className="pt-2 space-y-2 text-xs font-mono text-slate-700">
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                <span>Side-Scan Sonar illuminates through turbid zero-light water</span>
+              {/* 4 Bullet Points with small blue tick and circle */}
+              <div className="space-y-3 pt-1">
+                <div className="flex items-start space-x-3 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <span>Large volumes of Side-Scan Sonar (SSS) data are collected during marine surveys.</span>
+                </div>
+                <div className="flex items-start space-x-3 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <span>Identifying and confirming debris (e.g., lost fishing gear, containers, other man-made objects) is slow and complex.</span>
+                </div>
+                <div className="flex items-start space-x-3 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <span>Many hazardous objects remain undetected, posing risks to navigation, marine life, coastal communities and marine operations.</span>
+                </div>
+                <div className="flex items-start space-x-3 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <span>There is a need for an automated solution to detect and help locate underwater debris and anomalies from SSS imagery.</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                <span>Automated AI eliminates manual inspection of gigabytes of waterfall logs</span>
+            </div>
+
+            {/* 6 Mini Challenge Cards (3x2 Grid) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+              {/* 1. Time-Consuming */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Time-Consuming</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Large sonar data takes time to analyze.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                <span>Instant geotagging enables rapid salvage vessel coordination</span>
+
+              {/* 2. Expert Dependent */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shrink-0">
+                  <UserCheck className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Expert Dependent</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Requires trained analysts.
+                  </p>
+                </div>
+              </div>
+
+              {/* 3. Risk to Navigation */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Risk to Navigation</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Undetected debris can endanger vessels.
+                  </p>
+                </div>
+              </div>
+
+              {/* 4. Disaster Management Relevance */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shrink-0">
+                  <Shield className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 leading-tight">Disaster Management Relevance</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Supports safer coasts and faster response.
+                  </p>
+                </div>
+              </div>
+
+              {/* 5. Environmental Impact */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                  <Leaf className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Environmental Impact</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Harms marine ecosystems and wildlife.
+                  </p>
+                </div>
+              </div>
+
+              {/* 6. Economic Losses */}
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
+                <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shrink-0">
+                  <IndianRupee className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Economic Losses</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                    Increases operational costs and damages.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6">
-            <div className="bg-white p-6 rounded-3xl border border-rose-200 shadow-md space-y-4 relative overflow-hidden">
-              <h3 className="text-sm font-mono uppercase text-rose-700 font-bold tracking-wider">
-                Threat Matrix: Subsea Debris Impact
-              </h3>
+          {/* Right Column: Real Survey Sonar Inspection & Our Goal */}
+          <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-4">
+            <div className="space-y-2 flex-1 flex flex-col">
+              {/* Top Subtitle Bar */}
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  SIDE-SCAN SONAR (SSS) : REAL SURVEY EXAMPLE
+                </span>
+                <span className="bg-slate-900 text-white text-[10.5px] px-2.5 py-0.5 rounded-full font-medium flex items-center space-x-1.5 shadow-xs">
+                  <BarChart2 className="w-3 h-3 text-amber-400" />
+                  <span>Actual Sonar Imagery</span>
+                </span>
+              </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <div className="text-slate-500 text-[10px] uppercase">Ghost Fishing Nets</div>
-                  <div className="text-rose-600 font-bold text-lg mt-1">46% of Ocean Macroplastics</div>
-                  <p className="text-[10px] text-slate-500 mt-1">Traps pelagic species for centuries</p>
-                </div>
+              {/* Complete, Uncropped Sonar Image */}
+              <div className="w-full">
+                <img
+                  src="/sonar-survey-sample.png"
+                  alt="Side-Scan Sonar Real Survey Example showing detected fishing net and man-made debris"
+                  className="w-full h-auto object-contain rounded-2xl block shadow-md"
+                />
+              </div>
+            </div>
 
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <div className="text-slate-500 text-[10px] uppercase">Lost Cargo Containers</div>
-                  <div className="text-amber-600 font-bold text-lg mt-1">1,382+ Lost / Year</div>
-                  <p className="text-[10px] text-slate-500 mt-1">Severe navigational collision risk</p>
+            {/* Bottom Target Goal Card - positioned at bottom in the same row as Economic Losses */}
+            <div className="bg-blue-50/80 border border-blue-200/80 rounded-2xl p-3.5 sm:p-4 flex items-start sm:items-center space-x-3.5 shadow-xs mt-auto">
+              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200">
+                <Target className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono font-bold text-blue-600 tracking-widest uppercase">
+                  OUR GOAL
                 </div>
-
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <div className="text-slate-500 text-[10px] uppercase">Toxic Chemical Drums</div>
-                  <div className="text-orange-600 font-bold text-lg mt-1">Persistent Leaching</div>
-                  <p className="text-[10px] text-slate-500 mt-1">Heavy metals & corrosive chemicals</p>
-                </div>
-
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <div className="text-slate-500 text-[10px] uppercase">Seafloor Tire Dumps</div>
-                  <div className="text-emerald-600 font-bold text-lg mt-1">Toxic Leachate</div>
-                  <p className="text-[10px] text-slate-500 mt-1">Microplastic fiber disintegration</p>
-                </div>
+                <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed mt-0.5">
+                  Automate the <span className="text-blue-700 font-bold">detection and localization</span> of underwater debris and anomalies from Side-Scan Sonar imagery.
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 4-Step Solution Pipeline */}
-        <div className="space-y-8 pt-8">
+        {/* 6-Step End-to-End Pipeline: From Sonar Upload to Actionable Insights */}
+        <div className="space-y-10 pt-6">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-blue-700 font-bold uppercase tracking-widest">
-              Automated Detection Architecture
+            <span className="text-xs font-mono text-blue-600 font-bold uppercase tracking-widest">
+              HOW VAINATEYA WORKS
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
-              The 4-Stage Sonar Intelligence Pipeline
+              From Sonar Upload to{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+                Actionable Insights
+              </span>
             </h2>
+            <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+              A simple, end-to-end pipeline to detect, review and map marine debris from Side-Scan Sonar imagery.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((step) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 lg:gap-3 relative items-stretch">
+            {steps.map((step, index) => {
               const Icon = step.icon;
               return (
                 <div
                   key={step.num}
-                  className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300 relative group"
+                  className="relative flex flex-col items-center justify-between bg-white px-4 py-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300 group"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-black font-mono text-slate-300 group-hover:text-blue-600 transition-colors">
-                      {step.num}
-                    </span>
-                    <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-600">
-                      <Icon className="w-5 h-5" />
-                    </div>
+                  {/* Top Step Pill Badge */}
+                  <div
+                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border shadow-xs ${step.badgeStyle}`}
+                  >
+                    {step.num}
                   </div>
 
-                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border inline-block mb-2 ${step.badgeColor}`}>
-                    {step.tag}
-                  </span>
+                  {/* Icon Square */}
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center border mt-2 mb-3.5 transition-transform group-hover:scale-105 ${step.iconStyle}`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </div>
 
-                  <h3 className="text-base font-bold text-slate-900 mb-2">{step.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
+                  {/* Step Title */}
+                  <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk'] text-center mb-1.5 leading-snug">
+                    {step.title}
+                  </h3>
+
+                  {/* Step Description */}
+                  <p className="text-[11.5px] text-slate-500 text-center leading-relaxed mb-4 flex-1">
+                    {step.desc}
+                  </p>
+
+                  {/* Bottom Pill */}
+                  <div
+                    className={`w-full py-1.5 px-2 rounded-xl text-[10.5px] font-semibold font-mono text-center border mt-auto ${step.tagStyle}`}
+                  >
+                    {step.bottomTag}
+                  </div>
+
+                  {/* Curved Connector Arrow for Large Screens (pointing to the next card) */}
+                  {index < steps.length - 1 && (
+                    <div className="hidden lg:block absolute -right-3.5 top-[38%] z-20 pointer-events-none w-7 h-5 text-blue-500">
+                      <svg viewBox="0 0 32 20" fill="none" className="w-full h-full">
+                        <path
+                          d="M2 14 C10 20, 18 3, 28 8"
+                          stroke="#3B82F6"
+                          strokeWidth="1.75"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M23 4.5 L28 8 L24 12"
+                          stroke="#3B82F6"
+                          strokeWidth="1.75"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -149,4 +322,4 @@ export function ProblemAndSolutionSection() {
       </div>
     </section>
   );
-};
+}

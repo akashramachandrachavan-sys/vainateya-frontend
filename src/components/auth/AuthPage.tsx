@@ -14,7 +14,9 @@ import {
   ArrowRight,
   Waves,
   Cpu,
-  Compass
+  Compass,
+  MapPin,
+  Leaf
 } from 'lucide-react';
 
 export const AuthPage: React.FC = () => {
@@ -91,7 +93,7 @@ export const AuthPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
       {/* Top Header Navigation */}
-      <header className="w-full bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
+      <header className="w-full bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center shadow-sm">
         <a
           href="/index.html"
           className="inline-flex items-center space-x-2 text-xs font-mono font-bold text-slate-700 hover:text-blue-600 transition-colors group"
@@ -101,75 +103,68 @@ export const AuthPage: React.FC = () => {
           </div>
           <span>Back to Home</span>
         </a>
-
-        <div className="flex items-center space-x-2.5">
-          <img
-            src="/vainateya-symbol.png"
-            alt="VAINATEYA Logo"
-            className="w-8 h-8 object-contain"
-          />
-          <div>
-            <span className="font-extrabold text-base tracking-wider font-['Space_Grotesk'] text-slate-900 block leading-tight">
-              VAINATEYA
-            </span>
-            <span className="text-[9px] font-mono text-slate-500 italic block leading-tight">
-              When human vision ends, perception must continue.
-            </span>
-          </div>
-        </div>
-
-        {/* Empty spacer on right for balanced flex centering */}
-        <div className="w-28 hidden sm:block"></div>
       </header>
 
       {/* Main Container */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12">
         <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
 
-          {/* Left Column: Visuals, Benefits & Trust (5 Cols) */}
+          {/* Left Column: Discover a Cleaner Ocean with AI (5 Cols) */}
           <div className="lg:col-span-5 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 p-8 lg:p-10 text-white flex flex-col justify-center relative overflow-hidden">
             {/* Background Decorative Rings */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full border border-white/10 pointer-events-none"></div>
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-72 h-72 rounded-full border border-white/10 pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full border border-white/10 pointer-events-none"></div>
 
             <div className="space-y-6 relative z-10">
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-['Space_Grotesk'] leading-tight">
-                Secure Portal for Oceanographic &amp; Harbor Operations
+              <h2 className="text-3xl sm:text-4xl font-extrabold font-['Space_Grotesk'] leading-tight tracking-tight">
+                Discover a<br />
+                Cleaner Ocean<br />
+                <span className="text-sky-400">with AI.</span>
               </h2>
 
               <p className="text-blue-100 text-xs sm:text-sm leading-relaxed">
-                Connect your hydrographic survey logs, side-scan sonar waterfall data, and coordinate salvage recovery operations in real-time.
+                Sign in to access VAINATEYA and detect underwater debris from Side-Scan Sonar imagery to support ocean conservation.
               </p>
 
               {/* Pillars */}
-              <div className="space-y-4 pt-2">
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 rounded-xl bg-white/10 border border-white/15 text-blue-200 shrink-0">
-                    <Waves className="w-4 h-4" />
+              <div className="space-y-5 pt-1">
+                <div className="flex items-start space-x-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0 shadow-sm">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 9a11 11 0 0 1 14 0" />
+                      <path d="M8.5 13a6 6 0 0 1 7 0" />
+                      <circle cx="12" cy="18" r="1.5" fill="currentColor" />
+                    </svg>
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">Dual-Frequency Sonar</h4>
-                    <p className="text-[11px] text-blue-100/90 leading-normal">Processes 455/900 kHz acoustic waterfall swaths with zero-visibility penetration.</p>
+                    <h4 className="text-sm font-bold text-white tracking-wide">AI-Powered Detection</h4>
+                    <p className="text-xs text-blue-100/80 leading-relaxed mt-0.5">
+                      Identify ghost nets, containers and other debris from Side-Scan Sonar imagery.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 rounded-xl bg-white/10 border border-white/15 text-blue-200 shrink-0">
-                    <Cpu className="w-4 h-4" />
+                <div className="flex items-start space-x-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0 shadow-sm">
+                    <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">YOLOv12 SSS Inference</h4>
-                    <p className="text-[11px] text-blue-100/90 leading-normal">Classifies ghost nets, drums, and containers with 94.8% detection accuracy.</p>
+                    <h4 className="text-sm font-bold text-white tracking-wide">Precise Localization</h4>
+                    <p className="text-xs text-blue-100/80 leading-relaxed mt-0.5">
+                      Get geotagged coordinates for faster dive and cleanup operations.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 rounded-xl bg-white/10 border border-white/15 text-blue-200 shrink-0">
-                    <Compass className="w-4 h-4" />
+                <div className="flex items-start space-x-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0 shadow-sm">
+                    <Leaf className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">Geotagged Fleet Recovery</h4>
-                    <p className="text-[11px] text-blue-100/90 leading-normal">Instant WGS 84 GPS coordinate extraction for cleanup and salvage vessels.</p>
+                    <h4 className="text-sm font-bold text-white tracking-wide">Support Ocean Conservation</h4>
+                    <p className="text-xs text-blue-100/80 leading-relaxed mt-0.5">
+                      Enable safer seas, healthier marine life and cleaner coastal ecosystems.
+                    </p>
                   </div>
                 </div>
               </div>

@@ -33,8 +33,8 @@ export const Navbar: React.FC<Props> = ({
                 PS 26057
               </span>
             </div>
-            <p className="text-[10.5px] font-mono text-slate-500 -mt-0.5 hidden sm:block italic">
-              When human vision ends, perception must continue.
+            <p className="text-[10.5px] font-mono text-blue-600 font-medium -mt-0.5 hidden sm:block italic">
+              When human vision ends, perception continues.
             </p>
           </div>
         </a>
