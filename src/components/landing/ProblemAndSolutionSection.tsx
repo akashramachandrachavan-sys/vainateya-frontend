@@ -8,9 +8,6 @@ import {
   Clock,
   UserCheck,
   AlertTriangle,
-  Shield,
-  Leaf,
-  IndianRupee,
   BarChart2,
   CheckCircle2,
 } from 'lucide-react';
@@ -151,45 +148,6 @@ export function ProblemAndSolutionSection() {
                   <h4 className="text-xs font-bold text-slate-900">Risk to Navigation</h4>
                   <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
                     Undetected debris can endanger vessels.
-                  </p>
-                </div>
-              </div>
-
-              {/* 4. Disaster Management Relevance */}
-              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
-                <div className="w-9 h-9 rounded-full bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shrink-0">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 leading-tight">Disaster Management Relevance</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                    Supports safer coasts and faster response.
-                  </p>
-                </div>
-              </div>
-
-              {/* 5. Environmental Impact */}
-              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
-                <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
-                  <Leaf className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">Environmental Impact</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                    Harms marine ecosystems and wildlife.
-                  </p>
-                </div>
-              </div>
-
-              {/* 6. Economic Losses */}
-              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-start space-x-3">
-                <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shrink-0">
-                  <IndianRupee className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">Economic Losses</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                    Increases operational costs and damages.
                   </p>
                 </div>
               </div>

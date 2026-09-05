@@ -1,150 +1,104 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 interface SplashScreenProps {
   onComplete?: () => void;
-  duration?: number; // total duration in ms, default 5500ms
+  duration?: number; // total duration in ms, default 1300ms
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({
   onComplete,
-  duration = 5500,
+  duration = 1300,
 }) => {
-  // Phases:
-  // 'enter'  (0ms - 150ms): initial appearance
-  // 'grow'   (150ms - 3200ms): logo slowly grows bigger with sonar ripples
-  // 'reveal' (3200ms - 4700ms): logo shrinks backward, backdrop turns semi-transparent so landing page is slightly visible behind
-  // 'exit'   (4700ms - 5500ms): smooth complete fade out into landing page
-  // 'done'   (5500ms+): unmounted
-  const [phase, setPhase] = useState<'enter' | 'grow' | 'reveal' | 'exit' | 'done'>('enter');
-  const [isDismissed, setIsDismissed] = useState(false);
+  // States: 'enter' -> 'visible' -> 'exit' -> 'done'
+  const [stage, setStage] = useState<'enter' | 'visible' | 'exit' | 'done'>('enter');
+
+  const handleDismiss = useCallback(() => {
+    if (stage === 'done' || stage === 'exit') return;
+    setStage('exit');
+    setTimeout(() => {
+      setStage('done');
+      if (onComplete) onComplete();
+    }, 250);
+  }, [stage, onComplete]);
 
   useEffect(() => {
-    // Phase 1: Begin slow, majestic expansion
-    const timerGrow = setTimeout(() => {
-      setPhase('grow');
-    }, 150);
+    // 1. Enter to visible immediately on next tick for smooth transition
+    const rAf = requestAnimationFrame(() => {
+      setStage('visible');
+    });
 
-    // Phase 2: Start backward shrink & reveal landing page behind
-    const timerReveal = setTimeout(() => {
-      setPhase('reveal');
-    }, 3200);
-
-    // Phase 3: Final smooth fade out
+    // 2. Start graceful exit fade
+    const exitDelay = Math.max(500, duration - 350);
     const timerExit = setTimeout(() => {
-      setPhase('exit');
-    }, Math.max(4200, duration - 800));
+      setStage('exit');
+    }, exitDelay);
 
-    // Phase 4: Done, unmount
+    // 3. Complete and unmount
     const timerDone = setTimeout(() => {
-      setPhase('done');
+      setStage('done');
       if (onComplete) onComplete();
     }, duration);
 
-    return () => {
-      clearTimeout(timerGrow);
-      clearTimeout(timerReveal);
-      clearTimeout(timerExit);
-      clearTimeout(timerDone);
-    };
-  }, [duration, onComplete]);
-
-  // Instant graceful skip on click or Esc / Space key
-  const handleDismiss = React.useCallback(() => {
-    if (isDismissed || phase === 'done') return;
-    setIsDismissed(true);
-    setPhase('exit');
-    setTimeout(() => {
-      setPhase('done');
-      if (onComplete) onComplete();
-    }, 400);
-  }, [isDismissed, phase, onComplete]);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === ' ') {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
         handleDismiss();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleDismiss]);
 
-  if (phase === 'done') {
+    return () => {
+      cancelAnimationFrame(rAf);
+      clearTimeout(timerExit);
+      clearTimeout(timerDone);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [duration, handleDismiss, onComplete]);
+
+  if (stage === 'done') {
     return null;
   }
 
-  // Backdrop opacity & style depending on phase:
-  // - enter/grow: solid white
-  // - reveal: semi-transparent with soft blur so the landing page behind is slightly visible!
-  // - exit: completely fades to 0
-  let backdropClass = 'bg-white opacity-100';
-  if (phase === 'reveal') {
-    backdropClass = 'bg-white/70 backdrop-blur-[2px] opacity-90';
-  } else if (phase === 'exit' || isDismissed) {
-    backdropClass = 'bg-white/0 backdrop-blur-none opacity-0 pointer-events-none';
-  }
-
-  // Logo transform & opacity
-  let logoTransform = 'scale(0.90)';
-  let logoOpacity = 0;
-  let logoTransition = 'all 2800ms cubic-bezier(0.16, 1, 0.3, 1)';
-
-  if (phase === 'grow') {
-    logoTransform = 'scale(1.12)';
-    logoOpacity = 1;
-    logoTransition = 'all 2800ms cubic-bezier(0.16, 1, 0.3, 1)';
-  } else if (phase === 'reveal') {
-    // Logo becomes a little smaller ("disappears backward")
-    logoTransform = 'scale(0.92)';
-    logoOpacity = 0.55;
-    logoTransition = 'all 1600ms cubic-bezier(0.4, 0, 0.2, 1)';
-  } else if (phase === 'exit' || isDismissed) {
-    logoTransform = 'scale(0.85)';
-    logoOpacity = 0;
-    logoTransition = 'all 700ms ease-out';
-  }
-
-  const isGrowing = phase === 'grow';
+  const isExit = stage === 'exit';
+  const isVisible = stage === 'visible';
 
   return (
     <div
       onClick={handleDismiss}
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none transition-all duration-1000 ease-in-out cursor-pointer ${backdropClass}`}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none bg-white cursor-pointer transition-opacity duration-300 ease-out ${isExit ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      style={{ willChange: 'opacity' }}
       aria-label="VAINATEYA Launch Splash Screen"
     >
-      {/* Background Acoustic Waves / Sonar Rings */}
+      {/* Subtle, lightweight ambient pulse */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
         <div
-          className={`absolute w-72 h-72 rounded-full border border-blue-200/60 transition-all duration-[3000ms] ease-out ${isGrowing ? 'scale-[2.6] opacity-0' : 'scale-50 opacity-70'
-            }`}
+          className={`w-72 h-72 sm:w-96 sm:h-96 rounded-full border border-blue-200/60 transition-all duration-700 ease-out ${isVisible ? 'scale-125 opacity-25' : 'scale-75 opacity-70'
+            } ${isExit ? 'opacity-0 scale-150' : ''}`}
+          style={{ willChange: 'transform, opacity' }}
         />
         <div
-          className={`absolute w-96 h-96 rounded-full border border-sky-300/50 transition-all duration-[3000ms] delay-300 ease-out ${isGrowing ? 'scale-[3.0] opacity-0' : 'scale-50 opacity-50'
+          className={`absolute w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-blue-50/70 transition-opacity duration-500 ease-out ${isExit ? 'opacity-0' : 'opacity-60'
             }`}
         />
-        <div
-          className={`absolute w-[32rem] h-[32rem] rounded-full border border-teal-200/40 transition-all duration-[3000ms] delay-600 ease-out ${isGrowing ? 'scale-[3.4] opacity-0' : 'scale-50 opacity-40'
-            }`}
-        />
-        {/* Soft center ambient glow */}
-        <div className="absolute w-96 h-96 bg-gradient-to-tr from-blue-100/50 via-sky-50/60 to-transparent rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* Main Centered VAINATEYA Logo & Tagline */}
+      {/* Main Centered VAINATEYA Logo */}
       <div
-        className="relative z-10 flex flex-col items-center px-4 max-w-lg w-full"
-        style={{
-          transform: logoTransform,
-          opacity: logoOpacity,
-          transition: logoTransition,
-        }}
+        className={`relative z-10 flex flex-col items-center px-4 max-w-sm sm:max-w-md w-full transition-all duration-400 ease-out ${isVisible && !isExit
+            ? 'opacity-100 scale-100 translate-y-0'
+            : isExit
+              ? 'opacity-0 scale-95 -translate-y-1'
+              : 'opacity-0 scale-90 translate-y-2'
+          }`}
+        style={{ willChange: 'transform, opacity' }}
       >
         <img
           src="/vainateya-logo.png"
-          alt="VAINATEYA - When human vision ends, perception continues."
-          className="w-full h-auto object-contain"
+          alt="VAINATEYA"
+          className="w-full h-auto object-contain drop-shadow-xs"
         />
       </div>
     </div>
   );
 };
+

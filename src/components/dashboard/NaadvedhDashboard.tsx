@@ -813,9 +813,6 @@ export const NaadvedhDashboard: React.FC = () => {
               <h1 className="font-extrabold text-sm sm:text-base text-slate-900 font-['Space_Grotesk'] tracking-wider leading-none">
                 VAINATEYA
               </h1>
-              <p className="text-[9px] text-blue-600 font-mono tracking-tight mt-0.5 truncate italic font-medium">
-                When human vision ends, perception continues.
-              </p>
             </div>
           </div>
 
@@ -900,11 +897,6 @@ export const NaadvedhDashboard: React.FC = () => {
             <span>Log out</span>
           </a>
 
-          <div className="pt-2 border-t border-slate-200/60">
-            <p className="text-[9px] font-mono tracking-widest text-slate-400 uppercase font-semibold">
-              PROTECT OUR OCEANS
-            </p>
-          </div>
         </div>
       </aside>
 
