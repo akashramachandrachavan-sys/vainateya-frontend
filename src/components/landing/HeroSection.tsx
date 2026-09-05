@@ -1,5 +1,3 @@
-import { Waves, ShieldCheck, Anchor, Cpu } from 'lucide-react';
-
 export function HeroSection() {
   return (
     <div className="relative overflow-hidden pt-12 pb-16 lg:pt-16 lg:pb-20 bg-gradient-to-b from-white via-sky-50/40 to-slate-50">
@@ -12,7 +10,6 @@ export function HeroSection() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-
         {/* Main Headline in one line */}
         <div className="space-y-4 max-w-5xl mx-auto">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
@@ -25,48 +22,7 @@ export function HeroSection() {
             Detect and locate underwater debris from Side-Scan Sonar imagery to support cleaner oceans and safer coastal communities.
           </p>
         </div>
-
-        {/* Live Survey Telemetry Ticker Strip */}
-        <div className="pt-10 max-w-5xl mx-auto">
-          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-md grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left">
-            <div>
-              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider flex items-center space-x-1.5 mb-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                <span>Model Accuracy</span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">94.8%</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">mAP@50 (YOLO SSS)</div>
-            </div>
-
-            <div>
-              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider flex items-center space-x-1.5 mb-1">
-                <Cpu className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Shadow Verification</span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono">38.4%</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">False-Positives Reduced</div>
-            </div>
-
-            <div>
-              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider flex items-center space-x-1.5 mb-1">
-                <Waves className="w-3.5 h-3.5 text-sky-600" />
-                <span>Survey Swath</span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">455/900</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">kHz Dual Acoustic Beam</div>
-            </div>
-
-            <div>
-              <div className="text-xs font-mono text-slate-500 uppercase tracking-wider flex items-center space-x-1.5 mb-1">
-                <Anchor className="w-3.5 h-3.5 text-blue-600" />
-                <span>Survey Area Mapped</span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-blue-600 font-mono">14,820</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">km² Coastal Shelf</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
-};
+}

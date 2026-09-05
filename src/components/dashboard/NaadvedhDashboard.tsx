@@ -54,6 +54,14 @@ import {
   Tag
 } from 'lucide-react';
 
+import {
+  apiService,
+  type ApiSurvey,
+  type ApiSonarFile,
+  type ApiDetection,
+  type SystemMetrics,
+} from '../../services/api';
+
 export interface NotificationItem {
   id: string;
   title: string;
@@ -78,58 +86,12 @@ export interface DetectionItem {
   estimatedHeightMeters: number;
 }
 
-const initialDetections: DetectionItem[] = [
-  {
-    id: 'DET-001',
-    type: 'Fishing Gear',
-    confidence: 93,
-    lat: '15.1234° N',
-    lng: '73.5432° E',
-    color: '#ef4444',
-    status: 'Confirmed',
-    operatorNote: 'Suspected ghost net cluster draped on seabed',
-    shadowLengthMeters: 4.8,
-    estimatedHeightMeters: 1.4,
-  },
-  {
-    id: 'DET-002',
-    type: 'Debris',
-    confidence: 88,
-    lat: '15.1278° N',
-    lng: '73.5489° E',
-    color: '#3b82f6',
-    status: 'Pending Review',
-    operatorNote: 'Submerged cargo container with prominent acoustic shadow',
-    shadowLengthMeters: 6.2,
-    estimatedHeightMeters: 2.6,
-  },
-  {
-    id: 'DET-003',
-    type: 'Unknown',
-    confidence: 64,
-    lat: '15.1301° N',
-    lng: '73.5512° E',
-    color: '#10b981',
-    status: 'Pending Review',
-    operatorNote: 'Acoustic anomaly in navigation fairway',
-    shadowLengthMeters: 3.1,
-    estimatedHeightMeters: 0.9,
-  },
-];
-
-interface UploadedFileItem {
+export interface UploadedFileItem {
   name: string;
   size: string;
   thumbnail: string;
+  rawFile?: File;
 }
-
-const defaultFilesList: UploadedFileItem[] = [
-  { name: 'sonar_001.tif', size: '12.4 MB', thumbnail: '/sonar-tile-1.jpg' },
-  { name: 'sonar_002.tif', size: '8.7 MB', thumbnail: '/sonar-tile-2.jpg' },
-  { name: 'sonar_003.tif', size: '15.1 MB', thumbnail: '/sonar-tile-3.jpg' },
-  { name: 'sonar_004.tif', size: '9.3 MB', thumbnail: '/sonar-survey-sample.png' },
-  { name: 'sonar_005.tif', size: '11.8 MB', thumbnail: '/sonar-tile-1.jpg' },
-];
 
 export interface MapDetection {
   id: string;
@@ -147,84 +109,6 @@ export interface MapDetection {
   thumb: string;
 }
 
-export const detailedDetections: MapDetection[] = [
-  {
-    id: 'det-1',
-    number: '#1',
-    name: 'Pipeline/Pipe',
-    confidence: 87.1,
-    lat: '17.68500°',
-    lng: '83.21850°',
-    rawLat: 17.4,
-    rawLng: 72.4,
-    status: 'Verified',
-    category: 'Pipeline',
-    color: '#10b981',
-    markerType: 'green',
-    thumb: '/sonar-tile-1.jpg',
-  },
-  {
-    id: 'det-2',
-    number: '#2',
-    name: 'Unknown Anomaly',
-    confidence: 62.1,
-    lat: '17.68620°',
-    lng: '83.21910°',
-    rawLat: 17.8,
-    rawLng: 72.7,
-    status: 'Unverified',
-    category: 'Anomaly',
-    color: '#ef4444',
-    markerType: 'red',
-    thumb: '/sonar-tile-2.jpg',
-  },
-  {
-    id: 'det-3',
-    number: '#3',
-    name: 'Possible Fishing Gear',
-    confidence: 78.4,
-    lat: '17.68410°',
-    lng: '83.21790°',
-    rawLat: 16.2,
-    rawLng: 73.1,
-    status: 'Verified',
-    category: 'Fishing Gear',
-    color: '#3b82f6',
-    markerType: 'blue',
-    thumb: '/sonar-tile-3.jpg',
-  },
-  {
-    id: 'det-4',
-    number: '#4',
-    name: 'Unknown Anomaly',
-    confidence: 55.2,
-    lat: '17.68350°',
-    lng: '83.22010°',
-    rawLat: 17.1,
-    rawLng: 72.8,
-    status: 'Unverified',
-    category: 'Anomaly',
-    color: '#f59e0b',
-    markerType: 'yellow',
-    thumb: '/sonar-tile-1.jpg',
-  },
-  {
-    id: 'det-5',
-    number: '#5',
-    name: 'Debris/Container',
-    confidence: 71.6,
-    lat: '17.68210°',
-    lng: '83.22130°',
-    rawLat: 15.8,
-    rawLng: 73.3,
-    status: 'Verified',
-    category: 'Debris',
-    color: '#10b981',
-    markerType: 'green',
-    thumb: '/sonar-tile-2.jpg',
-  },
-];
-
 export interface SurveyCatalogItem {
   id: string;
   number: string;
@@ -234,181 +118,11 @@ export interface SurveyCatalogItem {
   location: string;
   images: number;
   detections: number;
-  status: 'Completed' | 'Processing' | 'High Priority' | 'Archived';
+  status: 'Completed' | 'Processing' | 'High Priority' | 'Archived' | 'Ready';
   description: string;
   verifiedCount: number;
   unclassifiedCount: number;
 }
-
-export const surveyCatalogData: SurveyCatalogItem[] = [
-  {
-    id: 'srv-1',
-    number: '#1',
-    name: 'Arabian Sea Survey',
-    date: '23 Sep 2025',
-    fullDate: '23 Sep 2025, 10:24 AM',
-    location: 'Arabian Sea (West Coast)',
-    images: 5,
-    detections: 12,
-    status: 'Completed',
-    description: 'Routine survey to detect potential marine debris in the designated area.',
-    verifiedCount: 9,
-    unclassifiedCount: 2,
-  },
-  {
-    id: 'srv-2',
-    number: '#2',
-    name: 'Mumbai Coast Survey',
-    date: '12 Sep 2025',
-    fullDate: '12 Sep 2025, 02:15 PM',
-    location: 'Mumbai',
-    images: 8,
-    detections: 7,
-    status: 'Completed',
-    description: 'Harbor approach sonar sweep for navigation obstacles and lost moorings.',
-    verifiedCount: 6,
-    unclassifiedCount: 1,
-  },
-  {
-    id: 'srv-3',
-    number: '#3',
-    name: 'Goa Patch Survey',
-    date: '28 Aug 2025',
-    fullDate: '28 Aug 2025, 11:40 AM',
-    location: 'Goa',
-    images: 4,
-    detections: 3,
-    status: 'Completed',
-    description: 'Fisheries conservation zone scan to detect ghost nets along coral reefs.',
-    verifiedCount: 3,
-    unclassifiedCount: 0,
-  },
-  {
-    id: 'srv-4',
-    number: '#4',
-    name: 'Test Survey 01',
-    date: '18 Aug 2025',
-    fullDate: '18 Aug 2025, 04:20 PM',
-    location: 'Lakshadweep',
-    images: 6,
-    detections: 4,
-    status: 'Processing',
-    description: 'Deep atoll hydrographic baseline testing with high-frequency side-scan sonar.',
-    verifiedCount: 2,
-    unclassifiedCount: 2,
-  },
-  {
-    id: 'srv-5',
-    number: '#5',
-    name: 'Deep Sea Survey',
-    date: '02 Aug 2025',
-    fullDate: '02 Aug 2025, 09:00 AM',
-    location: 'Arabian Sea',
-    images: 10,
-    detections: 15,
-    status: 'Completed',
-    description: 'Bathymetric survey of offshore hydrocarbon pipeline corridor.',
-    verifiedCount: 13,
-    unclassifiedCount: 2,
-  },
-  {
-    id: 'srv-6',
-    number: '#6',
-    name: 'Coastal Validation',
-    date: '21 Jul 2025',
-    fullDate: '21 Jul 2025, 03:30 PM',
-    location: 'Karwar',
-    images: 3,
-    detections: 1,
-    status: 'Completed',
-    description: 'Naval base approach channel clearance verification.',
-    verifiedCount: 1,
-    unclassifiedCount: 0,
-  },
-  {
-    id: 'srv-7',
-    number: '#7',
-    name: 'Pilot Survey',
-    date: '10 Jul 2025',
-    fullDate: '10 Jul 2025, 01:10 PM',
-    location: 'Mangalore',
-    images: 7,
-    detections: 6,
-    status: 'Completed',
-    description: 'Estuary sediment and discarded fishing gear monitoring survey.',
-    verifiedCount: 5,
-    unclassifiedCount: 1,
-  },
-  {
-    id: 'srv-8',
-    number: '#8',
-    name: 'Unknown Area Scan',
-    date: '25 Jun 2025',
-    fullDate: '25 Jun 2025, 05:45 PM',
-    location: 'Arabian Sea',
-    images: 9,
-    detections: 8,
-    status: 'High Priority',
-    description: 'Emergency search survey following commercial vessel container spill report.',
-    verifiedCount: 4,
-    unclassifiedCount: 4,
-  },
-  {
-    id: 'srv-9',
-    number: '#9',
-    name: 'Model Evaluation',
-    date: '14 Jun 2025',
-    fullDate: '14 Jun 2025, 10:00 AM',
-    location: 'Goa',
-    images: 5,
-    detections: 2,
-    status: 'Completed',
-    description: 'Benchmark calibration for YOLOv12 acoustic anomaly detector.',
-    verifiedCount: 2,
-    unclassifiedCount: 0,
-  },
-  {
-    id: 'srv-10',
-    number: '#10',
-    name: 'Sample Data Run',
-    date: '01 Jun 2025',
-    fullDate: '01 Jun 2025, 08:30 AM',
-    location: 'Test Area',
-    images: 4,
-    detections: 1,
-    status: 'Archived',
-    description: 'Synthetic and archived SSS dataset integration run.',
-    verifiedCount: 1,
-    unclassifiedCount: 0,
-  },
-];
-
-const initialNotifications: NotificationItem[] = [
-  {
-    id: 'notif-1',
-    title: 'High Priority Anomaly Flagged',
-    message: 'Pipeline/Pipe detected in Arabian Sea with 87.1% confidence.',
-    timestamp: '10m ago',
-    read: false,
-    category: 'alert',
-  },
-  {
-    id: 'notif-2',
-    title: 'Sonar Swath Batch Processed',
-    message: '5 raw side-scan sonar image frames analyzed successfully.',
-    timestamp: '45m ago',
-    read: false,
-    category: 'success',
-  },
-  {
-    id: 'notif-3',
-    title: 'Cloudflare R2 Synchronized',
-    message: 'Uploaded survey files securely mirrored to object storage.',
-    timestamp: '2h ago',
-    read: true,
-    category: 'info',
-  },
-];
 
 export interface BatchDetectionObject {
   id: string;
@@ -447,610 +161,30 @@ export interface BatchImageResult {
   detections: BatchDetectionObject[];
 }
 
-const batchSurveyImagesData: BatchImageResult[] = [
-  {
-    id: 'sonar_003.tif',
-    filename: 'sonar_003.tif',
-    objectsCount: 3,
-    priority: 'High',
-    timestamp: '05 Sep 2026, 12:08 PM',
-    timeShort: '12:08 PM',
-    size: '12.4 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '12:08:14',
-    thumb: '/sonar-tile-2.jpg',
-    sonarImg: '/sonar-tile-3.jpg',
-    detections: [
-      {
-        id: 'det-003-1',
-        orderNumber: 1,
-        name: 'Sunken Container',
-        type: 'Sunken Container',
-        confidence: 93,
-        coordinates: '15.1234° N, 73.5678° E',
-        size: '12.4 × 3.8',
-        color: 'red',
-        hexColor: '#ef4444',
-        borderColor: 'border-rose-500',
-        bgColor: 'bg-rose-500/10',
-        textColor: 'text-rose-600',
-        tagColor: 'bg-rose-500',
-        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
-        bbox: { top: '56%', left: '36%', width: '22%', height: '24%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-      {
-        id: 'det-003-2',
-        orderNumber: 2,
-        name: 'Fishing Gear',
-        type: 'Fishing Gear (Possible)',
-        confidence: 87,
-        coordinates: '15.1241° N, 73.5690° E',
-        size: '8.6 × 4.2',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '38%', left: '46%', width: '24%', height: '22%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-      {
-        id: 'det-003-3',
-        orderNumber: 3,
-        name: 'Debris',
-        type: 'Debris (Unknown)',
-        confidence: 76,
-        coordinates: '15.1228° N, 73.5712° E',
-        size: '5.1 × 2.9',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '50%', left: '62%', width: '16%', height: '22%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_017.tif',
-    filename: 'sonar_017.tif',
-    objectsCount: 2,
-    priority: 'Medium',
-    timestamp: '05 Sep 2026, 12:14 PM',
-    timeShort: '12:14 PM',
-    size: '11.8 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '12:14:32',
-    thumb: '/sonar-tile-1.jpg',
-    sonarImg: '/sonar-tile-1.jpg',
-    detections: [
-      {
-        id: 'det-017-1',
-        orderNumber: 1,
-        name: 'Fishing Net Cluster',
-        type: 'Fishing Gear (Cluster)',
-        confidence: 81,
-        coordinates: '15.1250° N, 73.5681° E',
-        size: '7.2 × 3.5',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '42%', left: '40%', width: '20%', height: '22%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-      {
-        id: 'det-017-2',
-        orderNumber: 2,
-        name: 'Metallic Scrap',
-        type: 'Debris (Metallic)',
-        confidence: 72,
-        coordinates: '15.1258° N, 73.5702° E',
-        size: '4.3 × 2.1',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '60%', left: '55%', width: '18%', height: '20%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_028.tif',
-    filename: 'sonar_028.tif',
-    objectsCount: 1,
-    priority: 'Medium',
-    timestamp: '05 Sep 2026, 12:21 PM',
-    timeShort: '12:21 PM',
-    size: '13.1 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '12:21:05',
-    thumb: '/sonar-tile-3.jpg',
-    sonarImg: '/sonar-tile-3.jpg',
-    detections: [
-      {
-        id: 'det-028-1',
-        orderNumber: 1,
-        name: 'Pipe Segment',
-        type: 'Pipeline / Pipe',
-        confidence: 78,
-        coordinates: '15.1262° N, 73.5695° E',
-        size: '15.6 × 1.2',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '35%', left: '30%', width: '38%', height: '18%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_042.tif',
-    filename: 'sonar_042.tif',
-    objectsCount: 4,
-    priority: 'High',
-    timestamp: '05 Sep 2026, 12:37 PM',
-    timeShort: '12:37 PM',
-    size: '14.2 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '12:37:40',
-    thumb: '/sonar-tile-2.jpg',
-    sonarImg: '/sonar-tile-2.jpg',
-    detections: [
-      {
-        id: 'det-042-1',
-        orderNumber: 1,
-        name: 'Sunken Cargo Hull',
-        type: 'Sunken Container / Hull',
-        confidence: 95,
-        coordinates: '15.1270° N, 73.5689° E',
-        size: '18.2 × 5.4',
-        color: 'red',
-        hexColor: '#ef4444',
-        borderColor: 'border-rose-500',
-        bgColor: 'bg-rose-500/10',
-        textColor: 'text-rose-600',
-        tagColor: 'bg-rose-500',
-        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
-        bbox: { top: '48%', left: '30%', width: '28%', height: '26%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-      {
-        id: 'det-042-2',
-        orderNumber: 2,
-        name: 'Ghost Gear Net',
-        type: 'Fishing Gear',
-        confidence: 89,
-        coordinates: '15.1275° N, 73.5710° E',
-        size: '7.8 × 4.0',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '28%', left: '55%', width: '20%', height: '22%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-      {
-        id: 'det-042-3',
-        orderNumber: 3,
-        name: 'Subsea Cable Anomaly',
-        type: 'Cable / Pipeline',
-        confidence: 84,
-        coordinates: '15.1281° N, 73.5670° E',
-        size: '22.0 × 0.8',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '65%', left: '22%', width: '32%', height: '16%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-      {
-        id: 'det-042-4',
-        orderNumber: 4,
-        name: 'Debris Cluster',
-        type: 'Debris (Unknown)',
-        confidence: 71,
-        coordinates: '15.1285° N, 73.5699° E',
-        size: '3.2 × 2.0',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '38%', left: '20%', width: '15%', height: '18%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_056.tif',
-    filename: 'sonar_056.tif',
-    objectsCount: 1,
-    priority: 'Low',
-    timestamp: '05 Sep 2026, 13:02 PM',
-    timeShort: '13:02 PM',
-    size: '10.9 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:02:18',
-    thumb: '/sonar-tile-1.jpg',
-    sonarImg: '/sonar-tile-1.jpg',
-    detections: [
-      {
-        id: 'det-056-1',
-        orderNumber: 1,
-        name: 'Small Acoustic Target',
-        type: 'Debris (Low Hazard)',
-        confidence: 54,
-        coordinates: '15.1292° N, 73.5721° E',
-        size: '2.1 × 1.5',
-        color: 'amber',
-        hexColor: '#10b981',
-        borderColor: 'border-emerald-500',
-        bgColor: 'bg-emerald-500/10',
-        textColor: 'text-emerald-600',
-        tagColor: 'bg-emerald-500',
-        badgeBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
-        bbox: { top: '45%', left: '50%', width: '16%', height: '16%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_079.tif',
-    filename: 'sonar_079.tif',
-    objectsCount: 2,
-    priority: 'Medium',
-    timestamp: '05 Sep 2026, 13:18 PM',
-    timeShort: '13:18 PM',
-    size: '12.1 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:18:50',
-    thumb: '/sonar-tile-3.jpg',
-    sonarImg: '/sonar-tile-3.jpg',
-    detections: [
-      {
-        id: 'det-079-1',
-        orderNumber: 1,
-        name: 'Discarded Net',
-        type: 'Fishing Gear',
-        confidence: 82,
-        coordinates: '15.1305° N, 73.5684° E',
-        size: '9.1 × 4.8',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '35%', left: '35%', width: '25%', height: '24%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-      {
-        id: 'det-079-2',
-        orderNumber: 2,
-        name: 'Concrete Sinker',
-        type: 'Concrete Debris',
-        confidence: 71,
-        coordinates: '15.1311° N, 73.5701° E',
-        size: '4.0 × 3.8',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '55%', left: '60%', width: '18%', height: '18%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_083.tif',
-    filename: 'sonar_083.tif',
-    objectsCount: 3,
-    priority: 'High',
-    timestamp: '05 Sep 2026, 13:25 PM',
-    timeShort: '13:25 PM',
-    size: '13.5 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:25:12',
-    thumb: '/sonar-tile-2.jpg',
-    sonarImg: '/sonar-tile-2.jpg',
-    detections: [
-      {
-        id: 'det-083-1',
-        orderNumber: 1,
-        name: 'Pipeline Rupture',
-        type: 'Pipeline / Pipe',
-        confidence: 91,
-        coordinates: '15.1322° N, 73.5690° E',
-        size: '14.0 × 2.0',
-        color: 'red',
-        hexColor: '#ef4444',
-        borderColor: 'border-rose-500',
-        bgColor: 'bg-rose-500/10',
-        textColor: 'text-rose-600',
-        tagColor: 'bg-rose-500',
-        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
-        bbox: { top: '40%', left: '30%', width: '32%', height: '20%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-      {
-        id: 'det-083-2',
-        orderNumber: 2,
-        name: 'Trawl Net',
-        type: 'Fishing Gear',
-        confidence: 85,
-        coordinates: '15.1329° N, 73.5714° E',
-        size: '8.4 × 3.6',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '55%', left: '50%', width: '22%', height: '22%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-      {
-        id: 'det-083-3',
-        orderNumber: 3,
-        name: 'Metal Drum',
-        type: 'Debris (Hazardous)',
-        confidence: 77,
-        coordinates: '15.1335° N, 73.5675° E',
-        size: '2.5 × 2.2',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '25%', left: '20%', width: '14%', height: '14%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_091.tif',
-    filename: 'sonar_091.tif',
-    objectsCount: 1,
-    priority: 'Low',
-    timestamp: '05 Sep 2026, 13:40 PM',
-    timeShort: '13:40 PM',
-    size: '11.2 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:40:02',
-    thumb: '/sonar-tile-1.jpg',
-    sonarImg: '/sonar-tile-1.jpg',
-    detections: [
-      {
-        id: 'det-091-1',
-        orderNumber: 1,
-        name: 'Synthetic Line',
-        type: 'Cable / Rope',
-        confidence: 56,
-        coordinates: '15.1342° N, 73.5708° E',
-        size: '12.0 × 0.4',
-        color: 'amber',
-        hexColor: '#10b981',
-        borderColor: 'border-emerald-500',
-        bgColor: 'bg-emerald-500/10',
-        textColor: 'text-emerald-600',
-        tagColor: 'bg-emerald-500',
-        badgeBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
-        bbox: { top: '48%', left: '40%', width: '28%', height: '12%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_095.tif',
-    filename: 'sonar_095.tif',
-    objectsCount: 2,
-    priority: 'Medium',
-    timestamp: '05 Sep 2026, 13:48 PM',
-    timeShort: '13:48 PM',
-    size: '12.8 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:48:22',
-    thumb: '/sonar-tile-3.jpg',
-    sonarImg: '/sonar-tile-3.jpg',
-    detections: [
-      {
-        id: 'det-095-1',
-        orderNumber: 1,
-        name: 'Concrete Caisson',
-        type: 'Concrete Debris',
-        confidence: 75,
-        coordinates: '15.1350° N, 73.5680° E',
-        size: '5.2 × 4.8',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '35%', left: '45%', width: '20%', height: '22%' },
-        thumb: '/sonar-tile-3.jpg',
-      },
-      {
-        id: 'det-095-2',
-        orderNumber: 2,
-        name: 'Unknown Acoustic Shadow',
-        type: 'Debris (Unknown)',
-        confidence: 66,
-        coordinates: '15.1358° N, 73.5702° E',
-        size: '3.6 × 2.4',
-        color: 'amber',
-        hexColor: '#f59e0b',
-        borderColor: 'border-amber-500',
-        bgColor: 'bg-amber-500/10',
-        textColor: 'text-amber-600',
-        tagColor: 'bg-amber-500',
-        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
-        bbox: { top: '58%', left: '25%', width: '16%', height: '18%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-    ],
-  },
-  {
-    id: 'sonar_099.tif',
-    filename: 'sonar_099.tif',
-    objectsCount: 2,
-    priority: 'High',
-    timestamp: '05 Sep 2026, 13:55 PM',
-    timeShort: '13:55 PM',
-    size: '14.0 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: '13:55:45',
-    thumb: '/sonar-tile-2.jpg',
-    sonarImg: '/sonar-tile-2.jpg',
-    detections: [
-      {
-        id: 'det-099-1',
-        orderNumber: 1,
-        name: 'Subsea Wellhead Structure',
-        type: 'Industrial / Infrastructure',
-        confidence: 94,
-        coordinates: '15.1365° N, 73.5695° E',
-        size: '10.5 × 6.2',
-        color: 'red',
-        hexColor: '#ef4444',
-        borderColor: 'border-rose-500',
-        bgColor: 'bg-rose-500/10',
-        textColor: 'text-rose-600',
-        tagColor: 'bg-rose-500',
-        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
-        bbox: { top: '44%', left: '35%', width: '26%', height: '24%' },
-        thumb: '/sonar-tile-2.jpg',
-      },
-      {
-        id: 'det-099-2',
-        orderNumber: 2,
-        name: 'Mooring Line Bundle',
-        type: 'Fishing Gear / Line',
-        confidence: 83,
-        coordinates: '15.1372° N, 73.5715° E',
-        size: '16.0 × 1.8',
-        color: 'blue',
-        hexColor: '#3b82f6',
-        borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
-        textColor: 'text-blue-600',
-        tagColor: 'bg-blue-500',
-        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
-        bbox: { top: '62%', left: '50%', width: '24%', height: '18%' },
-        thumb: '/sonar-tile-1.jpg',
-      },
-    ],
-  },
-];
-
-// Generate 90 blank sonar images to complete the 100-batch dataset
-const generatedEmptyBatchImages: BatchImageResult[] = Array.from({ length: 90 }, (_, i) => {
-  const num = (i + 4).toString().padStart(3, '0');
-  const filename = `sonar_${num}.tif`;
-  return {
-    id: filename,
-    filename,
-    objectsCount: 0,
-    priority: 'None' as const,
-    timestamp: `05 Sep 2026, 12:${(10 + (i % 50)).toString().padStart(2, '0')} PM`,
-    timeShort: `12:${(10 + (i % 50)).toString().padStart(2, '0')} PM`,
-    size: '11.5 MB',
-    location: 'Arabian Sea (West Coast)',
-    frequency: '900kHz',
-    swath: '50m',
-    speed: '3kts',
-    timeHud: `12:${(10 + (i % 50)).toString().padStart(2, '0')}:00`,
-    thumb: '/sonar-tile-1.jpg',
-    sonarImg: '/sonar-tile-1.jpg',
-    detections: [],
-  };
-});
-
-const allBatchSurveyImages: BatchImageResult[] = [
-  ...batchSurveyImagesData,
-  ...generatedEmptyBatchImages,
-];
-
 export const NaadvedhDashboard: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<DashboardScreen>('dashboard');
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
-  const [notificationsList, setNotificationsList] = useState<NotificationItem[]>(initialNotifications);
+  const [notificationsList, setNotificationsList] = useState<NotificationItem[]>([]);
   const [newSurveyStep, setNewSurveyStep] = useState<1 | 2 | 3 | 4>(1);
 
+  // Live Backend State
+  const [backendSurveys, setBackendSurveys] = useState<ApiSurvey[]>([]);
+  const [backendMetrics, setBackendMetrics] = useState<SystemMetrics | null>(null);
+  const [activeSurveyId, setActiveSurveyId] = useState<string>('');
+  const [activeSurveyFiles, setActiveSurveyFiles] = useState<ApiSonarFile[]>([]);
+  const [activeDetections, setActiveDetections] = useState<ApiDetection[]>([]);
+  const [uploadedRawFiles, setUploadedRawFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   // Step 4 Batch Results State
-  const [selectedBatchImageId, setSelectedBatchImageId] = useState<string>('sonar_003.tif');
-  const [batchFilterTab, setBatchFilterTab] = useState<'all' | 'detections' | 'no_detections'>('detections');
+  const [selectedBatchImageId, setSelectedBatchImageId] = useState<string>('');
+  const [batchFilterTab, setBatchFilterTab] = useState<'all' | 'detections' | 'no_detections'>('all');
   const [batchSearchQuery, setBatchSearchQuery] = useState<string>('');
   const [batchSortBy, setBatchSortBy] = useState<'priority' | 'time' | 'objects'>('priority');
-  const [batchSelectedImageIds, setBatchSelectedImageIds] = useState<string[]>(['sonar_003.tif']);
+  const [batchSelectedImageIds, setBatchSelectedImageIds] = useState<string[]>([]);
   const [batchImageDisplayMode, setBatchImageDisplayMode] = useState<'detected' | 'original'>('detected');
   const [batchZoomLevel, setBatchZoomLevel] = useState<number>(100);
-  const [selectedDetectionCardId, setSelectedDetectionCardId] = useState<string>('det-003-1');
+  const [selectedDetectionCardId, setSelectedDetectionCardId] = useState<string>('');
   const [batchPaginationPage, setBatchPaginationPage] = useState<number>(1);
   const [detectionReviewMap, setDetectionReviewMap] = useState<
     Record<string, { status: 'confirmed' | 'rejected' | 'classified' | 'pending'; category?: string }>
@@ -1058,36 +192,35 @@ export const NaadvedhDashboard: React.FC = () => {
   const [isClassifyDropdownOpen, setIsClassifyDropdownOpen] = useState<boolean>(false);
 
   // Survey Details State
-  const [surveyName, setSurveyName] = useState<string>('Arabian Sea Survey - Sept 2025');
-  const [surveyLocation, setSurveyLocation] = useState<string>('Arabian Sea (West Coast)');
-  const [surveyDate, setSurveyDate] = useState<string>('2025-09-23');
+  const [surveyName, setSurveyName] = useState<string>('Arabian Sea Survey - Sept 2026');
+  const [surveyLocation, setSurveyLocation] = useState<string>('Goa Coast, Arabian Sea');
+  const [surveyDate, setSurveyDate] = useState<string>(new Date().toISOString().slice(0, 10));
   const [surveyDescription, setSurveyDescription] = useState<string>(
     'Routine survey to detect potential marine debris in the designated area.'
   );
 
   // Files State
-  const [selectedFiles, setSelectedFiles] = useState<UploadedFileItem[]>(defaultFilesList.slice(0, 3));
+  const [selectedFiles, setSelectedFiles] = useState<UploadedFileItem[]>([]);
   const [batchViewMode, setBatchViewMode] = useState<'grid' | 'list'>('grid');
 
   // Processing Screen State
-  const [processingProgress, setProcessingProgress] = useState<number>(60);
+  const [processingProgress, setProcessingProgress] = useState<number>(0);
   const [isProcessingComplete, setIsProcessingComplete] = useState<boolean>(false);
-  const [activeStage, setActiveStage] = useState<number>(3);
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(95);
+  const [activeStage, setActiveStage] = useState<number>(1);
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
 
-  // Analysis / Results State
-  const [detections] = useState<DetectionItem[]>(initialDetections);
+  // Modals
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [isSupportedFormatsModalOpen, setIsSupportedFormatsModalOpen] = useState<boolean>(false);
 
   // Map Screen state
   const [mapLayerMode, setMapLayerMode] = useState<'map' | 'satellite'>('satellite');
-  const [selectedMapSurvey] = useState<string>('Arabian Sea Survey - Sept 2025');
-  const [selectedMapDetectionId, setSelectedMapDetectionId] = useState<string>('det-1');
+  const [selectedMapSurvey, setSelectedMapSurvey] = useState<string>('All Surveys');
+  const [selectedMapDetectionId, setSelectedMapDetectionId] = useState<string>('');
 
   // Surveys Screen state
   const [surveyTabFilter, setSurveyTabFilter] = useState<'all' | 'completed' | 'processing' | 'high_priority' | 'archived'>('all');
-  const [selectedCatalogSurveyId, setSelectedCatalogSurveyId] = useState<string>('srv-1');
+  const [selectedCatalogSurveyId, setSelectedCatalogSurveyId] = useState<string>('');
 
   // Settings Screen state
   const [settingsTab, setSettingsTab] = useState<'profile' | 'preferences' | 'storage' | 'security' | 'notifications' | 'about'>('profile');
@@ -1109,7 +242,222 @@ export const NaadvedhDashboard: React.FC = () => {
   const reportMapRef = useRef<HTMLDivElement | null>(null);
   const reportMapInstance = useRef<L.Map | null>(null);
 
-  const selectedCatalogSurvey = surveyCatalogData.find(s => s.id === selectedCatalogSurveyId) || surveyCatalogData[0];
+  // Load real surveys, metrics, and detections from backend on mount
+  const loadBackendData = async () => {
+    try {
+      const [surveys, metrics, dets] = await Promise.all([
+        apiService.getSurveys().catch(() => []),
+        apiService.getMetrics().catch(() => null),
+        apiService.getDetections().catch(() => [])
+      ]);
+      setBackendSurveys(surveys);
+      setBackendMetrics(metrics);
+      setActiveDetections(dets);
+      if (surveys.length > 0) {
+        setActiveSurveyId(prev => prev || surveys[0].id);
+        setSelectedCatalogSurveyId(prev => prev || surveys[0].id);
+      }
+    } catch (e) {
+      console.error('Error fetching backend data:', e);
+    }
+  };
+
+  useEffect(() => {
+    loadBackendData();
+  }, []);
+
+  // Fetch files and detections whenever activeSurveyId changes
+  useEffect(() => {
+    if (!activeSurveyId) return;
+    const loadSurveyAssets = async () => {
+      try {
+        const [files, dets] = await Promise.all([
+          apiService.getSurveyFiles(activeSurveyId).catch(() => []),
+          apiService.getDetections(activeSurveyId).catch(() => [])
+        ]);
+        setActiveSurveyFiles(files);
+        if (files.length > 0) {
+          setSelectedBatchImageId(prev => prev || files[0].id);
+        }
+        if (dets.length > 0) {
+          setActiveDetections(dets);
+          setSelectedDetectionCardId(prev => prev || dets[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load survey files/detections:', err);
+      }
+    };
+    loadSurveyAssets();
+  }, [activeSurveyId]);
+
+  // Derived Survey Catalog Data from Backend
+  const surveyCatalogData: SurveyCatalogItem[] = backendSurveys.map((srv, idx) => ({
+    id: srv.id,
+    number: srv.code || `#${idx + 1}`,
+    name: srv.name,
+    date: new Date(srv.created_at).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' }),
+    fullDate: new Date(srv.created_at).toLocaleString(),
+    location: srv.location_name,
+    images: srv.file_count || 1,
+    detections: srv.detection_count || 0,
+    status: (srv.status === 'ANALYZED' || srv.status === 'COMPLETED' ? 'Completed' : srv.status === 'PROCESSING' ? 'Processing' : 'Ready') as any,
+    description: srv.description || 'Survey transect scanning for marine debris and seabed anomalies.',
+    verifiedCount: srv.confirmed_count || 0,
+    unclassifiedCount: Math.max(0, (srv.detection_count || 0) - (srv.confirmed_count || 0)),
+  }));
+
+  const selectedCatalogSurvey: SurveyCatalogItem = surveyCatalogData.find(s => s.id === selectedCatalogSurveyId) || surveyCatalogData[0] || {
+    id: 'empty',
+    number: '#0',
+    name: 'No Surveys Found',
+    date: 'N/A',
+    fullDate: 'N/A',
+    location: 'N/A',
+    images: 0,
+    detections: 0,
+    status: 'Ready' as const,
+    description: 'No surveys registered yet. Create a survey to begin scanning.',
+    verifiedCount: 0,
+    unclassifiedCount: 0,
+  };
+
+  // Derived Map Detections from Backend
+  const detailedDetections: MapDetection[] = activeDetections.map((d, idx) => {
+    const isVerified = d.status === 'CONFIRMED';
+    const cat: 'Pipeline' | 'Anomaly' | 'Fishing Gear' | 'Debris' =
+      d.class_name === 'pipe' ? 'Pipeline' :
+        d.class_name === 'fishing_gear' ? 'Fishing Gear' :
+          d.class_name === 'container' || d.class_name === 'shipwreck_debris' ? 'Debris' : 'Anomaly';
+
+    const color = isVerified ? '#10b981' : d.priority === 'CRITICAL' || d.priority === 'HIGH' ? '#ef4444' : '#3b82f6';
+    const markerType: 'green' | 'red' | 'blue' | 'yellow' = isVerified ? 'green' : d.priority === 'HIGH' || d.priority === 'CRITICAL' ? 'red' : 'blue';
+
+    return {
+      id: d.id,
+      number: d.code || `#${idx + 1}`,
+      name: d.label || d.class_name,
+      confidence: Math.round(d.confidence > 1 ? d.confidence : d.confidence * 100),
+      lat: `${d.location.latitude.toFixed(4)}°`,
+      lng: `${d.location.longitude.toFixed(4)}°`,
+      rawLat: d.location.latitude,
+      rawLng: d.location.longitude,
+      status: isVerified ? 'Verified' : 'Unverified',
+      category: cat,
+      color,
+      markerType,
+      thumb: '/sonar-tile-1.jpg',
+    };
+  });
+
+  // Derived DetectionItem list
+  const detections: DetectionItem[] = activeDetections.map(d => ({
+    id: d.code || d.id,
+    type: (d.class_name === 'fishing_gear' ? 'Fishing Gear' : d.class_name === 'container' ? 'Debris' : 'Unknown') as any,
+    confidence: Math.round(d.confidence > 1 ? d.confidence : d.confidence * 100),
+    lat: `${d.location.latitude.toFixed(4)}° N`,
+    lng: `${d.location.longitude.toFixed(4)}° E`,
+    color: d.priority === 'CRITICAL' || d.priority === 'HIGH' ? '#ef4444' : '#3b82f6',
+    status: d.status === 'CONFIRMED' ? 'Confirmed' : d.status === 'REJECTED' ? 'Rejected' : 'Pending Review',
+    operatorNote: d.notes || undefined,
+    shadowLengthMeters: d.dimensions?.acoustic_shadow_length_m || 4.5,
+    estimatedHeightMeters: d.dimensions?.estimated_length_m ? Number((d.dimensions.estimated_length_m * 0.3).toFixed(1)) : 1.2,
+  }));
+
+  // Derived Batch Images from active survey files & detections
+  const allBatchSurveyImages: BatchImageResult[] = (activeSurveyFiles.length > 0
+    ? activeSurveyFiles
+    : [{
+      id: 'default-file',
+      survey_id: activeSurveyId || 'default',
+      filename: 'transect_sss_line_01.png',
+      file_size_bytes: 1802049,
+      mime_type: 'image/png',
+      width: 1200,
+      height: 700,
+      range_meters: 75,
+      frequency_khz: 455,
+      status: 'PROCESSED',
+      created_at: new Date().toISOString(),
+      url: '/sonar-tile-1.jpg'
+    }]
+  ).map((file, fIdx) => {
+    const fileDetections = activeDetections.filter(
+      d => d.file_id === file.id || (!d.file_id && fIdx === 0)
+    );
+
+    const mappedDetections: BatchDetectionObject[] = fileDetections.map((d, dIdx) => {
+      const isCritical = d.priority === 'CRITICAL' || d.priority === 'HIGH';
+      const isBlue = d.class_name === 'fishing_gear';
+      const color: 'red' | 'blue' | 'amber' = isCritical ? 'red' : isBlue ? 'blue' : 'amber';
+      const hexColor = isCritical ? '#ef4444' : isBlue ? '#3b82f6' : '#f59e0b';
+      const borderColor = isCritical ? 'border-rose-500' : isBlue ? 'border-blue-500' : 'border-amber-500';
+      const bgColor = isCritical ? 'bg-rose-500/10' : isBlue ? 'bg-blue-500/10' : 'bg-amber-500/10';
+      const textColor = isCritical ? 'text-rose-600' : isBlue ? 'text-blue-600' : 'text-amber-600';
+      const tagColor = isCritical ? 'bg-rose-500' : isBlue ? 'bg-blue-500' : 'bg-amber-500';
+      const badgeBg = isCritical
+        ? 'bg-rose-50 text-rose-600 border border-rose-200'
+        : isBlue
+          ? 'bg-blue-50 text-blue-600 border border-blue-200'
+          : 'bg-amber-50 text-amber-600 border border-amber-200';
+
+      const imgW = file.width || 1200;
+      const imgH = file.height || 700;
+
+      return {
+        id: d.id,
+        orderNumber: dIdx + 1,
+        name: d.label || d.class_name,
+        type: d.class_name,
+        confidence: Math.round(d.confidence > 1 ? d.confidence : d.confidence * 100),
+        coordinates: `${d.location.latitude.toFixed(4)}° N, ${d.location.longitude.toFixed(4)}° E`,
+        size: d.dimensions
+          ? `${d.dimensions.estimated_length_m || 5.0} × ${d.dimensions.estimated_width_m || 2.0}`
+          : '5.0 × 2.0',
+        color,
+        hexColor,
+        borderColor,
+        bgColor,
+        textColor,
+        tagColor,
+        badgeBg,
+        bbox: {
+          left: `${Math.round((d.bbox.x / imgW) * 100)}%`,
+          top: `${Math.round((d.bbox.y / imgH) * 100)}%`,
+          width: `${Math.round((d.bbox.width / imgW) * 100)}%`,
+          height: `${Math.round((d.bbox.height / imgH) * 100)}%`,
+        },
+        thumb: file.url || '/sonar-tile-1.jpg',
+      };
+    });
+
+    const hasHigh = fileDetections.some(d => d.priority === 'CRITICAL' || d.priority === 'HIGH');
+    const hasMed = fileDetections.some(d => d.priority === 'MEDIUM');
+    const priority: 'High' | 'Medium' | 'Low' | 'None' = hasHigh
+      ? 'High'
+      : hasMed
+        ? 'Medium'
+        : fileDetections.length > 0
+          ? 'Low'
+          : 'None';
+
+    return {
+      id: file.id || file.filename,
+      filename: file.filename,
+      objectsCount: fileDetections.length,
+      priority,
+      timestamp: file.created_at ? new Date(file.created_at).toLocaleString() : 'Recent',
+      timeShort: file.created_at ? new Date(file.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '12:00 PM',
+      size: `${(file.file_size_bytes / (1024 * 1024)).toFixed(1)} MB`,
+      location: 'Arabian Sea Shelf',
+      frequency: `${file.frequency_khz || 455}kHz`,
+      swath: `${file.range_meters || 75}m`,
+      speed: '3kts',
+      timeHud: file.created_at ? new Date(file.created_at).toLocaleTimeString() : '12:08:14',
+      thumb: file.url || '/sonar-tile-1.jpg',
+      sonarImg: file.url || '/sonar-tile-1.jpg',
+      detections: mappedDetections,
+    };
+  });
 
   // Timer for live processing simulation
   useEffect(() => {
@@ -1368,10 +716,123 @@ export const NaadvedhDashboard: React.FC = () => {
 
   const handleRemoveFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setUploadedRawFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleAddFiles = () => {
-    setSelectedFiles(defaultFilesList);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const filesArr = Array.from(e.target.files);
+    setUploadedRawFiles(prev => [...prev, ...filesArr]);
+    const mapped: UploadedFileItem[] = filesArr.map(f => ({
+      name: f.name,
+      size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+      thumbnail: URL.createObjectURL(f),
+      rawFile: f,
+    }));
+    setSelectedFiles(prev => [...prev, ...mapped]);
+  };
+
+  const handleCreateSurveyStep1 = async () => {
+    try {
+      const created = await apiService.createSurvey({
+        name: surveyName,
+        location_name: surveyLocation,
+        description: surveyDescription,
+        operator: profileOrg,
+        sonar_device: 'Side-Scan Sonar'
+      });
+      setActiveSurveyId(created.id);
+      setSelectedCatalogSurveyId(created.id);
+      setBackendSurveys(prev => [created, ...prev.filter(s => s.id !== created.id)]);
+      setNewSurveyStep(2);
+    } catch (err) {
+      console.warn('Backend create survey error:', err);
+      setNewSurveyStep(2);
+    }
+  };
+
+  const handleStartProcessingStep2 = async () => {
+    setNewSurveyStep(3);
+    setProcessingProgress(20);
+    setActiveStage(1);
+    setIsProcessingComplete(false);
+
+    try {
+      // 1. Upload files to backend if user selected files
+      if (activeSurveyId && uploadedRawFiles.length > 0) {
+        for (const file of uploadedRawFiles) {
+          await apiService.uploadSonarFile(activeSurveyId, file).catch(err => console.warn('File upload warning:', err));
+        }
+      }
+      setProcessingProgress(50);
+      setActiveStage(3);
+
+      // 2. Trigger AI detection model inference
+      if (activeSurveyId) {
+        await apiService.triggerAnalysis(activeSurveyId).catch(err => console.warn('Inference trigger warning:', err));
+      }
+
+      setProcessingProgress(85);
+      setActiveStage(4);
+
+      // 3. Refresh survey files and detections
+      if (activeSurveyId) {
+        const [files, dets] = await Promise.all([
+          apiService.getSurveyFiles(activeSurveyId).catch(() => []),
+          apiService.getDetections(activeSurveyId).catch(() => [])
+        ]);
+        setActiveSurveyFiles(files);
+        if (files.length > 0) {
+          setSelectedBatchImageId(files[0].id);
+        }
+        if (dets.length > 0) {
+          setActiveDetections(dets);
+          setSelectedDetectionCardId(dets[0].id);
+        }
+      }
+
+      setProcessingProgress(100);
+      setActiveStage(5);
+      setIsProcessingComplete(true);
+      confetti({ particleCount: 45, spread: 70, origin: { y: 0.6 } });
+    } catch (err) {
+      console.error('Processing error:', err);
+      setProcessingProgress(100);
+      setIsProcessingComplete(true);
+    }
+  };
+
+  const handleOperatorVerify = async (
+    detectionId: string,
+    status: 'CONFIRMED' | 'REJECTED',
+    categoryNote?: string
+  ) => {
+    setDetectionReviewMap(prev => ({
+      ...prev,
+      [detectionId]: {
+        status: status === 'CONFIRMED' ? (categoryNote ? 'classified' : 'confirmed') : 'rejected',
+        category: categoryNote || prev[detectionId]?.category,
+      },
+    }));
+
+    try {
+      await apiService.verifyDetection(detectionId, {
+        status,
+        notes: categoryNote
+          ? `Operator classified: ${categoryNote}`
+          : status === 'CONFIRMED'
+            ? 'Confirmed real debris by operator'
+            : 'Rejected false alarm by operator',
+        verified_by: profileFullName || 'Marine Operator',
+      });
+      apiService.getMetrics().then(m => setBackendMetrics(m)).catch(() => { });
+    } catch (err) {
+      console.warn('Operator verify API warning:', err);
+    }
   };
 
   const handleExportCSV = () => {
@@ -1657,10 +1118,10 @@ export const NaadvedhDashboard: React.FC = () => {
                           </p>
                           <button
                             type="button"
-                            onClick={() => setNotificationsList(initialNotifications)}
+                            onClick={loadBackendData}
                             className="text-[10.5px] font-bold text-blue-600 hover:text-blue-700 underline mt-1 cursor-pointer"
                           >
-                            Reset sample notifications
+                            Sync with server
                           </button>
                         </div>
                       )}
@@ -1714,10 +1175,10 @@ export const NaadvedhDashboard: React.FC = () => {
                 <div>
                   <div className="text-[11px] font-medium text-slate-500">Total Surveys</div>
                   <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
-                    12
+                    {backendMetrics?.total_surveys ?? backendSurveys.length}
                   </div>
                   <div className="text-[10px] font-bold text-emerald-600">
-                    &uarr; +3 this month
+                    Active: {backendSurveys.length}
                   </div>
                 </div>
               </div>
@@ -1730,10 +1191,10 @@ export const NaadvedhDashboard: React.FC = () => {
                 <div>
                   <div className="text-[11px] font-medium text-slate-500">Total Detections</div>
                   <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
-                    86
+                    {backendMetrics?.total_detections ?? activeDetections.length}
                   </div>
-                  <div className="text-[10px] font-bold text-emerald-600">
-                    &uarr; +21 this month
+                  <div className="text-[10px] font-bold text-purple-600">
+                    {activeDetections.length} in active survey
                   </div>
                 </div>
               </div>
@@ -1746,10 +1207,10 @@ export const NaadvedhDashboard: React.FC = () => {
                 <div>
                   <div className="text-[11px] font-medium text-slate-500">High Priority</div>
                   <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
-                    4
+                    {backendMetrics?.high_priority_count ?? activeDetections.filter(d => d.priority === 'HIGH' || d.priority === 'CRITICAL').length}
                   </div>
-                  <div className="text-[10px] text-slate-500">
-                    Needs review
+                  <div className="text-[10px] text-rose-600 font-medium">
+                    Requires action
                   </div>
                 </div>
               </div>
@@ -1762,10 +1223,10 @@ export const NaadvedhDashboard: React.FC = () => {
                 <div>
                   <div className="text-[11px] font-medium text-slate-500">Processed</div>
                   <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
-                    8
+                    {backendMetrics?.confirmed_count ?? activeDetections.filter(d => d.status === 'CONFIRMED').length}
                   </div>
-                  <div className="text-[10px] text-slate-500">
-                    67% completed
+                  <div className="text-[10px] text-emerald-600 font-medium">
+                    {backendMetrics?.verification_rate_percent !== undefined ? `${backendMetrics.verification_rate_percent}% verified` : 'Live verified'}
                   </div>
                 </div>
               </div>
@@ -2336,10 +1797,7 @@ export const NaadvedhDashboard: React.FC = () => {
                   </button>
 
                   <button
-                    onClick={() => {
-                      if (selectedFiles.length === 0) setSelectedFiles(defaultFilesList);
-                      setNewSurveyStep(2);
-                    }}
+                    onClick={handleCreateSurveyStep1}
                     className="px-5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
                   >
                     <span>Next: Upload Data</span>
@@ -2354,6 +1812,15 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 2 && (
               <div className="space-y-3">
+                {/* Hidden File Input for Real File Uploads */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileInputChange}
+                  multiple
+                  accept=".png,.jpg,.jpeg,.tif,.tiff,.bmp"
+                  className="hidden"
+                />
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
                   {/* Left Column (5 cols): Upload Box & Selected Files */}
                   <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3">
@@ -2560,7 +2027,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </button>
 
                       <button
-                        onClick={() => setNewSurveyStep(3)}
+                        onClick={handleStartProcessingStep2}
                         className="px-5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
                       >
                         <span>Start Processing</span>
@@ -2887,10 +2354,10 @@ export const NaadvedhDashboard: React.FC = () => {
 
               const currentBatchImage =
                 allBatchSurveyImages.find(img => img.id === selectedBatchImageId) ||
-                batchSurveyImagesData[0];
+                allBatchSurveyImages[0];
 
               const activeDetection =
-                currentBatchImage.detections.find(d => d.id === selectedDetectionCardId) ||
+                currentBatchImage.detections.find((d: BatchDetectionObject) => d.id === selectedDetectionCardId) ||
                 currentBatchImage.detections[0];
 
               const activeReview = activeDetection
@@ -3387,7 +2854,7 @@ export const NaadvedhDashboard: React.FC = () => {
                           {/* Bounding Boxes for Detections */}
                           {batchImageDisplayMode === 'detected' && (
                             <>
-                              {currentBatchImage.detections.map(det => {
+                              {currentBatchImage.detections.map((det: BatchDetectionObject) => {
                                 const isCardSelected = selectedDetectionCardId === det.id;
 
                                 let boxStyle: React.CSSProperties = {
@@ -3568,13 +3035,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => {
-                                setDetectionReviewMap(prev => ({
-                                  ...prev,
-                                  [activeDetection.id]: {
-                                    status: 'confirmed',
-                                    category: prev[activeDetection.id]?.category || activeDetection.name
-                                  }
-                                }));
+                                handleOperatorVerify(activeDetection.id, 'CONFIRMED');
                               }}
                               className={`flex-1 flex items-center justify-center space-x-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer shadow-2xs ${activeReview?.status === 'confirmed'
                                 ? 'bg-emerald-600 text-white ring-1 ring-emerald-400'
@@ -3589,13 +3050,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => {
-                                setDetectionReviewMap(prev => ({
-                                  ...prev,
-                                  [activeDetection.id]: {
-                                    status: 'rejected',
-                                    category: prev[activeDetection.id]?.category || activeDetection.name
-                                  }
-                                }));
+                                handleOperatorVerify(activeDetection.id, 'REJECTED');
                               }}
                               className={`flex-1 flex items-center justify-center space-x-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer shadow-2xs ${activeReview?.status === 'rejected'
                                 ? 'bg-rose-600 text-white ring-1 ring-rose-400'
@@ -3647,10 +3102,7 @@ export const NaadvedhDashboard: React.FC = () => {
                                       key={cat.label}
                                       type="button"
                                       onClick={() => {
-                                        setDetectionReviewMap(prev => ({
-                                          ...prev,
-                                          [activeDetection.id]: { status: 'classified', category: cat.label }
-                                        }));
+                                        handleOperatorVerify(activeDetection.id, 'CONFIRMED', cat.label);
                                         setIsClassifyDropdownOpen(false);
                                       }}
                                       className="w-full text-left px-2 py-1 rounded-md text-[10.5px] font-medium hover:bg-blue-50 hover:text-blue-700 flex items-center justify-between transition-colors cursor-pointer"
@@ -3690,7 +3142,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               No objects detected in this image.
                             </div>
                           ) : (
-                            currentBatchImage.detections.slice(0, 4).map(det => {
+                            currentBatchImage.detections.slice(0, 4).map((det: BatchDetectionObject) => {
                               const isSelected = selectedDetectionCardId === det.id;
                               const reviewInfo = detectionReviewMap[det.id];
 
@@ -3945,14 +3397,18 @@ export const NaadvedhDashboard: React.FC = () => {
               </div>
 
               <div className="relative">
-                <button
-                  type="button"
-                  className="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                <select
+                  value={selectedMapSurvey}
+                  onChange={(e) => setSelectedMapSurvey(e.target.value)}
+                  className="appearance-none flex items-center pl-8 pr-7 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                  <span>{selectedMapSurvey}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-1" />
-                </button>
+                  <option value="All Surveys">All Surveys</option>
+                  {backendSurveys.map(s => (
+                    <option key={s.id} value={s.name}>{s.name}</option>
+                  ))}
+                </select>
+                <MapPin className="w-3.5 h-3.5 text-blue-600 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
 

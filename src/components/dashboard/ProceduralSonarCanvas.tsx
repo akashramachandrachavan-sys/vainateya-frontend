@@ -46,7 +46,7 @@ export const ProceduralSonarCanvas: React.FC<Props> = ({
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const index = (y * width + x) * 4;
-        
+
         // Distance from nadir line (center x = width/2)
         const distFromNadir = Math.abs(x - width / 2);
         const nadirFactor = Math.min(1, distFromNadir / 40);
@@ -54,7 +54,7 @@ export const ProceduralSonarCanvas: React.FC<Props> = ({
         // Ripple wave frequency
         const wave = Math.sin(y * 0.08 + x * 0.015) * 18 + Math.cos(y * 0.04 - x * 0.02) * 12;
         const noise = (Math.random() - 0.5) * 28;
-        
+
         let intensity = (55 + wave + noise) * nadirFactor;
 
         // Nadir water column is dark acoustic void
@@ -162,11 +162,10 @@ export const ProceduralSonarCanvas: React.FC<Props> = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={onToggleBoundingBoxes}
-            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
-              showBoundingBoxes 
-                ? 'bg-blue-600 text-white font-bold shadow-sm' 
-                : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-300'
-            }`}
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${showBoundingBoxes
+              ? 'bg-blue-600 text-white font-bold shadow-sm'
+              : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-300'
+              }`}
             title="Toggle YOLO Bounding Boxes"
           >
             {showBoundingBoxes ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -202,7 +201,7 @@ export const ProceduralSonarCanvas: React.FC<Props> = ({
 
       {/* Main Viewport Container */}
       <div className="relative w-full aspect-[16/9] min-h-[380px] max-h-[560px] overflow-hidden flex items-center justify-center bg-black cursor-crosshair">
-        <div 
+        <div
           className="relative transition-transform duration-200"
           style={{ transform: `scale(${zoom})` }}
         >
@@ -233,19 +232,17 @@ export const ProceduralSonarCanvas: React.FC<Props> = ({
                   width: `${detection.bbox.width}%`,
                   height: `${detection.bbox.height}%`,
                 }}
-                className={`absolute transition-all cursor-pointer rounded-sm border-2 ${
-                  isSelected 
-                    ? 'border-blue-500 bg-blue-500/20 ring-4 ring-blue-500/40 z-30 shadow-lg'
-                    : isHovered
+                className={`absolute transition-all cursor-pointer rounded-sm border-2 ${isSelected
+                  ? 'border-blue-500 bg-blue-500/20 ring-4 ring-blue-500/40 z-30 shadow-lg'
+                  : isHovered
                     ? 'border-white bg-white/20 z-20 shadow-md'
                     : 'border-yellow-400 bg-yellow-400/20 z-10'
-                }`}
+                  }`}
               >
                 {/* YOLO Label Tag */}
-                <div 
-                  className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[11px] font-mono whitespace-nowrap flex items-center space-x-1.5 shadow-md ${
-                    isSelected ? 'bg-blue-600 text-white font-bold' : 'bg-slate-900/90 text-yellow-300 border border-yellow-400/60'
-                  }`}
+                <div
+                  className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[11px] font-mono whitespace-nowrap flex items-center space-x-1.5 shadow-md ${isSelected ? 'bg-blue-600 text-white font-bold' : 'bg-slate-900/90 text-yellow-300 border border-yellow-400/60'
+                    }`}
                 >
                   <Crosshair className="w-3 h-3" />
                   <span>{detection.name}</span>

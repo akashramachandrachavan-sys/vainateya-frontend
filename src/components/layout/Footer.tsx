@@ -27,28 +27,11 @@ export const Footer: React.FC<Props> = () => {
           </div>
         </div>
 
-        {/* Legal Disclaimer: Reference and Non-Endorsement Notice */}
-        <div className="pt-6 pb-2 border-t border-slate-200">
-          <p className="text-[11px] font-sans text-slate-500 leading-relaxed">
-            <strong className="font-semibold text-slate-700 font-mono">Disclaimer:</strong> All organizational logos, emblems, and agency names (including the Ministry of Earth Sciences, Government of India, and Smart India Hackathon) displayed on this platform are used solely for academic reference, hackathon prototype context (Problem Statement PS 26057), and educational demonstration. Their presentation does not imply official government endorsement, affiliation, or formal partnership with the respective organizations.
+        {/* Bottom Bar: Copyright */}
+        <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-slate-500 text-xs font-mono text-left">
+            &copy; 2026 VAINATEYA &bull; Marine Debris Detection Platform.
           </p>
-        </div>
-
-        {/* Bottom Bar: Copyright on left, Developed with ❤️ prominently covering from PS 26057 to the right edge */}
-        <div className="pt-4 border-t border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <p className="text-slate-500 text-xs font-mono text-left shrink-0">
-            &copy; 2026 VAINATEYA &bull; Smart India Hackathon Prototype (PS 26057).
-          </p>
-
-          <div className="flex-1 flex justify-start md:justify-end items-center pl-0 md:pl-6 text-left md:text-right">
-            <span className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight flex items-center gap-2 sm:gap-3 flex-wrap justify-start md:justify-end">
-              <span>Developed with</span>
-              <span className="text-rose-500 text-2xl sm:text-3xl lg:text-4xl animate-pulse inline-block">❤️</span>
-              <span className="bg-gradient-to-r from-blue-700 via-sky-600 to-teal-600 bg-clip-text text-transparent">
-                for Ocean Conservation
-              </span>
-            </span>
-          </div>
         </div>
       </div>
     </footer>

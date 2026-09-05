@@ -39,20 +39,7 @@ export const Navbar: React.FC<Props> = ({
           </div>
         </a>
 
-        {/* Official Organizations: Ministry of Earth Sciences & Smart India Hackathon (Clean & Enlarge) */}
-        <div className="hidden md:flex items-center space-x-5 pl-5 border-l border-slate-200">
-          <img
-            src="/moes-logo.png"
-            alt="Ministry of Earth Sciences, Government of India"
-            className="h-11 lg:h-12 w-auto object-contain hover:opacity-90 transition-opacity"
-          />
-          <div className="h-10 w-px bg-slate-200"></div>
-          <img
-            src="/sih-logo.png"
-            alt="Smart India Hackathon 2026"
-            className="h-11 lg:h-12 w-auto object-contain hover:opacity-90 transition-opacity"
-          />
-        </div>
+
 
         {/* User Auth: Single Compact Button */}
         <div className="flex items-center space-x-2.5 shrink-0">
