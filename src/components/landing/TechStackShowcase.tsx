@@ -28,7 +28,7 @@ interface TechItem {
 
 export function TechStackShowcase() {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Frontend' | 'Backend' | 'AI Tools'>('All');
-  const [viewMode, setViewMode] = useState<'columns' | 'grid' | 'table'>('columns');
+  const [viewMode, setViewMode] = useState<'grid' | 'columns' | 'table'>('grid');
 
   const stackItems: TechItem[] = [
     // Frontend Tools
@@ -240,20 +240,20 @@ export function TechStackShowcase() {
 
           <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
             <button
-              onClick={() => setViewMode('columns')}
-              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'columns' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
-                }`}
-            >
-              <Layers className="w-3 h-3" />
-              <span>3-Column Stack</span>
-            </button>
-            <button
               onClick={() => setViewMode('grid')}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
             >
               <LayoutGrid className="w-3 h-3" />
               <span>Compact Cards ({filteredItems.length})</span>
+            </button>
+            <button
+              onClick={() => setViewMode('columns')}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors ${viewMode === 'columns' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
+                }`}
+            >
+              <Layers className="w-3 h-3" />
+              <span>3-Column Stack</span>
             </button>
             <button
               onClick={() => setViewMode('table')}
