@@ -504,30 +504,30 @@ export const NaadvedhDashboard: React.FC = () => {
       {/* 2. Main Content Viewport */}
       <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="h-16 bg-white border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-2xs">
+        <header className="h-14 bg-white border-b border-slate-200 px-5 sm:px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-2xs">
           {/* Search Bar */}
           <div className="relative w-full max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search surveys, locations, or detections..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
             />
           </div>
 
           {/* Right Header: Notification Bell & Profile Avatar */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             <button
               type="button"
-              className="relative p-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="relative p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               title="Notifications"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600 ring-2 ring-white"></span>
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-600 ring-2 ring-white"></span>
             </button>
 
             <div className="flex items-center space-x-2.5 pl-3 border-l border-slate-200 cursor-pointer group">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                 A
               </div>
               <div className="text-left hidden sm:block">
@@ -543,84 +543,84 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 1: DASHBOARD OVERVIEW (Image 1) */}
         {/* ========================================================= */}
         {currentScreen === 'dashboard' && (
-          <main className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-3.5 max-w-7xl mx-auto w-full">
             {/* Header Greeting & Date */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
                   Welcome back, Akash!
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5">
                   Monitor surveys, review detections, and contribute to cleaner oceans.
                 </p>
               </div>
 
-              <div className="text-xs font-mono text-slate-500 font-medium bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+              <div className="text-[11px] font-mono text-slate-500 font-medium bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs">
                 Tue, 23 Sep 2025
               </div>
             </div>
 
             {/* 4 Stat Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {/* 1. Total Surveys */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center space-x-4">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
-                  <FolderKanban className="w-5 h-5" />
+              <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-slate-200/90 shadow-xs flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+                  <FolderKanban className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-500">Total Surveys</div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                  <div className="text-[11px] font-medium text-slate-500">Total Surveys</div>
+                  <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
                     12
                   </div>
-                  <div className="text-[11px] font-bold text-emerald-600 mt-0.5">
+                  <div className="text-[10px] font-bold text-emerald-600">
                     &uarr; +3 this month
                   </div>
                 </div>
               </div>
 
               {/* 2. Total Detections */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center space-x-4">
-                <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shrink-0">
-                  <Crosshair className="w-5 h-5" />
+              <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-slate-200/90 shadow-xs flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shrink-0">
+                  <Crosshair className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-500">Total Detections</div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                  <div className="text-[11px] font-medium text-slate-500">Total Detections</div>
+                  <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
                     86
                   </div>
-                  <div className="text-[11px] font-bold text-emerald-600 mt-0.5">
+                  <div className="text-[10px] font-bold text-emerald-600">
                     &uarr; +21 this month
                   </div>
                 </div>
               </div>
 
               {/* 3. High Priority */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center space-x-4">
-                <div className="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-5 h-5" />
+              <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-slate-200/90 shadow-xs flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-500">High Priority</div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                  <div className="text-[11px] font-medium text-slate-500">High Priority</div>
+                  <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
                     4
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">
+                  <div className="text-[10px] text-slate-500">
                     Needs review
                   </div>
                 </div>
               </div>
 
               {/* 4. Processed */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center space-x-4">
-                <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+              <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-slate-200/90 shadow-xs flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-500">Processed</div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                  <div className="text-[11px] font-medium text-slate-500">Processed</div>
+                  <div className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] leading-tight">
                     8
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">
+                  <div className="text-[10px] text-slate-500">
                     67% completed
                   </div>
                 </div>
@@ -628,128 +628,128 @@ export const NaadvedhDashboard: React.FC = () => {
             </div>
 
             {/* Middle Row: Survey Locations Map (Left) & Recent Surveys (Right) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
               {/* Left Column (7 cols): Survey Locations Map Card */}
-              <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between pb-3">
+              <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 flex flex-col justify-between">
+                <div className="flex items-center justify-between pb-2">
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                       Survey Locations
                     </h2>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-[11px] text-slate-500">
                       Overview of all survey areas and detected anomalies.
                     </p>
                   </div>
 
-                  <button className="flex items-center space-x-1 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50">
+                  <button className="flex items-center space-x-1 px-2.5 py-1 rounded-md border border-slate-200 bg-white text-[11px] font-medium text-slate-700 hover:bg-slate-50">
                     <span>All Surveys</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronDown className="w-3 h-3 text-slate-400" />
                   </button>
                 </div>
 
-                {/* Map Viewport */}
-                <div className="relative w-full h-[280px] sm:h-[320px] rounded-xl overflow-hidden border border-slate-200">
+                {/* Map Viewport - Compact height to eliminate vertical scrolling */}
+                <div className="relative w-full h-[185px] sm:h-[205px] rounded-lg overflow-hidden border border-slate-200">
                   <div ref={dashMapRef} className="w-full h-full z-0"></div>
 
                   {/* Top-Right Map Controls */}
-                  <div className="absolute top-3 right-3 z-10 flex flex-col space-y-1 bg-white rounded-lg border border-slate-200 shadow-sm p-0.5">
+                  <div className="absolute top-2 right-2 z-10 flex flex-col space-y-1 bg-white rounded border border-slate-200 shadow-sm p-0.5">
                     <button
                       onClick={() => dashMapInstance.current?.zoomIn()}
-                      className="p-1.5 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
+                      className="p-1 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
                       title="Zoom In"
                     >
                       +
                     </button>
                     <button
                       onClick={() => dashMapInstance.current?.zoomOut()}
-                      className="p-1.5 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
+                      className="p-1 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
                       title="Zoom Out"
                     >
                       &minus;
                     </button>
                     <button
                       onClick={() => dashMapInstance.current?.setView([16.4, 72.8], 7)}
-                      className="p-1.5 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
+                      className="p-1 hover:bg-slate-100 text-slate-700 rounded text-xs font-bold transition-colors cursor-pointer"
                       title="Center Map"
                     >
-                      <Locate className="w-3.5 h-3.5" />
+                      <Locate className="w-3 h-3" />
                     </button>
                   </div>
 
                   {/* Geographic Watermarks on Map */}
-                  <div className="absolute top-1/2 left-8 -translate-y-1/2 text-white/50 font-['Space_Grotesk'] font-bold text-sm tracking-widest italic pointer-events-none drop-shadow-sm select-none">
+                  <div className="absolute top-1/2 left-6 -translate-y-1/2 text-white/50 font-['Space_Grotesk'] font-bold text-xs tracking-widest italic pointer-events-none drop-shadow-sm select-none">
                     Arabian Sea
                   </div>
-                  <div className="absolute top-1/3 right-8 text-white/70 font-semibold text-xs tracking-wider pointer-events-none drop-shadow-sm select-none">
+                  <div className="absolute top-1/4 right-6 text-white/70 font-semibold text-[11px] tracking-wider pointer-events-none drop-shadow-sm select-none">
                     Maharashtra
                   </div>
-                  <div className="absolute bottom-1/4 right-12 text-white/70 font-semibold text-xs tracking-wider pointer-events-none drop-shadow-sm select-none">
+                  <div className="absolute bottom-1/4 right-8 text-white/70 font-semibold text-[11px] tracking-wider pointer-events-none drop-shadow-sm select-none">
                     Goa
                   </div>
 
                   {/* Bottom-Left Legend */}
-                  <div className="absolute bottom-3 left-3 z-10 bg-white/90 backdrop-blur-md px-3 py-2 rounded-lg border border-slate-200 shadow-sm text-[11px] space-y-1.5">
-                    <div className="flex items-center space-x-2 text-slate-700">
-                      <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></span>
+                  <div className="absolute bottom-2 left-2 z-10 bg-white/90 backdrop-blur-md px-2.5 py-1.5 rounded border border-slate-200 shadow-sm text-[10px] space-y-1">
+                    <div className="flex items-center space-x-1.5 text-slate-700">
+                      <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
                       <span>Survey Location</span>
                     </div>
-                    <div className="flex items-center space-x-2 text-slate-700">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                    <div className="flex items-center space-x-1.5 text-slate-700">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
                       <span>High Priority Detection</span>
                     </div>
                   </div>
 
                   {/* Bottom-Right Scale Bar */}
-                  <div className="absolute bottom-3 right-3 z-10 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded border border-slate-200 text-[10px] font-mono text-slate-600 shadow-sm">
+                  <div className="absolute bottom-2 right-2 z-10 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded border border-slate-200 text-[9px] font-mono text-slate-600 shadow-sm">
                     100 km
                   </div>
                 </div>
               </div>
 
               {/* Right Column (5 cols): Recent Surveys */}
-              <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+              <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 flex flex-col justify-between">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                     Recent Surveys
                   </h2>
                   <button
                     onClick={() => setCurrentScreen('surveys')}
-                    className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center space-x-1"
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-700 flex items-center space-x-1"
                   >
                     <span>View All</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
 
-                <div className="divide-y divide-slate-100 space-y-1">
+                <div className="divide-y divide-slate-100 space-y-0.5">
                   {/* Survey 1 */}
                   <div
                     onClick={() => {
                       setCurrentScreen('new-survey');
                       setNewSurveyStep(4);
                     }}
-                    className="py-2.5 flex items-center justify-between hover:bg-slate-50 p-2 rounded-xl transition-colors cursor-pointer group"
+                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center space-x-3 min-w-0">
+                    <div className="flex items-center space-x-2.5 min-w-0">
                       <img
                         src="/sonar-tile-1.jpg"
                         alt="Arabian Sea Survey"
-                        className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0 group-hover:opacity-90"
+                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
                       />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
                           Arabian Sea Survey
                         </h4>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[10px] text-slate-400 font-mono">
                           23 Sep 2025 &bull; 24 images
                         </p>
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Completed
                       </span>
-                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">5 detections</div>
+                      <div className="text-[9px] text-slate-500 font-mono mt-0.5">5 detections</div>
                     </div>
                   </div>
 
@@ -759,24 +759,24 @@ export const NaadvedhDashboard: React.FC = () => {
                       setCurrentScreen('new-survey');
                       setNewSurveyStep(3);
                     }}
-                    className="py-2.5 flex items-center justify-between hover:bg-slate-50 p-2 rounded-xl transition-colors cursor-pointer group"
+                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center space-x-3 min-w-0">
+                    <div className="flex items-center space-x-2.5 min-w-0">
                       <img
                         src="/sonar-tile-2.jpg"
                         alt="Mumbai Coast Survey"
-                        className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0 group-hover:opacity-90"
+                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
                       />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
                           Mumbai Coast Survey
                         </h4>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[10px] text-slate-400 font-mono">
                           20 Sep 2025 &bull; 18 images
                         </p>
                       </div>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-sky-50 text-sky-700 border border-sky-200 shrink-0">
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-sky-50 text-sky-700 border border-sky-200 shrink-0">
                       Processing
                     </span>
                   </div>
@@ -787,28 +787,28 @@ export const NaadvedhDashboard: React.FC = () => {
                       setCurrentScreen('new-survey');
                       setNewSurveyStep(4);
                     }}
-                    className="py-2.5 flex items-center justify-between hover:bg-slate-50 p-2 rounded-xl transition-colors cursor-pointer group"
+                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center space-x-3 min-w-0">
+                    <div className="flex items-center space-x-2.5 min-w-0">
                       <img
                         src="/sonar-tile-3.jpg"
                         alt="Goa Patch Survey"
-                        className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0 group-hover:opacity-90"
+                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
                       />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
                           Goa Patch Survey
                         </h4>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[10px] text-slate-400 font-mono">
                           18 Sep 2025 &bull; 32 images
                         </p>
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Completed
                       </span>
-                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">3 detections</div>
+                      <div className="text-[9px] text-slate-500 font-mono mt-0.5">3 detections</div>
                     </div>
                   </div>
 
@@ -818,24 +818,24 @@ export const NaadvedhDashboard: React.FC = () => {
                       setCurrentScreen('new-survey');
                       setNewSurveyStep(1);
                     }}
-                    className="py-2.5 flex items-center justify-between hover:bg-slate-50 p-2 rounded-xl transition-colors cursor-pointer group"
+                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center space-x-3 min-w-0">
+                    <div className="flex items-center space-x-2.5 min-w-0">
                       <img
                         src="/sonar-survey-sample.png"
                         alt="Ratnagiri Survey"
-                        className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0 group-hover:opacity-90"
+                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
                       />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
                           Ratnagiri Survey
                         </h4>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[10px] text-slate-400 font-mono">
                           14 Sep 2025 &bull; 27 images
                         </p>
                       </div>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
                       Not Started
                     </span>
                   </div>
@@ -844,33 +844,33 @@ export const NaadvedhDashboard: React.FC = () => {
             </div>
 
             {/* Bottom Row: Quick Actions */}
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                   Quick Actions
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-[11px] text-slate-500">
                   Start a new survey or view results.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Action 1: New Survey */}
                 <div
                   onClick={() => {
                     setCurrentScreen('new-survey');
                     setNewSurveyStep(1);
                   }}
-                  className="bg-white p-4 rounded-2xl border border-blue-200 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center space-x-3.5 group"
+                  className="bg-white p-2.5 sm:p-3 rounded-xl border border-blue-200 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex items-center space-x-2.5 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <Plus className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                    <Plus className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                    <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600">
                       New Survey
                     </div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-[10px] text-slate-500">
                       Upload sonar data
                     </div>
                   </div>
@@ -879,16 +879,16 @@ export const NaadvedhDashboard: React.FC = () => {
                 {/* Action 2: View Map */}
                 <div
                   onClick={() => setCurrentScreen('map')}
-                  className="bg-white p-4 rounded-2xl border border-slate-200/90 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center space-x-3.5 group"
+                  className="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/90 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex items-center space-x-2.5 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
-                    <MapIcon className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
+                    <MapIcon className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                    <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600">
                       View Map
                     </div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-[10px] text-slate-500">
                       Explore detections
                     </div>
                   </div>
@@ -897,16 +897,16 @@ export const NaadvedhDashboard: React.FC = () => {
                 {/* Action 3: Generate Report */}
                 <div
                   onClick={() => setIsReportModalOpen(true)}
-                  className="bg-white p-4 rounded-2xl border border-slate-200/90 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center space-x-3.5 group"
+                  className="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/90 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex items-center space-x-2.5 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
-                    <FileText className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
+                    <FileText className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                    <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600">
                       Generate Report
                     </div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-[10px] text-slate-500">
                       Export results (JSON/CSV)
                     </div>
                   </div>
@@ -918,16 +918,16 @@ export const NaadvedhDashboard: React.FC = () => {
                     setCurrentScreen('new-survey');
                     setNewSurveyStep(4);
                   }}
-                  className="bg-white p-4 rounded-2xl border border-slate-200/90 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center space-x-3.5 group"
+                  className="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/90 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex items-center space-x-2.5 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
-                    <Clock className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition-colors">
+                    <Clock className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                    <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600">
                       Detection History
                     </div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-[10px] text-slate-500">
                       View past surveys
                     </div>
                   </div>
@@ -941,107 +941,107 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 2: NEW SURVEY (Images 2, 3, 4, 5) */}
         {/* ========================================================= */}
         {currentScreen === 'new-survey' && (
-          <main className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl mx-auto w-full">
             {/* Top Back link */}
             <button
               onClick={() => setCurrentScreen('dashboard')}
-              className="inline-flex items-center space-x-2 text-xs font-mono font-bold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
             >
               <span>&larr; Back to Dashboard</span>
             </button>
 
             {/* Title & Subtitle */}
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
                 New Survey
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.
               </p>
             </div>
 
             {/* 4-Step Stepper Header (Images 2, 3, 4) */}
-            <div className="flex items-center max-w-3xl pt-1 pb-2 text-xs font-mono font-bold">
+            <div className="flex items-center max-w-2xl pt-0 pb-1 text-xs font-mono font-bold">
               {/* Step 1 */}
               <div
                 onClick={() => setNewSurveyStep(1)}
-                className={`flex items-center space-x-2 cursor-pointer ${newSurveyStep >= 1 ? 'text-blue-600' : 'text-slate-400'
+                className={`flex items-center space-x-1.5 cursor-pointer ${newSurveyStep >= 1 ? 'text-blue-600' : 'text-slate-400'
                   }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 1
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 1
                     ? 'bg-blue-600 text-white'
                     : newSurveyStep === 1
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-500'
                     }`}
                 >
-                  {newSurveyStep > 1 ? <Check className="w-4 h-4 stroke-[3]" /> : '1'}
+                  {newSurveyStep > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : '1'}
                 </div>
                 <span>Survey Details</span>
               </div>
 
               {/* Line 1-2 */}
               <div
-                className={`flex-1 h-0.5 mx-3 ${newSurveyStep >= 2 ? 'bg-blue-600' : 'bg-slate-200'}`}
+                className={`flex-1 h-0.5 mx-2.5 ${newSurveyStep >= 2 ? 'bg-blue-600' : 'bg-slate-200'}`}
               ></div>
 
               {/* Step 2 */}
               <div
                 onClick={() => setNewSurveyStep(2)}
-                className={`flex items-center space-x-2 cursor-pointer ${newSurveyStep >= 2 ? 'text-blue-600' : 'text-slate-400'
+                className={`flex items-center space-x-1.5 cursor-pointer ${newSurveyStep >= 2 ? 'text-blue-600' : 'text-slate-400'
                   }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 2
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 2
                     ? 'bg-blue-600 text-white'
                     : newSurveyStep === 2
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-500'
                     }`}
                 >
-                  {newSurveyStep > 2 ? <Check className="w-4 h-4 stroke-[3]" /> : '2'}
+                  {newSurveyStep > 2 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : '2'}
                 </div>
                 <span>Upload Data</span>
               </div>
 
               {/* Line 2-3 */}
               <div
-                className={`flex-1 h-0.5 mx-3 ${newSurveyStep >= 3 ? 'bg-blue-600' : 'bg-slate-200'}`}
+                className={`flex-1 h-0.5 mx-2.5 ${newSurveyStep >= 3 ? 'bg-blue-600' : 'bg-slate-200'}`}
               ></div>
 
               {/* Step 3 */}
               <div
                 onClick={() => setNewSurveyStep(3)}
-                className={`flex items-center space-x-2 cursor-pointer ${newSurveyStep >= 3 ? 'text-blue-600' : 'text-slate-400'
+                className={`flex items-center space-x-1.5 cursor-pointer ${newSurveyStep >= 3 ? 'text-blue-600' : 'text-slate-400'
                   }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 3
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${newSurveyStep > 3
                     ? 'bg-blue-600 text-white'
                     : newSurveyStep === 3
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-500'
                     }`}
                 >
-                  {newSurveyStep > 3 ? <Check className="w-4 h-4 stroke-[3]" /> : '3'}
+                  {newSurveyStep > 3 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : '3'}
                 </div>
                 <span>Processing</span>
               </div>
 
               {/* Line 3-4 */}
               <div
-                className={`flex-1 h-0.5 mx-3 ${newSurveyStep >= 4 ? 'bg-blue-600' : 'bg-slate-200'}`}
+                className={`flex-1 h-0.5 mx-2.5 ${newSurveyStep >= 4 ? 'bg-blue-600' : 'bg-slate-200'}`}
               ></div>
 
               {/* Step 4 */}
               <div
                 onClick={() => setNewSurveyStep(4)}
-                className={`flex items-center space-x-2 cursor-pointer ${newSurveyStep === 4 ? 'text-blue-600' : 'text-slate-400'
+                className={`flex items-center space-x-1.5 cursor-pointer ${newSurveyStep === 4 ? 'text-blue-600' : 'text-slate-400'
                   }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${newSurveyStep === 4
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${newSurveyStep === 4
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'bg-slate-100 text-slate-500'
                     }`}
@@ -1056,68 +1056,68 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* STEP 1: SURVEY DETAILS (Image 2) */}
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 1 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
                   {/* Left Box: Survey Information */}
-                  <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4 flex flex-col justify-between">
-                    <div className="space-y-4">
+                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 space-y-3 flex flex-col justify-between">
+                    <div className="space-y-2.5">
                       <div>
-                        <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Survey Information
                         </h2>
-                        <p className="text-xs text-slate-500 mt-0.5">
+                        <p className="text-[11px] text-slate-500">
                           Provide basic details about the survey.
                         </p>
                       </div>
 
                       {/* Survey Name */}
                       <div>
-                        <label className="block text-xs font-mono font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
                           Survey Name <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
                           value={surveyName}
                           onChange={e => setSurveyName(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                         />
                       </div>
 
                       {/* Survey Date & Survey Area */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                          <label className="block text-xs font-mono font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
                             Survey Date <span className="text-rose-500">*</span>
                           </label>
                           <div className="relative">
-                            <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                            <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                             <input
                               type="date"
                               value={surveyDate}
                               onChange={e => setSurveyDate(e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-mono"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-mono"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-mono font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
                             Survey Area / Location
                           </label>
                           <div className="relative">
-                            <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                            <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                             <input
                               type="text"
                               value={surveyLocation}
                               onChange={e => setSurveyLocation(e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-7 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all"
                             />
                             {surveyLocation && (
                               <button
                                 onClick={() => setSurveyLocation('')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
                               >
-                                <X className="w-3.5 h-3.5" />
+                                <X className="w-3 h-3" />
                               </button>
                             )}
                           </div>
@@ -1126,8 +1126,8 @@ export const NaadvedhDashboard: React.FC = () => {
 
                       {/* Description */}
                       <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <label className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
                             Description (Optional)
                           </label>
                           <span className="text-[10px] font-mono text-slate-400">
@@ -1135,21 +1135,21 @@ export const NaadvedhDashboard: React.FC = () => {
                           </span>
                         </div>
                         <textarea
-                          rows={4}
+                          rows={2}
                           value={surveyDescription}
                           maxLength={500}
                           onChange={e => setSurveyDescription(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-all leading-relaxed"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-all leading-relaxed"
                         />
                       </div>
                     </div>
 
                     {/* Why these details note */}
-                    <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-3.5 flex items-start space-x-3 mt-4">
-                      <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                    <div className="bg-blue-50/70 border border-blue-100 rounded-lg p-2.5 flex items-start space-x-2 mt-2">
+                      <Info className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-xs font-bold text-blue-900">Why these details?</h5>
-                        <p className="text-[11px] text-blue-700/90 leading-normal mt-0.5">
+                        <h5 className="text-[11px] font-bold text-blue-900 leading-tight">Why these details?</h5>
+                        <p className="text-[10.5px] text-blue-700/90 leading-normal mt-0.5">
                           Survey information helps in organizing data, mapping detections, and generating accurate reports.
                         </p>
                       </div>
@@ -1157,21 +1157,21 @@ export const NaadvedhDashboard: React.FC = () => {
                   </div>
 
                   {/* Right Box: Upload Side-Scan Sonar Data */}
-                  <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4 flex flex-col justify-between">
-                    <div className="space-y-4">
+                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 space-y-3 flex flex-col justify-between">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                          <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                             Upload Side-Scan Sonar Data
                           </h2>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-[11px] text-slate-500">
                             Upload one or multiple sonar image files for analysis.
                           </p>
                         </div>
                         <button
                           type="button"
                           onClick={() => setIsSupportedFormatsModalOpen(true)}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-[10px] font-mono bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition-colors cursor-pointer"
+                          className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9.5px] font-mono bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition-colors cursor-pointer"
                         >
                           <Info className="w-3 h-3 text-blue-600" />
                           <span>Supported Formats</span>
@@ -1181,66 +1181,66 @@ export const NaadvedhDashboard: React.FC = () => {
                       {/* Dropzone Box */}
                       <div
                         onClick={handleAddFiles}
-                        className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-2xl p-6 text-center bg-blue-50/20 hover:bg-blue-50/40 transition-all cursor-pointer space-y-2"
+                        className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-xl p-3.5 text-center bg-blue-50/20 hover:bg-blue-50/40 transition-all cursor-pointer space-y-1"
                       >
-                        <div className="w-12 h-12 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto">
-                          <UploadCloud className="w-6 h-6" />
+                        <div className="w-9 h-9 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto">
+                          <UploadCloud className="w-4 h-4" />
                         </div>
                         <div className="text-xs font-bold text-slate-800">
                           Drag &amp; drop sonar images here
                         </div>
-                        <div className="text-[11px] text-slate-400">or</div>
+                        <div className="text-[10px] text-slate-400">or</div>
                         <button
                           type="button"
-                          className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                          className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
                         >
                           Browse Files
                         </button>
-                        <p className="text-[10.5px] font-mono text-slate-400 pt-1">
+                        <p className="text-[10px] font-mono text-slate-400 pt-0.5">
                           PNG, JPEG, TIFF, or BMP &bull; Up to 25 MB per file &bull; Multiple files allowed
                         </p>
                       </div>
 
                       {/* Selected Files List */}
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
                             Selected Files ({selectedFiles.length})
                           </span>
                           {selectedFiles.length > 0 && (
                             <button
                               onClick={() => setSelectedFiles([])}
-                              className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
+                              className="text-[11px] font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
                             >
                               Clear All
                             </button>
                           )}
                         </div>
 
-                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                           {selectedFiles.map((file, idx) => (
                             <div
                               key={idx}
-                              className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 flex items-center justify-between text-xs"
+                              className="p-1.5 px-2.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-50 flex items-center justify-between text-xs"
                             >
-                              <div className="flex items-center space-x-2.5 min-w-0">
-                                <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 shrink-0">
-                                  <ImageIcon className="w-4 h-4" />
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <div className="p-1 rounded bg-blue-50 text-blue-600 shrink-0">
+                                  <ImageIcon className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="min-w-0">
-                                  <div className="font-bold text-slate-900 truncate font-mono">
+                                  <div className="font-bold text-slate-900 truncate font-mono text-[11px]">
                                     {file.name}
                                   </div>
-                                  <div className="text-[10px] text-slate-400 font-mono">
+                                  <div className="text-[9.5px] text-slate-400 font-mono">
                                     {file.size}
                                   </div>
                                 </div>
                               </div>
                               <button
                                 onClick={() => handleRemoveFile(idx)}
-                                className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer"
+                                className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
                               >
-                                <X className="w-3.5 h-3.5" />
+                                <X className="w-3 h-3" />
                               </button>
                             </div>
                           ))}
@@ -1251,10 +1251,10 @@ export const NaadvedhDashboard: React.FC = () => {
                 </div>
 
                 {/* Bottom Buttons Bar */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                <div className="flex items-center justify-between pt-2.5 border-t border-slate-200">
                   <button
                     onClick={() => setCurrentScreen('dashboard')}
-                    className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-colors cursor-pointer"
+                    className="px-4 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1264,10 +1264,10 @@ export const NaadvedhDashboard: React.FC = () => {
                       if (selectedFiles.length === 0) setSelectedFiles(defaultFilesList);
                       setNewSurveyStep(2);
                     }}
-                    className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-2 cursor-pointer"
+                    className="px-5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
                   >
                     <span>Next: Upload Data</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -1277,92 +1277,92 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* STEP 2: UPLOAD DATA & BATCH PREVIEW (Image 3) */}
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 2 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                  {/* Left Column (5 cols): Upload Box & Selected Files (5) */}
-                  <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4">
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
+                  {/* Left Column (5 cols): Upload Box & Selected Files */}
+                  <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Upload Side-Scan Sonar Data
                         </h2>
-                        <p className="text-xs text-slate-500 mt-0.5">
+                        <p className="text-[11px] text-slate-500">
                           Select one or multiple sonar image files for analysis.
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={() => setIsSupportedFormatsModalOpen(true)}
-                        className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-[10px] font-mono bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition-colors cursor-pointer"
+                        className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9.5px] font-mono bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition-colors cursor-pointer"
                       >
-                        <Info className="w-3 h-3 text-blue-600" />
-                        <span>Supported Formats</span>
+                        <Info className="w-2.5 h-2.5 text-blue-600" />
+                        <span>Formats</span>
                       </button>
                     </div>
 
                     {/* Dropzone */}
                     <div
                       onClick={handleAddFiles}
-                      className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-2xl p-5 text-center bg-blue-50/20 hover:bg-blue-50/40 transition-all cursor-pointer space-y-1.5"
+                      className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-xl p-3 text-center bg-blue-50/20 hover:bg-blue-50/40 transition-all cursor-pointer space-y-1"
                     >
-                      <div className="w-10 h-10 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto">
-                        <UploadCloud className="w-5 h-5" />
+                      <div className="w-8 h-8 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto">
+                        <UploadCloud className="w-4 h-4" />
                       </div>
                       <div className="text-xs font-bold text-slate-800">
                         Drag &amp; drop sonar images here
                       </div>
-                      <div className="text-[11px] text-slate-400">or</div>
+                      <div className="text-[10px] text-slate-400">or</div>
                       <button
                         type="button"
-                        className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer"
+                        className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] shadow-xs cursor-pointer"
                       >
                         Browse Files
                       </button>
-                      <p className="text-[10px] font-mono text-slate-400 pt-1">
-                        PNG, JPEG, TIFF, or BMP &bull; Up to 25 MB per file &bull; Multiple files allowed
+                      <p className="text-[9.5px] font-mono text-slate-400 pt-0.5">
+                        PNG, JPEG, TIFF, BMP &bull; Up to 25 MB per file
                       </p>
                     </div>
 
-                    {/* Selected Files List (5) */}
+                    {/* Selected Files List */}
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
                           Selected Files ({selectedFiles.length})
                         </span>
                         {selectedFiles.length > 0 && (
                           <button
                             onClick={() => setSelectedFiles([])}
-                            className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
+                            className="text-[11px] font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
                           >
                             Clear All
                           </button>
                         )}
                       </div>
 
-                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                      <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                         {selectedFiles.map((file, idx) => (
                           <div
                             key={idx}
-                            className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 flex items-center justify-between text-xs"
+                            className="p-1.5 px-2.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-50 flex items-center justify-between text-xs"
                           >
-                            <div className="flex items-center space-x-2.5 min-w-0">
-                              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 shrink-0">
-                                <ImageIcon className="w-4 h-4" />
+                            <div className="flex items-center space-x-2 min-w-0">
+                              <div className="p-1 rounded bg-blue-50 text-blue-600 shrink-0">
+                                <ImageIcon className="w-3.5 h-3.5" />
                               </div>
                               <div className="min-w-0">
-                                <div className="font-bold text-slate-900 truncate font-mono">
+                                <div className="font-bold text-slate-900 truncate font-mono text-[11px]">
                                   {file.name}
                                 </div>
-                                <div className="text-[10px] text-slate-400 font-mono">
+                                <div className="text-[9.5px] text-slate-400 font-mono">
                                   {file.size}
                                 </div>
                               </div>
                             </div>
                             <button
                               onClick={() => handleRemoveFile(idx)}
-                              className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer"
+                              className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
                             >
-                              <X className="w-3.5 h-3.5" />
+                              <X className="w-3 h-3" />
                             </button>
                           </div>
                         ))}
@@ -1370,15 +1370,15 @@ export const NaadvedhDashboard: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right Column (7 cols): Batch Preview (5 images selected) */}
-                  <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4 flex flex-col justify-between">
-                    <div className="space-y-4">
+                  {/* Right Column (7 cols): Batch Preview */}
+                  <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3 flex flex-col justify-between">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                          <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                             Batch Preview
                           </h2>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-[11px] text-slate-500">
                             {selectedFiles.length} images selected
                           </p>
                         </div>
@@ -1387,47 +1387,47 @@ export const NaadvedhDashboard: React.FC = () => {
                         <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
                           <button
                             onClick={() => setBatchViewMode('grid')}
-                            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${batchViewMode === 'grid'
+                            className={`flex items-center space-x-1 px-2 py-0.5 rounded-md transition-colors cursor-pointer text-[11px] ${batchViewMode === 'grid'
                               ? 'bg-white text-blue-700 shadow-xs font-semibold'
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
-                            <Grid className="w-3.5 h-3.5" />
-                            <span>Grid View</span>
+                            <Grid className="w-3 h-3" />
+                            <span>Grid</span>
                           </button>
                           <button
                             onClick={() => setBatchViewMode('list')}
-                            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${batchViewMode === 'list'
+                            className={`flex items-center space-x-1 px-2 py-0.5 rounded-md transition-colors cursor-pointer text-[11px] ${batchViewMode === 'list'
                               ? 'bg-white text-blue-700 shadow-xs font-semibold'
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
-                            <List className="w-3.5 h-3.5" />
-                            <span>List View</span>
+                            <List className="w-3 h-3" />
+                            <span>List</span>
                           </button>
                         </div>
                       </div>
 
                       {/* Previews: 3x2 Grid */}
                       {batchViewMode === 'grid' ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {selectedFiles.map((file, idx) => (
                             <div
                               key={idx}
-                              className="rounded-xl border border-slate-200 overflow-hidden bg-slate-900 group"
+                              className="rounded-lg border border-slate-200 overflow-hidden bg-slate-900 group"
                             >
-                              <div className="h-28 sm:h-32 w-full overflow-hidden relative">
+                              <div className="h-20 sm:h-22 w-full overflow-hidden relative">
                                 <img
                                   src={file.thumbnail}
                                   alt={file.name}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                                 />
-                                <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/60 text-white font-mono text-[9px]">
+                                <div className="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 text-white font-mono text-[8.5px]">
                                   {file.size}
                                 </div>
                               </div>
-                              <div className="p-2 bg-white border-t border-slate-100">
-                                <div className="text-[11px] font-mono font-bold text-slate-800 truncate">
+                              <div className="p-1.5 bg-white border-t border-slate-100">
+                                <div className="text-[10px] font-mono font-bold text-slate-800 truncate">
                                   {file.name}
                                 </div>
                               </div>
@@ -1435,24 +1435,24 @@ export const NaadvedhDashboard: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <div className="space-y-2">
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto">
                           {selectedFiles.map((file, idx) => (
                             <div
                               key={idx}
-                              className="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between"
+                              className="p-2 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between"
                             >
-                              <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2.5">
                                 <img
                                   src={file.thumbnail}
                                   alt={file.name}
-                                  className="w-10 h-10 object-cover rounded-lg"
+                                  className="w-8 h-8 object-cover rounded"
                                 />
                                 <div>
                                   <div className="text-xs font-bold font-mono text-slate-900">
                                     {file.name}
                                   </div>
-                                  <div className="text-[10px] text-slate-500 font-mono">
-                                    {file.size} &bull; Ready for inference
+                                  <div className="text-[9.5px] text-slate-500 font-mono">
+                                    {file.size} &bull; Ready
                                   </div>
                                 </div>
                               </div>
@@ -1462,35 +1462,33 @@ export const NaadvedhDashboard: React.FC = () => {
                       )}
 
                       {/* Tips for best results */}
-                      <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-3.5 flex items-start space-x-3 mt-2">
-                        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                        <div className="space-y-1">
-                          <h5 className="text-xs font-bold text-blue-900">Tips for best results</h5>
-                          <ul className="text-[11px] text-blue-800/80 space-y-0.5 list-disc pl-4">
-                            <li>Use clear, high-resolution side-scan sonar images.</li>
-                            <li>Ensure images are correctly oriented (port-starboard).</li>
-                            <li>For large surveys, you can upload multiple files at once.</li>
-                            <li>Supported formats: PNG, JPEG, TIFF, BMP. Maximum size: 25 MB per file.</li>
+                      <div className="bg-blue-50/60 border border-blue-100 rounded-lg p-2.5 flex items-start space-x-2.5 mt-1">
+                        <Info className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                        <div className="space-y-0.5">
+                          <h5 className="text-[11px] font-bold text-blue-900">Tips for best results</h5>
+                          <ul className="text-[10px] text-blue-800/80 space-y-0.5 list-disc pl-3.5">
+                            <li>Use high-resolution side-scan sonar images (port-starboard oriented).</li>
+                            <li>Supported: PNG, JPEG, TIFF, BMP &bull; Up to 25 MB per file.</li>
                           </ul>
                         </div>
                       </div>
                     </div>
 
                     {/* Bottom Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between pt-2.5 border-t border-slate-100">
                       <button
                         onClick={() => setNewSurveyStep(1)}
-                        className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-colors cursor-pointer"
+                        className="px-4 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-colors cursor-pointer"
                       >
                         Back
                       </button>
 
                       <button
                         onClick={() => setNewSurveyStep(3)}
-                        className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-2 cursor-pointer"
+                        className="px-5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer"
                       >
                         <span>Start Processing</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -1502,28 +1500,28 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* STEP 3: PROCESSING SONAR IMAGES (Image 4) */}
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 3 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
                   {/* Left Column (7 cols): Pipeline Checklist & Progress */}
-                  <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-5 flex flex-col justify-between">
-                    <div className="space-y-5">
+                  <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5 flex flex-col justify-between">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h2 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                          <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                             Processing Sonar Images
                           </h2>
-                          <p className="text-xs text-slate-500 mt-0.5">
-                            Analyzing your sonar data using AI to detect and classify underwater objects.
+                          <p className="text-[11px] text-slate-500">
+                            Analyzing sonar data using AI to detect and classify underwater debris.
                           </p>
                         </div>
-                        <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
                           {selectedFiles.length || 5} images
                         </span>
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between text-xs">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-[11px]">
                           <span className="font-semibold text-slate-700">
                             {isProcessingComplete
                               ? '5 of 5 images processed'
@@ -1533,7 +1531,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             {processingProgress}%
                           </span>
                         </div>
-                        <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                           <div
                             className="h-full bg-blue-600 rounded-full transition-all duration-700 ease-out"
                             style={{ width: `${processingProgress}%` }}
@@ -1542,159 +1540,159 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
 
                       {/* 5-Stage Checklist */}
-                      <div className="space-y-3 pt-1">
+                      <div className="space-y-1.5 pt-0.5">
                         {/* 1. Data Validation */}
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start justify-between">
-                          <div className="flex items-start space-x-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                        <div className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 flex items-start justify-between">
+                          <div className="flex items-start space-x-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             <div>
                               <h4 className="text-xs font-bold text-slate-900">
                                 1. Data Validation
                               </h4>
-                              <p className="text-[11px] text-slate-500 mt-0.5">
+                              <p className="text-[10px] text-slate-500">
                                 Checking file format, resolution, and integrity.
                               </p>
                             </div>
                           </div>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                            Completed 00:00:05
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                            00:00:05
                           </span>
                         </div>
 
                         {/* 2. Image Preprocessing */}
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start justify-between">
-                          <div className="flex items-start space-x-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                        <div className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 flex items-start justify-between">
+                          <div className="flex items-start space-x-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             <div>
                               <h4 className="text-xs font-bold text-slate-900">
                                 2. Image Preprocessing
                               </h4>
-                              <p className="text-[11px] text-slate-500 mt-0.5">
-                                Noise filtering and enhancement.
+                              <p className="text-[10px] text-slate-500">
+                                Noise filtering, beam slant-range correction, and contrast boost.
                               </p>
                             </div>
                           </div>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                            Completed 00:00:18
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                            00:00:18
                           </span>
                         </div>
 
                         {/* 3. AI Detection & Classification */}
-                        <div className="p-3 rounded-xl bg-blue-50/40 border border-blue-200 flex items-start justify-between">
-                          <div className="flex items-start space-x-3">
+                        <div className="p-2 rounded-lg bg-blue-50/40 border border-blue-200 flex items-start justify-between">
+                          <div className="flex items-start space-x-2.5">
                             {isProcessingComplete || activeStage > 3 ? (
-                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             ) : (
-                              <RotateCw className="w-5 h-5 text-blue-600 animate-spin shrink-0 mt-0.5" />
+                              <RotateCw className="w-4 h-4 text-blue-600 animate-spin shrink-0 mt-0.5" />
                             )}
                             <div>
                               <h4 className="text-xs font-bold text-blue-900">
                                 3. AI Detection &amp; Classification
                               </h4>
-                              <p className="text-[11px] text-blue-700/80 mt-0.5">
-                                Identifying potential marine debris and anomalies.
+                              <p className="text-[10px] text-blue-700/80">
+                                YOLOv12 acoustic bounding box and confidence score scoring.
                               </p>
                             </div>
                           </div>
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border shrink-0 ${isProcessingComplete || activeStage > 3
+                            className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold border shrink-0 ${isProcessingComplete || activeStage > 3
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : 'bg-blue-50 text-blue-700 border-blue-200'
                               }`}
                           >
-                            {isProcessingComplete || activeStage > 3 ? 'Completed 00:01:12' : 'Processing 00:01:12'}
+                            {isProcessingComplete || activeStage > 3 ? '00:01:12' : 'Scanning...'}
                           </span>
                         </div>
 
                         {/* 4. Geospatial Localization */}
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start justify-between">
-                          <div className="flex items-start space-x-3">
+                        <div className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 flex items-start justify-between">
+                          <div className="flex items-start space-x-2.5">
                             {isProcessingComplete || activeStage >= 4 ? (
-                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             ) : (
-                              <div className="w-5 h-5 rounded-full border-2 border-slate-300 shrink-0 mt-0.5"></div>
+                              <div className="w-4 h-4 rounded-full border-2 border-slate-300 shrink-0 mt-0.5"></div>
                             )}
                             <div>
                               <h4 className="text-xs font-bold text-slate-900">
                                 4. Geospatial Localization
                               </h4>
-                              <p className="text-[11px] text-slate-500 mt-0.5">
-                                Mapping detections to geographic coordinates.
+                              <p className="text-[10px] text-slate-500">
+                                Converting pixel positions to WGS84 geographic coordinates.
                               </p>
                             </div>
                           </div>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
-                            {isProcessingComplete || activeStage >= 4 ? 'Completed 00:00:20' : 'Pending --:--'}
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
+                            {isProcessingComplete || activeStage >= 4 ? '00:00:20' : 'Pending'}
                           </span>
                         </div>
 
                         {/* 5. Generating Results */}
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start justify-between">
-                          <div className="flex items-start space-x-3">
+                        <div className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 flex items-start justify-between">
+                          <div className="flex items-start space-x-2.5">
                             {isProcessingComplete || activeStage >= 5 ? (
-                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             ) : (
-                              <div className="w-5 h-5 rounded-full border-2 border-slate-300 shrink-0 mt-0.5"></div>
+                              <div className="w-4 h-4 rounded-full border-2 border-slate-300 shrink-0 mt-0.5"></div>
                             )}
                             <div>
                               <h4 className="text-xs font-bold text-slate-900">
                                 5. Generating Results
                               </h4>
-                              <p className="text-[11px] text-slate-500 mt-0.5">
-                                Compiling analysis results and visualizations.
+                              <p className="text-[10px] text-slate-500">
+                                Compiling analysis results and shadow verification geometry.
                               </p>
                             </div>
                           </div>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
-                            {isProcessingComplete || activeStage >= 5 ? 'Completed 00:00:08' : 'Pending --:--'}
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
+                            {isProcessingComplete || activeStage >= 5 ? '00:00:08' : 'Pending'}
                           </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Bottom Alert and Cancel */}
-                    <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-                      <div className="flex items-start space-x-2 text-[11px] text-slate-500 leading-tight">
-                        <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                    <div className="pt-2.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2">
+                      <div className="flex items-center space-x-1.5 text-[10px] text-slate-500 leading-tight">
+                        <Info className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span>
-                          Please keep this page open. Processing may take a few minutes. You will be automatically redirected once complete.
+                          Please keep this page open. Processing runs in high-priority GPU batch mode.
                         </span>
                       </div>
 
                       {isProcessingComplete ? (
                         <button
                           onClick={() => setNewSurveyStep(4)}
-                          className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors shrink-0 flex items-center space-x-1.5 cursor-pointer"
+                          className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors shrink-0 flex items-center space-x-1 cursor-pointer"
                         >
                           <span>View Results</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-3.5 h-3.5" />
                         </button>
                       ) : (
                         <button
                           onClick={() => setNewSurveyStep(2)}
-                          className="px-4 py-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs shadow-xs transition-colors shrink-0 flex items-center space-x-1.5 cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs shadow-xs transition-colors shrink-0 flex items-center space-x-1 cursor-pointer"
                         >
-                          <StopCircle className="w-4 h-4" />
-                          <span>Cancel Processing</span>
+                          <StopCircle className="w-3.5 h-3.5" />
+                          <span>Cancel</span>
                         </button>
                       )}
                     </div>
                   </div>
 
                   {/* Right Column (5 cols): Current Image Scanning & Live Statistics */}
-                  <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4 flex flex-col justify-between">
+                  <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                      <div className="flex items-center justify-between mb-2">
+                        <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Current Image
                         </h2>
-                        <span className="text-xs font-mono font-bold text-slate-500">
+                        <span className="text-[11px] font-mono font-bold text-slate-500">
                           {isProcessingComplete ? '5 / 5' : '3 / 5'}
                         </span>
                       </div>
 
                       {/* Active Sonar Waterfall Box with Scanning Laser HUD */}
-                      <div className="relative rounded-xl overflow-hidden border border-slate-300 bg-black aspect-4/3">
+                      <div className="relative rounded-lg overflow-hidden border border-slate-300 bg-black aspect-16/10 max-h-40">
                         <img
                           src="/sonar-tile-3.jpg"
                           alt="Current active sonar frame"
@@ -1707,13 +1705,13 @@ export const NaadvedhDashboard: React.FC = () => {
                         )}
 
                         {/* Top HUD badge */}
-                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 text-cyan-400 font-mono text-[10px] border border-cyan-500/30 flex items-center space-x-1.5">
+                        <div className="absolute top-1.5 left-1.5 px-1.5 py-0.2 rounded bg-black/70 text-cyan-400 font-mono text-[9px] border border-cyan-500/30 flex items-center space-x-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                          <span>YOLOv12 SSS SCANNER</span>
+                          <span>YOLOv12 SSS</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mt-2">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mt-1.5">
                         <span className="font-bold text-slate-800">sonar_003.tif</span>
                         <span className="text-blue-600 font-bold">
                           {isProcessingComplete ? 'Complete' : 'Processing...'}
@@ -1722,36 +1720,36 @@ export const NaadvedhDashboard: React.FC = () => {
                     </div>
 
                     {/* Live Statistics */}
-                    <div className="pt-4 border-t border-slate-100 space-y-3">
-                      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
+                    <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                      <h4 className="text-[10.5px] font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
                         Live Statistics
                       </h4>
 
-                      <div className="space-y-2 text-xs">
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-slate-500 flex items-center space-x-2">
-                            <FileText className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Images Processed</span>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex items-center justify-between py-0.5 border-b border-slate-50">
+                          <span className="text-slate-500 flex items-center space-x-1.5">
+                            <FileText className="w-3 h-3 text-slate-400" />
+                            <span className="text-[11px]">Images Processed</span>
                           </span>
-                          <span className="font-bold font-mono text-slate-900">
+                          <span className="font-bold font-mono text-slate-900 text-xs">
                             {isProcessingComplete ? '5 / 5' : '3 / 5'}
                           </span>
                         </div>
 
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-slate-500 flex items-center space-x-2">
-                            <Crosshair className="w-3.5 h-3.5 text-purple-600" />
-                            <span>Potential Detections</span>
+                        <div className="flex items-center justify-between py-0.5 border-b border-slate-50">
+                          <span className="text-slate-500 flex items-center space-x-1.5">
+                            <Crosshair className="w-3 h-3 text-purple-600" />
+                            <span className="text-[11px]">Potential Detections</span>
                           </span>
-                          <span className="font-bold font-mono text-purple-600">12</span>
+                          <span className="font-bold font-mono text-purple-600 text-xs">12</span>
                         </div>
 
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-slate-500 flex items-center space-x-2">
-                            <Clock className="w-3.5 h-3.5 text-blue-600" />
-                            <span>Elapsed Time</span>
+                        <div className="flex items-center justify-between py-0.5 border-b border-slate-50">
+                          <span className="text-slate-500 flex items-center space-x-1.5">
+                            <Clock className="w-3 h-3 text-blue-600" />
+                            <span className="text-[11px]">Elapsed Time</span>
                           </span>
-                          <span className="font-bold font-mono text-slate-900">
+                          <span className="font-bold font-mono text-slate-900 text-xs">
                             {Math.floor(elapsedSeconds / 60)
                               .toString()
                               .padStart(2, '0')}
@@ -1759,13 +1757,13 @@ export const NaadvedhDashboard: React.FC = () => {
                           </span>
                         </div>
 
-                        <div className="flex items-center justify-between py-1">
-                          <span className="text-slate-500 flex items-center space-x-2">
-                            <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>Processing Speed</span>
+                        <div className="flex items-center justify-between py-0.5">
+                          <span className="text-slate-500 flex items-center space-x-1.5">
+                            <Activity className="w-3 h-3 text-emerald-600" />
+                            <span className="text-[11px]">Processing Speed</span>
                           </span>
-                          <span className="font-bold font-mono text-emerald-600">
-                            ~ 6.2 sec/image
+                          <span className="font-bold font-mono text-emerald-600 text-xs">
+                            ~ 6.2 sec/img
                           </span>
                         </div>
                       </div>
@@ -1779,59 +1777,59 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* STEP 4: RESULTS / ANALYSIS STUDIO (Image 5 Minimalist Style) */}
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 4 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
                   {/* Left Column (5 cols): Upload SSS Image & Survey Position */}
-                  <div className="lg:col-span-5 space-y-6">
+                  <div className="lg:col-span-5 space-y-3">
                     {/* Upload SSS image card */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 space-y-3">
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-2">
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Upload SSS image
                         </h3>
-                        <p className="text-[11px] text-slate-500">
+                        <p className="text-[10.5px] text-slate-500">
                           PNG, JPEG, TIFF, or BMP survey frame
                         </p>
                       </div>
 
                       <div
                         onClick={() => setNewSurveyStep(2)}
-                        className="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition-all cursor-pointer space-y-1.5"
+                        className="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-lg p-3 text-center bg-slate-50/50 hover:bg-blue-50/20 transition-all cursor-pointer space-y-1"
                       >
-                        <UploadCloud className="w-8 h-8 text-blue-600 mx-auto" />
+                        <UploadCloud className="w-6 h-6 text-blue-600 mx-auto" />
                         <div className="text-xs font-bold text-slate-800">
                           Drop an SSS image here, or click to browse
                         </div>
-                        <p className="text-[10px] text-slate-400 font-mono">
-                          PNG, JPEG, TIFF, or BMP &bull; up to 25.00 MB
+                        <p className="text-[9.5px] text-slate-400 font-mono">
+                          PNG, JPEG, TIFF, or BMP &bull; up to 25 MB
                         </p>
                       </div>
                     </div>
 
                     {/* Survey Position mini map card */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 space-y-3">
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-2">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Survey position
                         </h3>
-                        <span className="text-[10px] font-mono text-slate-500">
+                        <span className="text-[9.5px] font-mono text-slate-500">
                           {selectedDetection.lat}, {selectedDetection.lng}
                         </span>
                       </div>
 
-                      <div className="relative h-44 rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+                      <div className="relative h-28 sm:h-32 rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
                         <img
                           src="/sonar-tile-2.jpg"
                           alt="Survey position bathymetry"
                           className="w-full h-full object-cover opacity-70"
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-5 h-5 rounded-full bg-blue-600 border-2 border-white shadow-md flex items-center justify-center">
-                            <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                          <div className="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-md flex items-center justify-center">
+                            <div className="w-1 h-1 rounded-full bg-white"></div>
                           </div>
                         </div>
-                        <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-white/90 text-[10px] font-mono text-slate-700 shadow-xs">
-                          Visakhapatnam / Goa Coast
+                        <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.2 rounded bg-white/90 text-[9px] font-mono text-slate-700 shadow-2xs">
+                          Goa / Maharashtra Coast
                         </div>
                       </div>
                     </div>
@@ -1845,19 +1843,19 @@ export const NaadvedhDashboard: React.FC = () => {
                   </div>
 
                   {/* Right Column (7 cols): Detection Results Viewport */}
-                  <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-5">
+                  <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5">
                     {/* Header Action Bar */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
                             Detection results
                           </h3>
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                            {detections.length} objects detected
+                            {detections.length} objects
                           </span>
                         </div>
-                        <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                        <p className="text-[10.5px] font-mono text-slate-400 mt-0.5">
                           {selectedFiles[0]?.name || 'a-try-1.jpeg'} &bull; 05 Sep 2026 at 12:08 PM
                         </p>
                       </div>
@@ -1865,27 +1863,27 @@ export const NaadvedhDashboard: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={handleExportCSV}
-                          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer"
+                          className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
                         >
-                          <Download className="w-3.5 h-3.5 text-slate-500" />
-                          <span>Download image report</span>
+                          <Download className="w-3 h-3 text-slate-500" />
+                          <span>Report</span>
                         </button>
 
                         <button
                           onClick={() => window.print()}
-                          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs cursor-pointer"
+                          className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold shadow-xs cursor-pointer"
                         >
-                          <Printer className="w-3.5 h-3.5" />
-                          <span>Print / Save PDF</span>
+                          <Printer className="w-3 h-3" />
+                          <span>Print</span>
                         </button>
                       </div>
                     </div>
 
                     {/* View Switcher: Detected image vs Original image */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <button
                         onClick={() => setAnalysisViewMode('detected')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'detected'
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'detected'
                           ? 'bg-blue-50 text-blue-700 border border-blue-200'
                           : 'text-slate-600 hover:bg-slate-100 border border-transparent'
                           }`}
@@ -1894,7 +1892,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </button>
                       <button
                         onClick={() => setAnalysisViewMode('original')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'original'
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'original'
                           ? 'bg-blue-50 text-blue-700 border border-blue-200'
                           : 'text-slate-600 hover:bg-slate-100 border border-transparent'
                           }`}
@@ -1904,7 +1902,7 @@ export const NaadvedhDashboard: React.FC = () => {
                     </div>
 
                     {/* Main Sonar Viewport with Interactive Bounding Box */}
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-300 bg-black aspect-16/10">
+                    <div className="relative rounded-xl overflow-hidden border border-slate-300 bg-black aspect-16/9 max-h-[320px]">
                       <img
                         src="/sonar-tile-3.jpg"
                         alt="Acoustic detection inspection"
@@ -1922,7 +1920,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               }`}
                             style={{ top: '24%', left: '46%', width: '22%', height: '34%' }}
                           >
-                            <span className="absolute -top-6 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500 text-white shadow-xs">
+                            <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-500 text-white shadow-xs">
                               1. Sunken Container &bull; 88%
                             </span>
                           </div>
@@ -1935,7 +1933,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               }`}
                             style={{ top: '65%', left: '20%', width: '18%', height: '22%' }}
                           >
-                            <span className="absolute -top-6 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500 text-white shadow-xs">
+                            <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-500 text-white shadow-xs">
                               2. Ghost Net &bull; 93%
                             </span>
                           </div>
@@ -1944,35 +1942,35 @@ export const NaadvedhDashboard: React.FC = () => {
 
                       {/* Acoustic Nadir Line indicator */}
                       <div className="absolute top-0 bottom-0 left-12 w-0.5 bg-cyan-400/40 border-r border-dashed border-cyan-200/50"></div>
-                      <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 text-cyan-300 font-mono text-[9.5px]">
+                      <div className="absolute bottom-2 left-2 px-1.5 py-0.2 rounded bg-black/70 text-cyan-300 font-mono text-[9px]">
                         NADIR TRACK &bull; SSS 900 kHz
                       </div>
                     </div>
 
                     {/* Detected Object Details Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
                       {detections.map(d => (
                         <div
                           key={d.id}
                           onClick={() => setSelectedDetectionId(d.id)}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer ${selectedDetectionId === d.id
-                            ? 'bg-blue-50/50 border-blue-300 shadow-xs'
+                          className={`p-2 rounded-lg border transition-all cursor-pointer ${selectedDetectionId === d.id
+                            ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
                             : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                             }`}
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-mono font-bold text-slate-500">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[9.5px] font-mono font-bold text-slate-500">
                               {d.id}
                             </span>
                             <span
-                              className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded"
+                              className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded"
                               style={{ color: d.color, backgroundColor: `${d.color}15` }}
                             >
                               {d.confidence}%
                             </span>
                           </div>
                           <h4 className="text-xs font-bold text-slate-900 truncate">{d.type}</h4>
-                          <p className="text-[10.5px] text-slate-500 truncate mt-0.5">{d.lat}</p>
+                          <p className="text-[10px] text-slate-500 truncate">{d.lat}</p>
                         </div>
                       ))}
                     </div>
@@ -1987,10 +1985,10 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN: FULL MAP VIEW */}
         {/* ========================================================= */}
         {currentScreen === 'map' && (
-          <main className="p-6 sm:p-8 space-y-4 max-w-7xl mx-auto w-full flex-1 flex flex-col">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-2.5 max-w-7xl mx-auto w-full flex-1 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
                   Geospatial Map View
                 </h1>
                 <p className="text-xs text-slate-500">
@@ -2003,13 +2001,13 @@ export const NaadvedhDashboard: React.FC = () => {
                   setCurrentScreen('new-survey');
                   setNewSurveyStep(1);
                 }}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer"
               >
                 + New Survey
               </button>
             </div>
 
-            <div className="flex-1 min-h-[500px] rounded-2xl overflow-hidden border border-slate-200 shadow-xs relative">
+            <div className="flex-1 min-h-[380px] sm:min-h-[440px] max-h-[calc(100vh-140px)] rounded-xl overflow-hidden border border-slate-200 shadow-xs relative">
               <div ref={fullMapRef} className="w-full h-full z-0"></div>
             </div>
           </main>
@@ -2019,10 +2017,10 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN: SURVEYS LIST */}
         {/* ========================================================= */}
         {currentScreen === 'surveys' && (
-          <main className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-3.5 max-w-7xl mx-auto w-full">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
                   Survey Catalog
                 </h1>
                 <p className="text-xs text-slate-500">
@@ -2034,36 +2032,36 @@ export const NaadvedhDashboard: React.FC = () => {
                   setCurrentScreen('new-survey');
                   setNewSurveyStep(1);
                 }}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer"
               >
                 + Ingest New Survey
               </button>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 font-mono text-slate-600 uppercase text-[10px]">
                   <tr>
-                    <th className="p-4">Survey Name</th>
-                    <th className="p-4">Location</th>
-                    <th className="p-4">Date</th>
-                    <th className="p-4">Images</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4 text-right">Actions</th>
+                    <th className="py-2.5 px-3.5">Survey Name</th>
+                    <th className="py-2.5 px-3.5">Location</th>
+                    <th className="py-2.5 px-3.5">Date</th>
+                    <th className="py-2.5 px-3.5">Images</th>
+                    <th className="py-2.5 px-3.5">Status</th>
+                    <th className="py-2.5 px-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   <tr className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900">Arabian Sea Survey</td>
-                    <td className="p-4 text-slate-600">Maharashtra Shelf</td>
-                    <td className="p-4 font-mono text-slate-500">23 Sep 2025</td>
-                    <td className="p-4 font-mono text-slate-600">24 images</td>
-                    <td className="p-4">
+                    <td className="py-2.5 px-3.5 font-bold text-slate-900">Arabian Sea Survey</td>
+                    <td className="py-2.5 px-3.5 text-slate-600">Maharashtra Shelf</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-500">23 Sep 2025</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-600">24 images</td>
+                    <td className="py-2.5 px-3.5">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Completed
                       </span>
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="py-2.5 px-3.5 text-right">
                       <button
                         onClick={() => {
                           setCurrentScreen('new-survey');
@@ -2076,16 +2074,16 @@ export const NaadvedhDashboard: React.FC = () => {
                     </td>
                   </tr>
                   <tr className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900">Mumbai Coast Survey</td>
-                    <td className="p-4 text-slate-600">Offshore Channel</td>
-                    <td className="p-4 font-mono text-slate-500">20 Sep 2025</td>
-                    <td className="p-4 font-mono text-slate-600">18 images</td>
-                    <td className="p-4">
+                    <td className="py-2.5 px-3.5 font-bold text-slate-900">Mumbai Coast Survey</td>
+                    <td className="py-2.5 px-3.5 text-slate-600">Offshore Channel</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-500">20 Sep 2025</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-600">18 images</td>
+                    <td className="py-2.5 px-3.5">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-sky-50 text-sky-700 border border-sky-200">
                         Processing
                       </span>
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="py-2.5 px-3.5 text-right">
                       <button
                         onClick={() => {
                           setCurrentScreen('new-survey');
@@ -2098,16 +2096,16 @@ export const NaadvedhDashboard: React.FC = () => {
                     </td>
                   </tr>
                   <tr className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900">Goa Patch Survey</td>
-                    <td className="p-4 text-slate-600">Mormugao Port Approach</td>
-                    <td className="p-4 font-mono text-slate-500">18 Sep 2025</td>
-                    <td className="p-4 font-mono text-slate-600">32 images</td>
-                    <td className="p-4">
+                    <td className="py-2.5 px-3.5 font-bold text-slate-900">Goa Patch Survey</td>
+                    <td className="py-2.5 px-3.5 text-slate-600">Mormugao Port Approach</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-500">18 Sep 2025</td>
+                    <td className="py-2.5 px-3.5 font-mono text-slate-600">32 images</td>
+                    <td className="py-2.5 px-3.5">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Completed
                       </span>
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="py-2.5 px-3.5 text-right">
                       <button
                         onClick={() => {
                           setCurrentScreen('new-survey');
@@ -2129,9 +2127,9 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN: SETTINGS */}
         {/* ========================================================= */}
         {currentScreen === 'settings' && (
-          <main className="p-6 sm:p-8 space-y-6 max-w-3xl mx-auto w-full">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-3.5 max-w-3xl mx-auto w-full">
             <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+              <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
                 System &amp; Pipeline Settings
               </h1>
               <p className="text-xs text-slate-500">
@@ -2139,9 +2137,9 @@ export const NaadvedhDashboard: React.FC = () => {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-5 text-xs">
+            <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 space-y-3.5 text-xs">
               <div>
-                <label className="block font-mono font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
                   AI Model Confidence Threshold: 75%
                 </label>
                 <input
@@ -2153,7 +2151,7 @@ export const NaadvedhDashboard: React.FC = () => {
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <div className="font-bold text-slate-900">Acoustic Shadow Verification Filter</div>
                   <div className="text-slate-500 text-[11px]">
@@ -2163,7 +2161,7 @@ export const NaadvedhDashboard: React.FC = () => {
                 <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <div className="font-bold text-slate-900">Cloudflare R2 Object Storage</div>
                   <div className="text-slate-500 text-[11px]">Connected: vainateya-sonar-swaths</div>
