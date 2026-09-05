@@ -1300,14 +1300,6 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* ========================================================= */}
         {currentScreen === 'new-survey' && (
           <main className="p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl mx-auto w-full">
-            {/* Top Back link */}
-            <button
-              onClick={() => setCurrentScreen('dashboard')}
-              className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
-            >
-              <span>&larr; Back to Dashboard</span>
-            </button>
-
             {/* Title & Subtitle */}
             <div>
               <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
@@ -2137,33 +2129,8 @@ export const NaadvedhDashboard: React.FC = () => {
             {newSurveyStep === 4 && (
               <div className="space-y-3">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
-                  {/* Left Column (5 cols): Upload SSS Image & Survey Position */}
+                  {/* Left Column (5 cols): Survey Position & Shadow Verification */}
                   <div className="lg:col-span-5 space-y-3">
-                    {/* Upload SSS image card */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-2">
-                      <div>
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                          Upload SSS image
-                        </h3>
-                        <p className="text-[10.5px] text-slate-500">
-                          PNG, JPEG, TIFF, or BMP survey frame
-                        </p>
-                      </div>
-
-                      <div
-                        onClick={() => setNewSurveyStep(2)}
-                        className="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-lg p-3 text-center bg-slate-50/50 hover:bg-blue-50/20 transition-all cursor-pointer space-y-1"
-                      >
-                        <UploadCloud className="w-6 h-6 text-blue-600 mx-auto" />
-                        <div className="text-xs font-bold text-slate-800">
-                          Drop an SSS image here, or click to browse
-                        </div>
-                        <p className="text-[9.5px] text-slate-400 font-mono">
-                          PNG, JPEG, TIFF, or BMP &bull; up to 25 MB
-                        </p>
-                      </div>
-                    </div>
-
                     {/* Survey Position mini map card */}
                     <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-2">
                       <div className="flex items-center justify-between">
@@ -2343,7 +2310,7 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 1: DETECTION MAP (Image 1) */}
         {/* ========================================================= */}
         {currentScreen === 'map' && (
-          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full">
             {/* Header with Survey Selector */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div>
@@ -2647,18 +2614,19 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 2: SURVEY REPORT (Image 2) */}
         {/* ========================================================= */}
         {currentScreen === 'reports' && (
-          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
-            {/* Top Navigation & Actions Bar */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => setCurrentScreen('dashboard')}
-                className="text-xs font-bold text-slate-600 hover:text-blue-600 flex items-center space-x-1.5 cursor-pointer transition-colors"
-              >
-                <span>&larr; Back to Dashboard</span>
-              </button>
+          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full">
+            {/* Header: Title on left, Action Buttons aligned on the same line */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div>
+                <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
+                  Survey Report
+                </h1>
+                <p className="text-xs text-slate-500">
+                  Detailed analysis results and insights from your sonar survey.
+                </p>
+              </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setCurrentScreen('map')}
@@ -2677,16 +2645,6 @@ export const NaadvedhDashboard: React.FC = () => {
                   <span>Download Report</span>
                 </button>
               </div>
-            </div>
-
-            {/* Title */}
-            <div>
-              <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
-                Survey Report
-              </h1>
-              <p className="text-xs text-slate-500">
-                Detailed analysis results and insights from your sonar survey.
-              </p>
             </div>
 
             {/* Survey Overview Card */}
@@ -2950,7 +2908,7 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 3: SURVEY HISTORY (Image 3) */}
         {/* ========================================================= */}
         {currentScreen === 'surveys' && (
-          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
@@ -3236,7 +3194,7 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 4: SETTINGS (Image 4) */}
         {/* ========================================================= */}
         {currentScreen === 'settings' && (
-          <main className="p-3 sm:p-4 lg:p-4 space-y-2.5 max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+          <main className="p-3.5 sm:p-4 lg:p-5 space-y-4 max-w-7xl mx-auto w-full">
             {/* Header */}
             <div>
               <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 font-['Space_Grotesk']">
@@ -3285,7 +3243,7 @@ export const NaadvedhDashboard: React.FC = () => {
               </div>
 
               {/* Right Column (8 cols): Settings Form Card */}
-              <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3">
+              <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3 min-h-[380px]">
                 {settingsTab === 'profile' && (
                   <div className="space-y-3">
                     {/* Card Header */}
