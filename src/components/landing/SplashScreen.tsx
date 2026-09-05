@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 interface SplashScreenProps {
   onComplete?: () => void;
-  duration?: number; // total duration in ms, default 5000ms
+  duration?: number; // total duration in ms, default 3500ms
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({
   onComplete,
-  duration = 5000,
+  duration = 3500,
 }) => {
   // Fade out starts 600ms before completion
   const [isFadingOut, setIsFadingOut] = useState(false);
