@@ -47,8 +47,15 @@ import {
   Waves,
   MoreHorizontal
 } from 'lucide-react';
-import { ShadowGeometryCard } from './ShadowGeometryCard';
-import type { DebrisDetection } from '../../types';
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  category: 'alert' | 'success' | 'info';
+}
 
 export type DashboardScreen = 'dashboard' | 'new-survey' | 'surveys' | 'map' | 'reports' | 'settings';
 
@@ -370,8 +377,37 @@ export const surveyCatalogData: SurveyCatalogItem[] = [
   },
 ];
 
+const initialNotifications: NotificationItem[] = [
+  {
+    id: 'notif-1',
+    title: 'High Priority Anomaly Flagged',
+    message: 'Pipeline/Pipe detected in Arabian Sea with 87.1% confidence.',
+    timestamp: '10m ago',
+    read: false,
+    category: 'alert',
+  },
+  {
+    id: 'notif-2',
+    title: 'Sonar Swath Batch Processed',
+    message: '5 raw side-scan sonar image frames analyzed successfully.',
+    timestamp: '45m ago',
+    read: false,
+    category: 'success',
+  },
+  {
+    id: 'notif-3',
+    title: 'Cloudflare R2 Synchronized',
+    message: 'Uploaded survey files securely mirrored to object storage.',
+    timestamp: '2h ago',
+    read: true,
+    category: 'info',
+  },
+];
+
 export const NaadvedhDashboard: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<DashboardScreen>('dashboard');
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
+  const [notificationsList, setNotificationsList] = useState<NotificationItem[]>(initialNotifications);
   const [newSurveyStep, setNewSurveyStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Survey Details State
@@ -428,25 +464,7 @@ export const NaadvedhDashboard: React.FC = () => {
   const reportMapRef = useRef<HTMLDivElement | null>(null);
   const reportMapInstance = useRef<L.Map | null>(null);
 
-  const selectedDetection = detections.find(d => d.id === selectedDetectionId) || detections[0];
   const selectedCatalogSurvey = surveyCatalogData.find(s => s.id === selectedCatalogSurveyId) || surveyCatalogData[0];
-
-  // Active Debris Detection for Shadow Geometry
-  const activeDebrisDetection: DebrisDetection = {
-    id: selectedDetection.id,
-    name: selectedDetection.type,
-    category: selectedDetection.type === 'Fishing Gear' ? 'ghost_net' : 'cargo_container',
-    confidence: selectedDetection.confidence,
-    bbox: { x: 46, y: 24, width: 22, height: 34 },
-    coordinates: { lat: 15.1234, lng: 73.5432 },
-    depthMeters: 28.5,
-    shadowLengthMeters: selectedDetection.shadowLengthMeters,
-    estimatedHeightMeters: selectedDetection.estimatedHeightMeters,
-    acousticShadowVerified: true,
-    severity: 'high',
-    timestamp: '2025-09-23T14:32:00Z',
-    materialComposition: selectedDetection.type === 'Fishing Gear' ? 'Synthetic Polymer Netting' : 'High-density Steel Alloy',
-  };
 
   // Timer for live processing simulation
   useEffect(() => {
@@ -875,14 +893,137 @@ export const NaadvedhDashboard: React.FC = () => {
 
           {/* Right Header: Notification Bell & Profile Avatar */}
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <button
-              type="button"
-              className="relative p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-              title="Notifications"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-600 ring-2 ring-white"></span>
-            </button>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                className="relative p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                {notificationsList.some(n => !n.read) && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                )}
+              </button>
+
+              {/* Notification Popover Dropdown */}
+              {isNotificationsOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsNotificationsOpen(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl border border-slate-200/90 shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                    {/* Header */}
+                    <div className="p-3 sm:p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                          Notifications
+                        </span>
+                        {notificationsList.filter(n => !n.read).length > 0 && (
+                          <span className="px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 text-[10px] font-mono font-bold">
+                            {notificationsList.filter(n => !n.read).length} new
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center space-x-2 text-[10.5px]">
+                        {notificationsList.length > 0 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => setNotificationsList(prev => prev.map(n => ({ ...n, read: true })))}
+                              className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+                            >
+                              Mark read
+                            </button>
+                            <span className="text-slate-300">&bull;</span>
+                            <button
+                              type="button"
+                              onClick={() => setNotificationsList([])}
+                              className="text-slate-400 hover:text-rose-600 font-semibold cursor-pointer"
+                            >
+                              Clear all
+                            </button>
+                          </>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
+                      {notificationsList.length > 0 ? (
+                        notificationsList.map(notif => (
+                          <div
+                            key={notif.id}
+                            onClick={() => {
+                              setNotificationsList(prev =>
+                                prev.map(n => n.id === notif.id ? { ...n, read: true } : n)
+                              );
+                            }}
+                            className={`p-3 transition-colors cursor-pointer flex items-start space-x-2.5 ${notif.read ? 'bg-white hover:bg-slate-50/70' : 'bg-blue-50/30 hover:bg-blue-50/60'
+                              }`}
+                          >
+                            <div className="mt-0.5 shrink-0">
+                              {notif.category === 'alert' && (
+                                <div className="w-6 h-6 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
+                                  <AlertTriangle className="w-3.5 h-3.5" />
+                                </div>
+                              )}
+                              {notif.category === 'success' && (
+                                <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                </div>
+                              )}
+                              {notif.category === 'info' && (
+                                <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
+                                  <Info className="w-3.5 h-3.5" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1">
+                                <span className={`text-xs truncate ${notif.read ? 'font-medium text-slate-800' : 'font-bold text-slate-900'}`}>
+                                  {notif.title}
+                                </span>
+                                <span className="text-[9.5px] font-mono text-slate-400 shrink-0">
+                                  {notif.timestamp}
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-500 leading-snug mt-0.5 line-clamp-2">
+                                {notif.message}
+                              </p>
+                            </div>
+
+                            {!notif.read && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 shrink-0"></span>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="py-8 px-4 text-center space-y-2">
+                          <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                            <Bell className="w-5 h-5" />
+                          </div>
+                          <p className="text-xs font-bold text-slate-700">No notifications</p>
+                          <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
+                            You're all caught up with your marine surveys and debris detection alerts.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setNotificationsList(initialNotifications)}
+                            className="text-[10.5px] font-bold text-blue-600 hover:text-blue-700 underline mt-1 cursor-pointer"
+                          >
+                            Reset sample notifications
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="flex items-center space-x-2.5 pl-3 border-l border-slate-200 cursor-pointer group">
               <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -1407,91 +1548,89 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 1 && (
               <div className="space-y-3">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-                  {/* Left Box: Survey Information */}
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2.5">
-                      <div>
-                        <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                          Survey Information
-                        </h2>
-                        <p className="text-[11px] text-slate-500">
-                          Provide basic details about the survey.
-                        </p>
-                      </div>
+                {/* Survey Information Card */}
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 sm:p-5 space-y-3.5">
+                  <div>
+                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                      Survey Information
+                    </h2>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Provide basic details about the survey before uploading sonar data in the next step.
+                    </p>
+                  </div>
 
-                      {/* Survey Name */}
+                  <div className="space-y-3">
+                    {/* Survey Name */}
+                    <div>
+                      <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Survey Name <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={surveyName}
+                        onChange={e => setSurveyName(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                      />
+                    </div>
+
+                    {/* Survey Date & Survey Area */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       <div>
                         <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
-                          Survey Name <span className="text-rose-500">*</span>
+                          Survey Date <span className="text-rose-500">*</span>
                         </label>
-                        <input
-                          type="text"
-                          value={surveyName}
-                          onChange={e => setSurveyName(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-                        />
-                      </div>
-
-                      {/* Survey Date & Survey Area */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <div>
-                          <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            Survey Date <span className="text-rose-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                              type="date"
-                              value={surveyDate}
-                              onChange={e => setSurveyDate(e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-mono"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            Survey Area / Location
-                          </label>
-                          <div className="relative">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                              type="text"
-                              value={surveyLocation}
-                              onChange={e => setSurveyLocation(e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-7 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all"
-                            />
-                            {surveyLocation && (
-                              <button
-                                onClick={() => setSurveyLocation('')}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            )}
-                          </div>
+                        <div className="relative">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="date"
+                            value={surveyDate}
+                            onChange={e => setSurveyDate(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-mono"
+                          />
                         </div>
                       </div>
 
-                      {/* Description */}
                       <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
-                            Description (Optional)
-                          </label>
-                          <span className="text-[10px] font-mono text-slate-400">
-                            {surveyDescription.length}/500
-                          </span>
+                        <label className="block text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          Survey Area / Location
+                        </label>
+                        <div className="relative">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={surveyLocation}
+                            onChange={e => setSurveyLocation(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-7 py-1.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-blue-500 transition-all"
+                          />
+                          {surveyLocation && (
+                            <button
+                              onClick={() => setSurveyLocation('')}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          )}
                         </div>
-                        <textarea
-                          rows={2}
-                          value={surveyDescription}
-                          maxLength={500}
-                          onChange={e => setSurveyDescription(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-all leading-relaxed"
-                        />
                       </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
+                          Description (Optional)
+                        </label>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          {surveyDescription.length}/500
+                        </span>
+                      </div>
+                      <textarea
+                        rows={2}
+                        value={surveyDescription}
+                        maxLength={500}
+                        onChange={e => setSurveyDescription(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 transition-all leading-relaxed"
+                      />
                     </div>
 
                     {/* Why these details note */}
@@ -1500,101 +1639,8 @@ export const NaadvedhDashboard: React.FC = () => {
                       <div>
                         <h5 className="text-[11px] font-bold text-blue-900 leading-tight">Why these details?</h5>
                         <p className="text-[10.5px] text-blue-700/90 leading-normal mt-0.5">
-                          Survey information helps in organizing data, mapping detections, and generating accurate reports.
+                          Survey information helps in organizing data, mapping detections, and generating accurate reports. You will upload side-scan sonar data in the next step.
                         </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Box: Upload Side-Scan Sonar Data */}
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                            Upload Side-Scan Sonar Data
-                          </h2>
-                          <p className="text-[11px] text-slate-500">
-                            Upload one or multiple sonar image files for analysis.
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setIsSupportedFormatsModalOpen(true)}
-                          className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9.5px] font-mono bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition-colors cursor-pointer"
-                        >
-                          <Info className="w-3 h-3 text-blue-600" />
-                          <span>Supported Formats</span>
-                        </button>
-                      </div>
-
-                      {/* Dropzone Box */}
-                      <div
-                        onClick={handleAddFiles}
-                        className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-xl p-3.5 text-center bg-blue-50/20 hover:bg-blue-50/40 transition-all cursor-pointer space-y-1"
-                      >
-                        <div className="w-9 h-9 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto">
-                          <UploadCloud className="w-4 h-4" />
-                        </div>
-                        <div className="text-xs font-bold text-slate-800">
-                          Drag &amp; drop sonar images here
-                        </div>
-                        <div className="text-[10px] text-slate-400">or</div>
-                        <button
-                          type="button"
-                          className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
-                        >
-                          Browse Files
-                        </button>
-                        <p className="text-[10px] font-mono text-slate-400 pt-0.5">
-                          PNG, JPEG, TIFF, or BMP &bull; Up to 25 MB per file &bull; Multiple files allowed
-                        </p>
-                      </div>
-
-                      {/* Selected Files List */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[11px] font-mono font-bold text-slate-700 uppercase tracking-wider">
-                            Selected Files ({selectedFiles.length})
-                          </span>
-                          {selectedFiles.length > 0 && (
-                            <button
-                              onClick={() => setSelectedFiles([])}
-                              className="text-[11px] font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
-                            >
-                              Clear All
-                            </button>
-                          )}
-                        </div>
-
-                        <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                          {selectedFiles.map((file, idx) => (
-                            <div
-                              key={idx}
-                              className="p-1.5 px-2.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-50 flex items-center justify-between text-xs"
-                            >
-                              <div className="flex items-center space-x-2 min-w-0">
-                                <div className="p-1 rounded bg-blue-50 text-blue-600 shrink-0">
-                                  <ImageIcon className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="font-bold text-slate-900 truncate font-mono text-[11px]">
-                                    {file.name}
-                                  </div>
-                                  <div className="text-[9.5px] text-slate-400 font-mono">
-                                    {file.size}
-                                  </div>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() => handleRemoveFile(idx)}
-                                className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -2128,177 +2174,137 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* ------------------------------------------------------------- */}
             {newSurveyStep === 4 && (
               <div className="space-y-3">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
-                  {/* Left Column (5 cols): Survey Position & Shadow Verification */}
-                  <div className="lg:col-span-5 space-y-3">
-                    {/* Survey Position mini map card */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                          Survey position
+                {/* Detection Results Viewport */}
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5">
+                  {/* Header Action Bar */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                          Detection results
                         </h3>
-                        <span className="text-[9.5px] font-mono text-slate-500">
-                          {selectedDetection.lat}, {selectedDetection.lng}
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          {detections.length} objects
                         </span>
                       </div>
-
-                      <div className="relative h-28 sm:h-32 rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
-                        <img
-                          src="/sonar-tile-2.jpg"
-                          alt="Survey position bathymetry"
-                          className="w-full h-full object-cover opacity-70"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-md flex items-center justify-center">
-                            <div className="w-1 h-1 rounded-full bg-white"></div>
-                          </div>
-                        </div>
-                        <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.2 rounded bg-white/90 text-[9px] font-mono text-slate-700 shadow-2xs">
-                          Goa / Maharashtra Coast
-                        </div>
-                      </div>
+                      <p className="text-[10.5px] font-mono text-slate-400 mt-0.5">
+                        {selectedFiles[0]?.name || 'a-try-1.jpeg'} &bull; 05 Sep 2026 at 12:08 PM
+                      </p>
                     </div>
 
-                    {/* Shadow Geometry Verification */}
-                    <ShadowGeometryCard
-                      detection={activeDebrisDetection}
-                      sensorAltitude={9.0}
-                      slantRange={45.0}
-                    />
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleExportCSV}
+                        className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
+                      >
+                        <Download className="w-3 h-3 text-slate-500" />
+                        <span>Report</span>
+                      </button>
+
+                      <button
+                        onClick={() => window.print()}
+                        className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold shadow-xs cursor-pointer"
+                      >
+                        <Printer className="w-3 h-3" />
+                        <span>Print</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Right Column (7 cols): Detection Results Viewport */}
-                  <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5">
-                    {/* Header Action Bar */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
-                            Detection results
-                          </h3>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                            {detections.length} objects
+                  {/* View Switcher: Detected image vs Original image */}
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() => setAnalysisViewMode('detected')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'detected'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+                        }`}
+                    >
+                      Detected image
+                    </button>
+                    <button
+                      onClick={() => setAnalysisViewMode('original')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'original'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+                        }`}
+                    >
+                      Original image
+                    </button>
+                  </div>
+
+                  {/* Main Sonar Viewport with Interactive Bounding Box */}
+                  <div className="relative rounded-xl overflow-hidden border border-slate-300 bg-black aspect-16/9 max-h-[320px]">
+                    <img
+                      src="/sonar-tile-3.jpg"
+                      alt="Acoustic detection inspection"
+                      className="w-full h-full object-cover select-none"
+                    />
+
+                    {/* Bounding Box 1: Ghost Net or Container */}
+                    {analysisViewMode === 'detected' && (
+                      <>
+                        <div
+                          onClick={() => setSelectedDetectionId('DET-001')}
+                          className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-001'
+                            ? 'border-cyan-400 bg-cyan-400/10 shadow-[0_0_12px_rgba(34,211,238,0.5)]'
+                            : 'border-blue-500 bg-blue-500/10'
+                            }`}
+                          style={{ top: '24%', left: '46%', width: '22%', height: '34%' }}
+                        >
+                          <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-500 text-white shadow-xs">
+                            1. Sunken Container &bull; 88%
                           </span>
                         </div>
-                        <p className="text-[10.5px] font-mono text-slate-400 mt-0.5">
-                          {selectedFiles[0]?.name || 'a-try-1.jpeg'} &bull; 05 Sep 2026 at 12:08 PM
-                        </p>
-                      </div>
 
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={handleExportCSV}
-                          className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                        >
-                          <Download className="w-3 h-3 text-slate-500" />
-                          <span>Report</span>
-                        </button>
-
-                        <button
-                          onClick={() => window.print()}
-                          className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold shadow-xs cursor-pointer"
-                        >
-                          <Printer className="w-3 h-3" />
-                          <span>Print</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* View Switcher: Detected image vs Original image */}
-                    <div className="flex items-center space-x-1.5">
-                      <button
-                        onClick={() => setAnalysisViewMode('detected')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'detected'
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-                          }`}
-                      >
-                        Detected image
-                      </button>
-                      <button
-                        onClick={() => setAnalysisViewMode('original')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'original'
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-                          }`}
-                      >
-                        Original image
-                      </button>
-                    </div>
-
-                    {/* Main Sonar Viewport with Interactive Bounding Box */}
-                    <div className="relative rounded-xl overflow-hidden border border-slate-300 bg-black aspect-16/9 max-h-[320px]">
-                      <img
-                        src="/sonar-tile-3.jpg"
-                        alt="Acoustic detection inspection"
-                        className="w-full h-full object-cover select-none"
-                      />
-
-                      {/* Bounding Box 1: Ghost Net or Container */}
-                      {analysisViewMode === 'detected' && (
-                        <>
-                          <div
-                            onClick={() => setSelectedDetectionId('DET-001')}
-                            className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-001'
-                              ? 'border-cyan-400 bg-cyan-400/10 shadow-[0_0_12px_rgba(34,211,238,0.5)]'
-                              : 'border-blue-500 bg-blue-500/10'
-                              }`}
-                            style={{ top: '24%', left: '46%', width: '22%', height: '34%' }}
-                          >
-                            <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-500 text-white shadow-xs">
-                              1. Sunken Container &bull; 88%
-                            </span>
-                          </div>
-
-                          <div
-                            onClick={() => setSelectedDetectionId('DET-002')}
-                            className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-002'
-                              ? 'border-rose-400 bg-rose-400/10 shadow-[0_0_12px_rgba(244,63,94,0.5)]'
-                              : 'border-rose-500 bg-rose-500/10'
-                              }`}
-                            style={{ top: '65%', left: '20%', width: '18%', height: '22%' }}
-                          >
-                            <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-500 text-white shadow-xs">
-                              2. Ghost Net &bull; 93%
-                            </span>
-                          </div>
-                        </>
-                      )}
-
-                      {/* Acoustic Nadir Line indicator */}
-                      <div className="absolute top-0 bottom-0 left-12 w-0.5 bg-cyan-400/40 border-r border-dashed border-cyan-200/50"></div>
-                      <div className="absolute bottom-2 left-2 px-1.5 py-0.2 rounded bg-black/70 text-cyan-300 font-mono text-[9px]">
-                        NADIR TRACK &bull; SSS 900 kHz
-                      </div>
-                    </div>
-
-                    {/* Detected Object Details Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-                      {detections.map(d => (
                         <div
-                          key={d.id}
-                          onClick={() => setSelectedDetectionId(d.id)}
-                          className={`p-2 rounded-lg border transition-all cursor-pointer ${selectedDetectionId === d.id
-                            ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
-                            : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                          onClick={() => setSelectedDetectionId('DET-002')}
+                          className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-002'
+                            ? 'border-rose-400 bg-rose-400/10 shadow-[0_0_12px_rgba(244,63,94,0.5)]'
+                            : 'border-rose-500 bg-rose-500/10'
                             }`}
+                          style={{ top: '65%', left: '20%', width: '18%', height: '22%' }}
                         >
-                          <div className="flex items-center justify-between mb-0.5">
-                            <span className="text-[9.5px] font-mono font-bold text-slate-500">
-                              {d.id}
-                            </span>
-                            <span
-                              className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded"
-                              style={{ color: d.color, backgroundColor: `${d.color}15` }}
-                            >
-                              {d.confidence}%
-                            </span>
-                          </div>
-                          <h4 className="text-xs font-bold text-slate-900 truncate">{d.type}</h4>
-                          <p className="text-[10px] text-slate-500 truncate">{d.lat}</p>
+                          <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-500 text-white shadow-xs">
+                            2. Ghost Net &bull; 93%
+                          </span>
                         </div>
-                      ))}
+                      </>
+                    )}
+
+                    {/* Acoustic Nadir Line indicator */}
+                    <div className="absolute top-0 bottom-0 left-12 w-0.5 bg-cyan-400/40 border-r border-dashed border-cyan-200/50"></div>
+                    <div className="absolute bottom-2 left-2 px-1.5 py-0.2 rounded bg-black/70 text-cyan-300 font-mono text-[9px]">
+                      NADIR TRACK &bull; SSS 900 kHz
                     </div>
+                  </div>
+
+                  {/* Detected Object Details Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                    {detections.map(d => (
+                      <div
+                        key={d.id}
+                        onClick={() => setSelectedDetectionId(d.id)}
+                        className={`p-2 rounded-lg border transition-all cursor-pointer ${selectedDetectionId === d.id
+                          ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
+                          : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                          }`}
+                      >
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-[9.5px] font-mono font-bold text-slate-500">
+                            {d.id}
+                          </span>
+                          <span
+                            className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded"
+                            style={{ color: d.color, backgroundColor: `${d.color}15` }}
+                          >
+                            {d.confidence}%
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-900 truncate">{d.type}</h4>
+                        <p className="text-[10px] text-slate-500 truncate">{d.lat}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -3501,155 +3507,158 @@ export const NaadvedhDashboard: React.FC = () => {
       </div>
 
       {/* Report Modal */}
-      {isReportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
-                Generate Survey Report
-              </h3>
-              <button
-                onClick={() => setIsReportModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Export verified detection summaries, GPS coordinates, and acoustic shadow geometry for salvage vessels and research teams.
-            </p>
-
-            <div className="space-y-2 pt-2">
-              <button
-                onClick={() => {
-                  window.print();
-                  setIsReportModalOpen(false);
-                }}
-                className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
-              >
-                <span className="flex items-center space-x-2">
-                  <Printer className="w-4 h-4 text-blue-600" />
-                  <span>Executive PDF Summary</span>
-                </span>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => {
-                  handleExportCSV();
-                  setIsReportModalOpen(false);
-                }}
-                className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
-              >
-                <span className="flex items-center space-x-2">
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                  <span>Raw Detections CSV Table</span>
-                </span>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Supported Formats Modal */}
-      {isSupportedFormatsModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center space-x-2.5">
-                <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
-                  <Info className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
-                    Supported Sonar Image Formats
-                  </h3>
-                  <p className="text-[11px] text-slate-500 font-mono">
-                    Specifications for Side-Scan Sonar (SSS) Batch Ingestion
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsSupportedFormatsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
-                <div className="px-2 py-1 rounded bg-blue-600 text-white font-mono text-[10px] font-bold shrink-0">
-                  TIFF
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 font-mono">GeoTIFF / TIFF (.tif, .tiff)</h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                    Industry standard for uncompressed raw acoustic waterfall swaths. Preserves 16-bit acoustic backscatter dynamics and coordinate tags.
-                  </p>
-                </div>
+      {
+        isReportModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+            <div className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                  Generate Survey Report
+                </h3>
+                <button
+                  onClick={() => setIsReportModalOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
-                <div className="px-2 py-1 rounded bg-sky-600 text-white font-mono text-[10px] font-bold shrink-0">
-                  PNG
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 font-mono">Portable Network Graphics (.png)</h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                    Lossless compression ideal for clear sonar waterfall frames, avoiding JPEG ringing artifacts around subtle acoustic shadows.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
-                <div className="px-2 py-1 rounded bg-slate-700 text-white font-mono text-[10px] font-bold shrink-0">
-                  JPEG
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 font-mono">Joint Photographic Experts (.jpg, .jpeg)</h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                    High compatibility, standard export from Klein, Edgetech, and StarFish sonar acquisition software.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
-                <div className="px-2 py-1 rounded bg-purple-600 text-white font-mono text-[10px] font-bold shrink-0">
-                  BMP
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 font-mono">Windows Bitmap (.bmp)</h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                    Uncompressed legacy hydrographic capture format directly compatible with bathymetric mapping stations.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Ingestion Parameters */}
-            <div className="p-3.5 rounded-xl bg-blue-50/60 border border-blue-100 text-[11px] text-blue-900 space-y-1">
-              <div className="font-bold flex items-center space-x-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                <span>Ingestion Parameters</span>
-              </div>
-              <p className="text-blue-800/80 leading-relaxed">
-                Maximum file size: <b>25 MB per file</b> &bull; Maximum batch: <b>50 images per survey</b> &bull; Native Slant Range Correction (SRC) recommended.
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Export verified detection summaries, GPS coordinates, and acoustic shadow geometry for salvage vessels and research teams.
               </p>
-            </div>
 
-            <div className="pt-2 flex justify-end">
-              <button
-                onClick={() => setIsSupportedFormatsModalOpen(false)}
-                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
-              >
-                Got it
-              </button>
+              <div className="space-y-2 pt-2">
+                <button
+                  onClick={() => {
+                    window.print();
+                    setIsReportModalOpen(false);
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex items-center space-x-2">
+                    <Printer className="w-4 h-4 text-blue-600" />
+                    <span>Executive PDF Summary</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    handleExportCSV();
+                    setIsReportModalOpen(false);
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex items-center space-x-2">
+                    <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                    <span>Raw Detections CSV Table</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
+      {/* Supported Formats Modal */}
+      {
+        isSupportedFormatsModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+            <div className="bg-white w-full max-w-lg rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                    <Info className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                      Supported Sonar Image Formats
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-mono">
+                      Specifications for Side-Scan Sonar (SSS) Batch Ingestion
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsSupportedFormatsModalOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
+                  <div className="px-2 py-1 rounded bg-blue-600 text-white font-mono text-[10px] font-bold shrink-0">
+                    TIFF
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 font-mono">GeoTIFF / TIFF (.tif, .tiff)</h4>
+                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                      Industry standard for uncompressed raw acoustic waterfall swaths. Preserves 16-bit acoustic backscatter dynamics and coordinate tags.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
+                  <div className="px-2 py-1 rounded bg-sky-600 text-white font-mono text-[10px] font-bold shrink-0">
+                    PNG
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 font-mono">Portable Network Graphics (.png)</h4>
+                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                      Lossless compression ideal for clear sonar waterfall frames, avoiding JPEG ringing artifacts around subtle acoustic shadows.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
+                  <div className="px-2 py-1 rounded bg-slate-700 text-white font-mono text-[10px] font-bold shrink-0">
+                    JPEG
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 font-mono">Joint Photographic Experts (.jpg, .jpeg)</h4>
+                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                      High compatibility, standard export from Klein, Edgetech, and StarFish sonar acquisition software.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start space-x-3">
+                  <div className="px-2 py-1 rounded bg-purple-600 text-white font-mono text-[10px] font-bold shrink-0">
+                    BMP
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 font-mono">Windows Bitmap (.bmp)</h4>
+                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                      Uncompressed legacy hydrographic capture format directly compatible with bathymetric mapping stations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ingestion Parameters */}
+              <div className="p-3.5 rounded-xl bg-blue-50/60 border border-blue-100 text-[11px] text-blue-900 space-y-1">
+                <div className="font-bold flex items-center space-x-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Ingestion Parameters</span>
+                </div>
+                <p className="text-blue-800/80 leading-relaxed">
+                  Maximum file size: <b>25 MB per file</b> &bull; Maximum batch: <b>50 images per survey</b> &bull; Native Slant Range Correction (SRC) recommended.
+                </p>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  onClick={() => setIsSupportedFormatsModalOpen(false)}
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                >
+                  Got it
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
