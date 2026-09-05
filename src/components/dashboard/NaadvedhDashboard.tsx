@@ -1399,28 +1399,28 @@ export const NaadvedhDashboard: React.FC = () => {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-[#F8FAFC] text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* 1. Minimalist White Sidebar (Matching Image 5 Reference) */}
-      <aside className="w-56 sm:w-60 bg-white border-r border-slate-200 text-slate-700 flex flex-col justify-between shrink-0 select-none z-30">
+      {/* 1. Minimalist White Sidebar (Narrower by ~10px for more workspace) */}
+      <aside className="w-52 sm:w-[228px] bg-white border-r border-slate-200 text-slate-700 flex flex-col justify-between shrink-0 select-none z-30">
         <div>
           {/* Logo & Brand Header */}
-          <div className="p-4 sm:p-5 flex items-center space-x-3 border-b border-slate-100">
+          <div className="p-3.5 sm:p-4 flex items-center space-x-2.5 border-b border-slate-100">
             <img
               src="/vainateya-symbol.png"
               alt="VAINATEYA Logo"
-              className="w-8 h-8 object-contain shrink-0"
+              className="w-7 h-7 object-contain shrink-0"
             />
             <div className="min-w-0">
-              <h1 className="font-extrabold text-base text-slate-900 font-['Space_Grotesk'] tracking-wider leading-none">
+              <h1 className="font-extrabold text-sm sm:text-base text-slate-900 font-['Space_Grotesk'] tracking-wider leading-none">
                 VAINATEYA
               </h1>
-              <p className="text-[9.5px] text-blue-600 font-mono tracking-tight mt-1 truncate italic font-medium">
+              <p className="text-[9px] text-blue-600 font-mono tracking-tight mt-0.5 truncate italic font-medium">
                 When human vision ends, perception continues.
               </p>
             </div>
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-3 space-y-1 text-xs font-medium">
+          <nav className="p-2.5 space-y-0.5 text-xs font-medium">
             <button
               onClick={() => setCurrentScreen('dashboard')}
               className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${currentScreen === 'dashboard'
@@ -2080,14 +2080,14 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* SCREEN 2: NEW SURVEY (Images 2, 3, 4, 5) */}
         {/* ========================================================= */}
         {currentScreen === 'new-survey' && (
-          <main className="p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl mx-auto w-full">
+          <main className={`w-full mx-auto ${newSurveyStep === 4 ? 'px-3.5 py-2 space-y-2 max-w-[1600px]' : 'p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl'}`}>
             {/* Title & Subtitle + Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
               <div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
+                <h1 className={`${newSurveyStep === 4 ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'} font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight`}>
                   {newSurveyStep === 4 ? 'Survey Results' : 'New Survey'}
                 </h1>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-[11px] text-slate-500 mt-0.5">
                   {newSurveyStep === 4
                     ? 'Batch analysis completed. Review detected objects and explore results across all processed images.'
                     : 'Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.'}
@@ -2095,31 +2095,31 @@ export const NaadvedhDashboard: React.FC = () => {
               </div>
 
               {newSurveyStep === 4 && (
-                <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-                  <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs shadow-2xs">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] shadow-2xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <div>
                       <span className="font-bold">Processing Completed</span>
                       <span className="hidden sm:inline text-slate-400 mx-1.5">|</span>
-                      <span className="block sm:inline text-[10.5px] font-mono text-emerald-700">100 / 100 images processed in 12 min 34 sec</span>
+                      <span className="block sm:inline text-[10px] font-mono text-emerald-700">100 / 100 images processed in 12 min 34 sec</span>
                     </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setCurrentScreen('reports')}
-                    className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                    className="flex items-center space-x-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
                   >
-                    <FileText className="w-3.5 h-3.5 text-slate-500" />
+                    <FileText className="w-3 h-3 text-slate-500" />
                     <span>View Report</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleExportCSV}
-                    className="flex items-center space-x-1.5 px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    className="flex items-center space-x-1.5 px-3.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <Download className="w-3 h-3" />
                     <span>Export Results</span>
                   </button>
                 </div>
@@ -2127,7 +2127,7 @@ export const NaadvedhDashboard: React.FC = () => {
             </div>
 
             {/* 4-Step Stepper Header (Images 2, 3, 4) */}
-            <div className="flex items-center max-w-2xl pt-0 pb-1 text-xs font-mono font-bold">
+            <div className={`flex items-center max-w-2xl text-[11px] font-mono font-bold ${newSurveyStep === 4 ? 'pt-0 pb-0' : 'pt-0 pb-1 text-xs'}`}>
               {/* Step 1 */}
               <div
                 onClick={() => setNewSurveyStep(1)}
@@ -2914,96 +2914,96 @@ export const NaadvedhDashboard: React.FC = () => {
               };
 
               return (
-                <div className="space-y-3.5">
+                <div className="space-y-2.5">
                   {/* ========================================================= */}
-                  {/* 1. TOP SUMMARY KPI CARDS (6 Cards matching Image 1)       */}
+                  {/* 1. TOP SUMMARY KPI CARDS (6 Compact Cards matching Image 1)*/}
                   {/* ========================================================= */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                     {/* Card 1: Total Images Processed */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                        <ImageIcon className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                        <ImageIcon className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           100
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Total Images Processed
                         </p>
                       </div>
                     </div>
 
                     {/* Card 2: Images with Detections */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shrink-0">
-                        <Target className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shrink-0">
+                        <Target className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           10
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Images with Detections (10%)
                         </p>
                       </div>
                     </div>
 
                     {/* Card 3: Total Objects Detected */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
-                        <Crosshair className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                        <Crosshair className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           28
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Total Objects Detected
                         </p>
                       </div>
                     </div>
 
                     {/* Card 4: High Priority Objects */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                        <AlertTriangle className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                        <AlertTriangle className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           5
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           High Priority Objects
                         </p>
                       </div>
                     </div>
 
                     {/* Card 5: Medium Priority Objects */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                        <AlertCircle className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                        <AlertCircle className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           12
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Medium Priority Objects
                         </p>
                       </div>
                     </div>
 
                     {/* Card 6: Low Priority Objects */}
-                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                        <CheckCircle2 className="w-5 h-5" />
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center space-x-2.5 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                        <CheckCircle2 className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                        <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
                           11
                         </div>
-                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                        <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Low Priority Objects
                         </p>
                       </div>
@@ -3013,14 +3013,14 @@ export const NaadvedhDashboard: React.FC = () => {
                   {/* ========================================================= */}
                   {/* 2. MAIN 3-COLUMN STUDIO SECTION                           */}
                   {/* ========================================================= */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-start">
                     {/* ------------------------------------------------------- */}
                     {/* LEFT COLUMN: Images List & Filter (lg:col-span-3)       */}
                     {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3 flex flex-col space-y-2.5">
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 flex flex-col space-y-2">
                       {/* Header with Title & Options */}
                       <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                           Images ({allBatchSurveyImages.length})
                         </h3>
                         <button
@@ -3028,19 +3028,19 @@ export const NaadvedhDashboard: React.FC = () => {
                           className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
                           title="Options"
                         >
-                          <MoreHorizontal className="w-4 h-4" />
+                          <MoreHorizontal className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
                       {/* Filter Tabs: All / Detections / No Detections */}
-                      <div className="flex items-center p-1 bg-slate-100/90 rounded-lg text-xs font-semibold">
+                      <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[10.5px] font-semibold">
                         <button
                           type="button"
                           onClick={() => {
                             setBatchFilterTab('all');
                             setBatchPaginationPage(1);
                           }}
-                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'all'
+                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'all'
                             ? 'bg-white text-blue-600 shadow-2xs font-bold'
                             : 'text-slate-600 hover:text-slate-900'
                             }`}
@@ -3053,7 +3053,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             setBatchFilterTab('detections');
                             setBatchPaginationPage(1);
                           }}
-                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'detections'
+                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'detections'
                             ? 'bg-white text-blue-600 shadow-2xs font-bold'
                             : 'text-slate-600 hover:text-slate-900'
                             }`}
@@ -3066,7 +3066,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             setBatchFilterTab('no_detections');
                             setBatchPaginationPage(1);
                           }}
-                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'no_detections'
+                          className={`flex-1 py-1 px-1 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'no_detections'
                             ? 'bg-white text-blue-600 shadow-2xs font-bold'
                             : 'text-slate-600 hover:text-slate-900'
                             }`}
@@ -3078,7 +3078,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       {/* Search Bar & Sort Dropdown */}
                       <div className="flex items-center gap-1.5">
                         <div className="relative flex-1">
-                          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                          <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" />
                           <input
                             type="text"
                             placeholder="Search images..."
@@ -3087,7 +3087,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               setBatchSearchQuery(e.target.value);
                               setBatchPaginationPage(1);
                             }}
-                            className="w-full pl-8 pr-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 bg-slate-50/50"
+                            className="w-full pl-7 pr-2 py-1 rounded-lg border border-slate-200 text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 bg-slate-50/50"
                           />
                         </div>
 
@@ -3095,20 +3095,20 @@ export const NaadvedhDashboard: React.FC = () => {
                           <select
                             value={batchSortBy}
                             onChange={e => setBatchSortBy(e.target.value as any)}
-                            className="appearance-none pl-2 pr-6 py-1.5 rounded-lg border border-slate-200 text-[11px] font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                            className="appearance-none pl-2 pr-5 py-1 rounded-lg border border-slate-200 text-[10.5px] font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                           >
-                            <option value="priority">Sort by: Priority</option>
-                            <option value="objects">Sort by: Objects</option>
-                            <option value="time">Sort by: Name</option>
+                            <option value="priority">Sort: Priority</option>
+                            <option value="objects">Sort: Objects</option>
+                            <option value="time">Sort: Name</option>
                           </select>
                           <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                         </div>
                       </div>
 
                       {/* Image Items List */}
-                      <div className="space-y-1.5 pt-0.5">
+                      <div className="space-y-1">
                         {paginatedImages.length === 0 ? (
-                          <div className="py-8 text-center text-xs text-slate-400">
+                          <div className="py-6 text-center text-xs text-slate-400">
                             No images match your filter.
                           </div>
                         ) : (
@@ -3125,8 +3125,8 @@ export const NaadvedhDashboard: React.FC = () => {
                                     setSelectedDetectionCardId(item.detections[0].id);
                                   }
                                 }}
-                                className={`flex items-center gap-2.5 p-2 rounded-xl transition-all cursor-pointer border ${isSelected
-                                  ? 'border-rose-400 bg-rose-50/40 shadow-xs ring-1 ring-rose-300'
+                                className={`flex items-center gap-2 p-1.5 rounded-lg transition-all cursor-pointer border ${isSelected
+                                  ? 'border-rose-400 bg-rose-50/40 shadow-2xs ring-1 ring-rose-300'
                                   : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/60'
                                   }`}
                               >
@@ -3139,7 +3139,7 @@ export const NaadvedhDashboard: React.FC = () => {
                                 />
 
                                 {/* Thumbnail */}
-                                <div className="w-12 h-10 rounded-md overflow-hidden bg-slate-900 border border-slate-200 shrink-0">
+                                <div className="w-10 h-8 rounded overflow-hidden bg-slate-900 border border-slate-200 shrink-0">
                                   <img
                                     src={item.thumb}
                                     alt={item.filename}
@@ -3150,39 +3150,39 @@ export const NaadvedhDashboard: React.FC = () => {
                                 {/* Content Details */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between">
-                                    <span className={`text-xs truncate ${isSelected ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'}`}>
+                                    <span className={`text-[11.5px] truncate ${isSelected ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'}`}>
                                       {item.filename}
                                     </span>
                                   </div>
 
                                   <div className="flex items-center justify-between mt-0.5">
-                                    <span className="text-[11px] font-mono text-slate-500">
+                                    <span className="text-[10px] font-mono text-slate-500">
                                       {item.objectsCount > 0 ? `${item.objectsCount} objects` : '0 objects'}
                                     </span>
 
                                     {item.priority === 'High' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-rose-100/80 text-rose-700 border border-rose-200/80">
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-rose-100/80 text-rose-700 border border-rose-200/80">
                                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                                         <span>High</span>
                                       </span>
                                     )}
                                     {item.priority === 'Medium' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                                         <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
                                         <span>Medium</span>
                                       </span>
                                     )}
                                     {item.priority === 'Low' && (
-                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
                                         <span>Low</span>
                                       </span>
                                     )}
                                   </div>
 
-                                  {/* Timestamp below when medium/low */}
+                                  {/* Timestamp */}
                                   {item.timeShort && (
-                                    <div className="text-[9.5px] text-slate-400 font-mono text-right mt-0.5">
+                                    <div className="text-[9px] text-slate-400 font-mono text-right">
                                       {item.timeShort}
                                     </div>
                                   )}
@@ -3193,15 +3193,15 @@ export const NaadvedhDashboard: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Pagination Controls matching Image 1: < 1 2 3 ... 10 > */}
-                      <div className="flex items-center justify-center gap-1 pt-2 border-t border-slate-100 text-xs">
+                      {/* Pagination Controls */}
+                      <div className="flex items-center justify-center gap-1 pt-1 border-t border-slate-100 text-xs">
                         <button
                           type="button"
                           onClick={() => setBatchPaginationPage(p => Math.max(1, p - 1))}
                           disabled={currentPage === 1}
-                          className="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+                          className="w-6 h-6 flex items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
                         >
-                          <ChevronLeft className="w-3.5 h-3.5" />
+                          <ChevronLeft className="w-3 h-3" />
                         </button>
 
                         {[1, 2, 3].map(pageNum => (
@@ -3209,7 +3209,7 @@ export const NaadvedhDashboard: React.FC = () => {
                             key={pageNum}
                             type="button"
                             onClick={() => setBatchPaginationPage(pageNum)}
-                            className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold cursor-pointer ${currentPage === pageNum
+                            className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === pageNum
                               ? 'bg-blue-600 text-white font-bold shadow-2xs'
                               : 'text-slate-600 hover:bg-slate-100'
                               }`}
@@ -3218,12 +3218,12 @@ export const NaadvedhDashboard: React.FC = () => {
                           </button>
                         ))}
 
-                        <span className="text-slate-400 px-1 text-xs">...</span>
+                        <span className="text-slate-400 px-0.5 text-xs">...</span>
 
                         <button
                           type="button"
                           onClick={() => setBatchPaginationPage(10)}
-                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold cursor-pointer ${currentPage === 10
+                          className={`w-6 h-6 flex items-center justify-center rounded-md text-[11px] font-semibold cursor-pointer ${currentPage === 10
                             ? 'bg-blue-600 text-white font-bold shadow-2xs'
                             : 'text-slate-600 hover:bg-slate-100'
                             }`}
@@ -3235,82 +3235,82 @@ export const NaadvedhDashboard: React.FC = () => {
                           type="button"
                           onClick={() => setBatchPaginationPage(p => Math.min(10, p + 1))}
                           disabled={currentPage === 10}
-                          className="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+                          className="w-6 h-6 flex items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
                         >
-                          <ChevronRight className="w-3.5 h-3.5" />
+                          <ChevronRight className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
 
                     {/* ------------------------------------------------------- */}
-                    {/* CENTER COLUMN: Sonar Canvas & Viewport (lg:col-span-5.5)*/}
+                    {/* CENTER COLUMN: Sonar Canvas & Viewport (lg:col-span-6)  */}
                     {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-6 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 flex flex-col space-y-2.5">
+                    <div className="lg:col-span-6 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2">
                       {/* Top Action & Navigation Row */}
                       <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                         <div className="flex items-center space-x-2">
-                          <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                             {currentBatchImage.filename}
                           </h3>
                           {currentBatchImage.priority === 'High' && (
-                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
                               <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                               <span>High Priority</span>
                             </span>
                           )}
                           {currentBatchImage.priority === 'Medium' && (
-                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                               <span>Medium Priority</span>
                             </span>
                           )}
                           {currentBatchImage.priority === 'Low' && (
-                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="inline-flex items-center space-x-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                               <span>Low Priority</span>
                             </span>
                           )}
                         </div>
 
                         {/* Prev / Next Nav Buttons */}
-                        <div className="flex items-center space-x-1.5">
+                        <div className="flex items-center space-x-1">
                           <button
                             type="button"
                             onClick={handlePrevImage}
                             disabled={currentIndex <= 0}
-                            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                            className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
                           >
-                            <ChevronLeft className="w-3.5 h-3.5" />
+                            <ChevronLeft className="w-3 h-3" />
                             <span>Previous</span>
                           </button>
                           <button
                             type="button"
                             onClick={handleNextImage}
                             disabled={currentIndex >= filteredBatchImages.length - 1}
-                            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                            className="flex items-center space-x-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
                           >
                             <span>Next</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
+                            <ChevronRight className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
 
                       {/* Image Sub-Metadata Row */}
-                      <div className="flex flex-wrap items-center gap-3 text-slate-500 text-xs">
+                      <div className="flex flex-wrap items-center gap-2.5 text-slate-500 text-[10.5px]">
                         <div className="flex items-center space-x-1">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <Calendar className="w-3 h-3 text-slate-400" />
                           <span>{currentBatchImage.timestamp}</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <Database className="w-3.5 h-3.5 text-slate-400" />
+                          <Database className="w-3 h-3 text-slate-400" />
                           <span>{currentBatchImage.size}</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <MapPin className="w-3 h-3 text-slate-400" />
                           <span>{currentBatchImage.location}</span>
                         </div>
                       </div>
 
-                      {/* Main Sonar Viewport Canvas with Bounding Boxes */}
-                      <div className="relative rounded-xl overflow-hidden border border-slate-900 bg-slate-950 aspect-[16/10] sm:aspect-[16/9] shadow-inner select-none">
+                      {/* Main Sonar Viewport Canvas with Controlled Height */}
+                      <div className="relative rounded-xl overflow-hidden border border-slate-900 bg-slate-950 w-full h-[225px] sm:h-[245px] shadow-inner select-none">
                         <img
                           src={currentBatchImage.sonarImg}
                           alt="Side-Scan Sonar Analysis"
@@ -3321,7 +3321,7 @@ export const NaadvedhDashboard: React.FC = () => {
                         />
 
                         {/* Depth Gauge on Left Side (0m, 10m, 20m, 30m, 40m) */}
-                        <div className="absolute left-1.5 top-2 bottom-2 flex flex-col justify-between text-[9.5px] font-mono font-bold text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] pointer-events-none z-10">
+                        <div className="absolute left-1.5 top-1.5 bottom-1.5 flex flex-col justify-between text-[9px] font-mono font-bold text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] pointer-events-none z-10">
                           <span>0m</span>
                           <span>10m</span>
                           <span>20m</span>
@@ -3330,13 +3330,13 @@ export const NaadvedhDashboard: React.FC = () => {
                         </div>
 
                         {/* Acoustic Nadir Line & Track Label */}
-                        <div className="absolute top-0 bottom-0 left-10 w-px bg-cyan-400/40 border-r border-dashed border-cyan-300/60 pointer-events-none"></div>
-                        <div className="absolute top-2 left-12 px-2 py-0.5 rounded bg-black/80 text-cyan-300 font-mono text-[9px] font-semibold border border-cyan-500/30 backdrop-blur-xs pointer-events-none z-10">
+                        <div className="absolute top-0 bottom-0 left-9 w-px bg-cyan-400/40 border-r border-dashed border-cyan-300/60 pointer-events-none"></div>
+                        <div className="absolute top-1.5 left-11 px-1.5 py-0.2 rounded bg-black/80 text-cyan-300 font-mono text-[8.5px] font-semibold border border-cyan-500/30 backdrop-blur-xs pointer-events-none z-10">
                           NADIR TRACK - SSS 900 kHz
                         </div>
 
                         {/* Top-Right HUD Telemetry Overlay */}
-                        <div className="absolute top-2 right-2 px-2.5 py-1.5 rounded-lg bg-black/85 border border-slate-700 text-slate-200 font-mono text-[9.5px] leading-snug backdrop-blur-xs text-right shadow-xs pointer-events-none z-10">
+                        <div className="absolute top-1.5 right-1.5 px-2 py-1 rounded bg-black/85 border border-slate-700 text-slate-200 font-mono text-[8.5px] leading-tight backdrop-blur-xs text-right shadow-xs pointer-events-none z-10">
                           <div>Time: {currentBatchImage.timeHud}</div>
                           <div>Freq: {currentBatchImage.frequency}</div>
                           <div>Swath: {currentBatchImage.swath}</div>
@@ -3344,12 +3344,12 @@ export const NaadvedhDashboard: React.FC = () => {
                         </div>
 
                         {/* Scale Bar at Bottom Right: [ 50 m ] */}
-                        <div className="absolute bottom-3 right-3 px-3 py-1 rounded bg-black/80 border border-slate-700 text-white font-mono text-[9px] flex items-center justify-center space-x-1 pointer-events-none z-10">
-                          <span className="w-1.5 h-1 border-l border-white inline-block"></span>
-                          <span className="w-14 h-0.5 bg-white inline-block"></span>
+                        <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 border border-slate-700 text-white font-mono text-[8.5px] flex items-center justify-center space-x-1 pointer-events-none z-10">
+                          <span className="w-1 h-1 border-l border-white inline-block"></span>
+                          <span className="w-10 h-0.5 bg-white inline-block"></span>
                           <span className="px-1 text-slate-200 font-bold">50 m</span>
-                          <span className="w-14 h-0.5 bg-white inline-block"></span>
-                          <span className="w-1.5 h-1 border-r border-white inline-block"></span>
+                          <span className="w-10 h-0.5 bg-white inline-block"></span>
+                          <span className="w-1 h-1 border-r border-white inline-block"></span>
                         </div>
 
                         {/* Bounding Boxes for Detections */}
@@ -3358,23 +3358,19 @@ export const NaadvedhDashboard: React.FC = () => {
                             {currentBatchImage.detections.map(det => {
                               const isCardSelected = selectedDetectionCardId === det.id;
 
-                              // Coordinate mapping based on orderNumber for sonar_003.tif
                               let boxStyle: React.CSSProperties = {
-                                top: '58%',
+                                top: '55%',
                                 left: '16%',
                                 width: '28%',
                                 height: '24%',
                               };
 
                               if (det.orderNumber === 1) {
-                                // Sunken container (red)
                                 boxStyle = { top: '55%', left: '16%', width: '28%', height: '25%' };
                               } else if (det.orderNumber === 2) {
-                                // Fishing gear (blue)
-                                boxStyle = { top: '25%', left: '38%', width: '28%', height: '28%' };
+                                boxStyle = { top: '22%', left: '38%', width: '28%', height: '28%' };
                               } else if (det.orderNumber === 3) {
-                                // Debris (amber)
-                                boxStyle = { top: '48%', left: '68%', width: '20%', height: '28%' };
+                                boxStyle = { top: '46%', left: '68%', width: '20%', height: '28%' };
                               }
 
                               const boxBorderColor =
@@ -3407,7 +3403,7 @@ export const NaadvedhDashboard: React.FC = () => {
                                   style={boxStyle}
                                 >
                                   <span
-                                    className={`absolute -top-5 left-0 px-2 py-0.5 rounded text-[9.5px] font-mono font-bold shadow-xs whitespace-nowrap ${tagBg}`}
+                                    className={`absolute -top-4.5 left-0 px-1.5 py-0.2 rounded text-[8.5px] font-mono font-bold shadow-xs whitespace-nowrap ${tagBg}`}
                                   >
                                     {det.orderNumber}. {det.name} ({det.confidence}%)
                                   </span>
@@ -3419,13 +3415,13 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
 
                       {/* Bottom Toolbar: Mode Switcher & Zoom Controls */}
-                      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-1">
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-1.5 pt-0.5">
                         {/* Mode Switcher */}
-                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-xs font-semibold">
+                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-[11px] font-semibold">
                           <button
                             type="button"
                             onClick={() => setBatchImageDisplayMode('original')}
-                            className={`px-3 py-1 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'original'
+                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'original'
                               ? 'bg-white text-blue-600 shadow-2xs font-bold'
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
@@ -3435,7 +3431,7 @@ export const NaadvedhDashboard: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setBatchImageDisplayMode('detected')}
-                            className={`px-3 py-1 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'detected'
+                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'detected'
                               ? 'bg-white text-blue-600 shadow-2xs font-bold'
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
@@ -3448,55 +3444,55 @@ export const NaadvedhDashboard: React.FC = () => {
                         <div className="flex items-center space-x-1 text-slate-600">
                           <button
                             type="button"
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
                             title="Inspect"
                           >
-                            <Search className="w-3.5 h-3.5" />
+                            <Search className="w-3 h-3" />
                           </button>
                           <button
                             type="button"
                             onClick={() => setBatchZoomLevel(z => Math.max(50, z - 10))}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
                             title="Zoom Out"
                           >
-                            <ZoomOut className="w-3.5 h-3.5" />
+                            <ZoomOut className="w-3 h-3" />
                           </button>
-                          <span className="text-xs font-mono font-bold px-1 text-slate-700">
+                          <span className="text-[11px] font-mono font-bold px-1 text-slate-700">
                             {batchZoomLevel}%
                           </span>
                           <button
                             type="button"
                             onClick={() => setBatchZoomLevel(z => Math.min(200, z + 10))}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
                             title="Zoom In"
                           >
-                            <ZoomIn className="w-3.5 h-3.5" />
+                            <ZoomIn className="w-3 h-3" />
                           </button>
                           <button
                             type="button"
                             onClick={() => setBatchZoomLevel(100)}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                            title="Fullscreen"
+                            className="p-1 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            title="Reset"
                           >
-                            <Maximize2 className="w-3.5 h-3.5" />
+                            <Maximize2 className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
                     </div>
 
                     {/* ------------------------------------------------------- */}
-                    {/* RIGHT COLUMN: Detections in This Image (lg:col-span-3.5)*/}
+                    {/* RIGHT COLUMN: Detections in This Image (lg:col-span-3)  */}
                     {/* ------------------------------------------------------- */}
-                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 flex flex-col space-y-2.5">
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 flex flex-col space-y-2">
                       {/* Header */}
-                      <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                         Detections in This Image ({currentBatchImage.detections.length})
                       </h3>
 
-                      {/* List of Detection Cards matching Image 1 */}
-                      <div className="space-y-2.5">
+                      {/* List of Detection Cards */}
+                      <div className="space-y-2">
                         {currentBatchImage.detections.length === 0 ? (
-                          <div className="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-slate-200/60">
+                          <div className="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-lg border border-slate-200/60">
                             No objects detected in this image.
                           </div>
                         ) : (
@@ -3521,28 +3517,28 @@ export const NaadvedhDashboard: React.FC = () => {
                               <div
                                 key={det.id}
                                 onClick={() => setSelectedDetectionCardId(det.id)}
-                                className={`rounded-xl border transition-all cursor-pointer overflow-hidden p-2.5 ${isSelected
+                                className={`rounded-lg border transition-all cursor-pointer overflow-hidden p-2 ${isSelected
                                   ? 'border-blue-300 bg-blue-50/30 shadow-2xs ring-1 ring-blue-200'
                                   : 'border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50/50'
                                   }`}
                               >
-                                {/* Card Title with colored accent bar & confidence */}
-                                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                {/* Card Title */}
+                                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
                                   <div className="flex items-center space-x-1.5">
-                                    <span className={`w-1.5 h-3.5 rounded-full ${accentStripeColor}`}></span>
-                                    <h4 className="text-xs font-bold text-slate-900">
+                                    <span className={`w-1 h-3 rounded-full ${accentStripeColor}`}></span>
+                                    <h4 className="text-[11px] font-bold text-slate-900">
                                       {det.orderNumber}. {det.name}
                                     </h4>
                                   </div>
-                                  <span className={`text-xs font-black font-mono ${confidenceTextColor}`}>
+                                  <span className={`text-[11px] font-black font-mono ${confidenceTextColor}`}>
                                     {det.confidence}%
                                   </span>
                                 </div>
 
-                                {/* Body with Thumbnail and Metadata Table */}
-                                <div className="flex items-center gap-3 pt-2">
-                                  {/* Cropped Detection Thumbnail */}
-                                  <div className="w-14 h-14 rounded-lg bg-black border border-slate-200 overflow-hidden shrink-0">
+                                {/* Body with Thumbnail and Metadata */}
+                                <div className="flex items-center gap-2 pt-1.5">
+                                  {/* Thumbnail */}
+                                  <div className="w-11 h-11 rounded-md bg-black border border-slate-200 overflow-hidden shrink-0">
                                     <img
                                       src={
                                         det.orderNumber === 1
@@ -3556,36 +3552,35 @@ export const NaadvedhDashboard: React.FC = () => {
                                     />
                                   </div>
 
-                                  {/* Key-Value Details */}
-                                  <div className="flex-1 min-w-0 space-y-0.5 text-[11px]">
+                                  {/* Details */}
+                                  <div className="flex-1 min-w-0 space-y-0.5 text-[10px]">
                                     <div className="flex items-center justify-between text-slate-500">
-                                      <span className="text-[10.5px]">Type</span>
-                                      <span className="font-semibold text-slate-800 truncate max-w-[110px]">
+                                      <span>Type</span>
+                                      <span className="font-semibold text-slate-800 truncate max-w-[95px]">
                                         {det.type}
                                       </span>
                                     </div>
                                     <div className="flex items-center justify-between text-slate-500">
-                                      <span className="text-[10.5px]">Coordinates</span>
-                                      <span className="font-mono text-[10px] text-slate-700 truncate max-w-[110px]">
+                                      <span>Coordinates</span>
+                                      <span className="font-mono text-[9px] text-slate-700 truncate max-w-[95px]">
                                         {det.coordinates}
                                       </span>
                                     </div>
                                     <div className="flex items-center justify-between text-slate-500">
-                                      <span className="text-[10.5px]">Size (m)</span>
-                                      <span className="font-mono text-[10.5px] text-slate-700">
+                                      <span>Size (m)</span>
+                                      <span className="font-mono text-slate-700">
                                         {det.size}
                                       </span>
                                     </div>
                                     <div className="flex items-center justify-between text-slate-500">
-                                      <span className="text-[10.5px]">Confidence</span>
-                                      <span className="font-mono font-bold text-emerald-600 text-[10.5px]">
+                                      <span>Confidence</span>
+                                      <span className="font-mono font-bold text-emerald-600">
                                         {det.confidence}%
                                       </span>
                                     </div>
                                   </div>
 
-                                  {/* Right Chevron */}
-                                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                                 </div>
                               </div>
                             );
@@ -3598,23 +3593,30 @@ export const NaadvedhDashboard: React.FC = () => {
                   {/* ========================================================= */}
                   {/* 3. BOTTOM ANALYTICS & DISTRIBUTION PANEL                  */}
                   {/* ========================================================= */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-start">
                     {/* Distribution Card: 100 Blocks Grid (lg:col-span-8) */}
-                    <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-3">
+                    <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 space-y-1.5">
                       <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                         Detection Distribution Across All Images
                       </h3>
 
-                      {/* 100-Block Visualization (2 rows of 50 blocks) */}
-                      <div className="grid grid-flow-row grid-cols-25 sm:grid-cols-50 gap-1 overflow-x-auto py-1">
+                      {/* 100-Block Visualization (Exact 50 columns x 2 rows) */}
+                      <div
+                        className="w-full py-0.5"
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(50, minmax(0, 1fr))',
+                          gap: '2px',
+                        }}
+                      >
                         {allBatchSurveyImages.map(img => {
-                          let blockColor = 'bg-slate-200 hover:bg-slate-300';
+                          let blockBg = '#cbd5e1'; // slate-300
                           if (img.priority === 'High') {
-                            blockColor = 'bg-rose-500 hover:bg-rose-600';
+                            blockBg = '#ef4444'; // rose-500
                           } else if (img.priority === 'Medium') {
-                            blockColor = 'bg-amber-500 hover:bg-amber-600';
+                            blockBg = '#f59e0b'; // amber-500
                           } else if (img.priority === 'Low') {
-                            blockColor = 'bg-emerald-500 hover:bg-emerald-600';
+                            blockBg = '#10b981'; // emerald-500
                           }
 
                           const isCurrent = img.id === selectedBatchImageId;
@@ -3628,73 +3630,74 @@ export const NaadvedhDashboard: React.FC = () => {
                                   setSelectedDetectionCardId(img.detections[0].id);
                                 }
                               }}
-                              className={`h-4.5 rounded-xs transition-all cursor-pointer ${blockColor} ${isCurrent ? 'ring-2 ring-blue-600 ring-offset-1 scale-110 z-10' : ''
+                              className={`h-2.5 sm:h-3 rounded-[1px] transition-all cursor-pointer ${isCurrent ? 'ring-2 ring-blue-600 ring-offset-1 scale-125 z-10' : 'hover:opacity-80'
                                 }`}
+                              style={{ backgroundColor: blockBg }}
                               title={`${img.filename}: ${img.objectsCount} objects (${img.priority})`}
                             />
                           );
                         })}
                       </div>
 
-                      {/* Legend & Footnote matching Image 1 */}
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1 text-xs text-slate-500">
-                        <div className="flex items-center space-x-4">
+                      {/* Legend & Footnote */}
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 pt-0.5 text-slate-500">
+                        <div className="flex items-center space-x-3">
                           <div className="flex items-center space-x-1.5">
-                            <span className="w-2.5 h-2.5 rounded-xs bg-rose-500"></span>
-                            <span className="text-[11px] font-medium text-slate-600">
+                            <span className="w-2 h-2 rounded-[1px] bg-rose-500"></span>
+                            <span className="text-[10.5px] font-medium text-slate-600">
                               Images with detections (10)
                             </span>
                           </div>
                           <div className="flex items-center space-x-1.5">
-                            <span className="w-2.5 h-2.5 rounded-xs bg-slate-300"></span>
-                            <span className="text-[11px] font-medium text-slate-600">
+                            <span className="w-2 h-2 rounded-[1px] bg-slate-300"></span>
+                            <span className="text-[10.5px] font-medium text-slate-600">
                               Images without detections (90)
                             </span>
                           </div>
                         </div>
 
-                        <span className="text-[10.5px] font-mono text-slate-400">
+                        <span className="text-[10px] font-mono text-slate-400">
                           Each block represents one image
                         </span>
                       </div>
                     </div>
 
                     {/* Priority Breakdown Card: Progress Bars (lg:col-span-4)   */}
-                    <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-3">
+                    <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 space-y-1.5">
                       <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
                         Priority Breakdown (28 objects)
                       </h3>
 
-                      <div className="space-y-2.5 pt-1 text-xs">
+                      <div className="space-y-1.5 pt-0.5 text-xs">
                         {/* High Priority Bar */}
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-700 text-xs">High Priority</span>
-                            <span className="font-mono font-bold text-slate-900 text-xs">5 (18%)</span>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-medium text-slate-700">High Priority</span>
+                            <span className="font-mono font-bold text-slate-900">5 (18%)</span>
                           </div>
-                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                             <div className="h-full bg-rose-500 rounded-full" style={{ width: '18%' }}></div>
                           </div>
                         </div>
 
                         {/* Medium Priority Bar */}
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-700 text-xs">Medium Priority</span>
-                            <span className="font-mono font-bold text-slate-900 text-xs">12 (43%)</span>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-medium text-slate-700">Medium Priority</span>
+                            <span className="font-mono font-bold text-slate-900">12 (43%)</span>
                           </div>
-                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                             <div className="h-full bg-amber-500 rounded-full" style={{ width: '43%' }}></div>
                           </div>
                         </div>
 
                         {/* Low Priority Bar */}
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-700 text-xs">Low Priority</span>
-                            <span className="font-mono font-bold text-slate-900 text-xs">11 (39%)</span>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-medium text-slate-700">Low Priority</span>
+                            <span className="font-mono font-bold text-slate-900">11 (39%)</span>
                           </div>
-                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                             <div className="h-full bg-emerald-500 rounded-full" style={{ width: '39%' }}></div>
                           </div>
                         </div>
