@@ -18,7 +18,7 @@ export function App() {
       {/* Intro Animation / Splash Screen on site visit */}
       {showSplash && (
         <SplashScreen
-          duration={1300}
+          duration={5000}
           onComplete={() => setShowSplash(false)}
         />
       )}
