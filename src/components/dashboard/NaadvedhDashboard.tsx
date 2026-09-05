@@ -39,8 +39,6 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
-  User,
-  Shield,
   Database,
   HelpCircle,
   Code,
@@ -223,7 +221,6 @@ export const NaadvedhDashboard: React.FC = () => {
   const [selectedCatalogSurveyId, setSelectedCatalogSurveyId] = useState<string>('');
 
   // Settings Screen state
-  const [settingsTab, setSettingsTab] = useState<'profile' | 'preferences' | 'storage' | 'security' | 'notifications' | 'about'>('profile');
   const [profileFullName, setProfileFullName] = useState<string>('Akash Chavan');
   const [profileRole] = useState<string>('Marine Operator');
   const [profileEmail, setProfileEmail] = useState<string>('akash1@gmail.com');
@@ -4190,295 +4187,167 @@ export const NaadvedhDashboard: React.FC = () => {
               </p>
             </div>
 
-            {/* Main 2-Column Section: Left Vertical Tabs + Right Form Card */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
-              {/* Left Column (4 cols): Vertical Settings Tabs */}
-              <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 space-y-1">
-                {[
-                  { id: 'profile', icon: User, title: 'Profile', desc: 'Manage your account information' },
-                  { id: 'preferences', icon: SettingsIcon, title: 'Preferences', desc: 'Application settings' },
-                  { id: 'storage', icon: Database, title: 'Data & Storage', desc: 'Manage your uploaded data' },
-                  { id: 'security', icon: Shield, title: 'Security', desc: 'Password and access' },
-                  { id: 'notifications', icon: Bell, title: 'Notifications', desc: 'Email and in-app alerts' },
-                  { id: 'about', icon: Info, title: 'About', desc: 'Version and system information' },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = settingsTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setSettingsTab(item.id as typeof settingsTab)}
-                      className={`w-full text-left p-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer ${isActive
-                        ? 'bg-blue-50 border border-blue-200/80 text-blue-700 shadow-2xs'
-                        : 'hover:bg-slate-50 text-slate-700 border border-transparent'
-                        }`}
-                    >
-                      <div className="flex items-center space-x-2.5 min-w-0">
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
-                        <div className="min-w-0">
-                          <div className="text-xs font-bold truncate">{item.title}</div>
-                          <div className="text-[10px] text-slate-400 truncate">{item.desc}</div>
-                        </div>
-                      </div>
-                      {isActive && <ChevronRight className="w-3.5 h-3.5 text-blue-600 shrink-0" />}
-                    </button>
-                  );
-                })}
+            {/* Profile Information Card */}
+            <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-4 sm:p-5 space-y-4 max-w-4xl">
+              {/* Card Header */}
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                    Profile Information
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Update your personal and organization details.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileSaved(true);
+                    setTimeout(() => setIsProfileSaved(false), 3000);
+                  }}
+                  className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                >
+                  {isProfileSaved ? 'Saved!' : 'Save Changes'}
+                </button>
               </div>
 
-              {/* Right Column (8 cols): Settings Form Card */}
-              <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-3 min-h-[380px]">
-                {settingsTab === 'profile' && (
-                  <div className="space-y-3">
-                    {/* Card Header */}
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                      <div>
-                        <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                          Profile Information
-                        </h2>
-                        <p className="text-[11px] text-slate-500">
-                          Update your personal and organization details.
-                        </p>
-                      </div>
+              {/* Section: Account Details */}
+              <div className="space-y-2.5">
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
+                  Account Details
+                </h3>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsProfileSaved(true);
-                          setTimeout(() => setIsProfileSaved(false), 3000);
-                        }}
-                        className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
-                      >
-                        {isProfileSaved ? 'Saved!' : 'Save Changes'}
-                      </button>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                  {/* Left Inputs (8 cols) */}
+                  <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={profileFullName}
+                        onChange={(e) => setProfileFullName(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
                     </div>
 
-                    {/* Section: Account Details */}
-                    <div className="space-y-2">
-                      <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
-                        Account Details
-                      </h3>
-
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-start">
-                        {/* Left Inputs (8 cols) */}
-                        <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          <div>
-                            <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                              Full Name
-                            </label>
-                            <input
-                              type="text"
-                              value={profileFullName}
-                              onChange={(e) => setProfileFullName(e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                              Role
-                            </label>
-                            <input
-                              type="text"
-                              value={profileRole}
-                              readOnly
-                              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500 cursor-not-allowed"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                              Email Address
-                            </label>
-                            <input
-                              type="email"
-                              value={profileEmail}
-                              onChange={(e) => setProfileEmail(e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                              Organization
-                            </label>
-                            <input
-                              type="text"
-                              value={profileOrg}
-                              onChange={(e) => setProfileOrg(e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                          </div>
-
-                          <div className="sm:col-span-2">
-                            <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                              Phone Number (Optional)
-                            </label>
-                            <input
-                              type="tel"
-                              value={profilePhone}
-                              onChange={(e) => setProfilePhone(e.target.value)}
-                              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                          </div>
-                        </div>
-
-                        {/* Right Profile Picture (4 cols) */}
-                        <div className="md:col-span-4 p-2.5 rounded-xl border border-slate-100 bg-slate-50/70 flex flex-col items-center justify-center space-y-2 text-center">
-                          <span className="text-[10.5px] font-mono font-bold text-slate-600 self-start">
-                            Profile Picture
-                          </span>
-                          <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                            A
-                          </div>
-                          <button
-                            type="button"
-                            className="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-bold text-slate-700 shadow-2xs cursor-pointer"
-                          >
-                            Change Photo
-                          </button>
-                          <span className="text-[9.5px] font-mono text-slate-400">JPG, PNG up to 2MB</span>
-                        </div>
-                      </div>
+                    <div>
+                      <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                        Role
+                      </label>
+                      <input
+                        type="text"
+                        value={profileRole}
+                        readOnly
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500 cursor-not-allowed"
+                      />
                     </div>
 
-                    {/* Section: Organization / Team */}
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
-                      <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
-                        Organization / Team
-                      </h3>
+                    <div>
+                      <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={profileEmail}
+                        onChange={(e) => setProfileEmail(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                            Team Name
-                          </label>
-                          <input
-                            type="text"
-                            value={profileTeam}
-                            onChange={(e) => setProfileTeam(e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        </div>
+                    <div>
+                      <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                        Organization
+                      </label>
+                      <input
+                        type="text"
+                        value={profileOrg}
+                        onChange={(e) => setProfileOrg(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
 
-                        <div>
-                          <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                            Location
-                          </label>
-                          <input
-                            type="text"
-                            value={profileLocation}
-                            onChange={(e) => setProfileLocation(e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        </div>
-
-                        <div className="sm:col-span-2">
-                          <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
-                            Bio (Optional)
-                          </label>
-                          <textarea
-                            rows={2}
-                            value={profileBio}
-                            maxLength={200}
-                            onChange={(e) => setProfileBio(e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
-                          ></textarea>
-                          <div className="text-right text-[10px] font-mono text-slate-400">
-                            {profileBio.length}/200
-                          </div>
-                        </div>
-                      </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                        Phone Number (Optional)
+                      </label>
+                      <input
+                        type="tel"
+                        value={profilePhone}
+                        onChange={(e) => setProfilePhone(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
                     </div>
                   </div>
-                )}
 
-                {settingsTab === 'preferences' && (
-                  <div className="space-y-3">
-                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk'] pb-2 border-b border-slate-100">
-                      Application Preferences
-                    </h2>
-                    <div className="space-y-2.5 text-xs">
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
-                        <div>
-                          <div className="font-bold text-slate-900">High-Resolution Waterfall Tiles</div>
-                          <div className="text-[10.5px] text-slate-500">Render uncompressed 16-bit acoustic backscatter</div>
-                        </div>
-                        <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-                      </div>
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
-                        <div>
-                          <div className="font-bold text-slate-900">Auto Slant Range Correction (SRC)</div>
-                          <div className="text-[10.5px] text-slate-500">Automatically rectify geometric distortions</div>
-                        </div>
-                        <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-                      </div>
+                  {/* Right Profile Picture (4 cols) */}
+                  <div className="md:col-span-4 p-3 rounded-xl border border-slate-100 bg-slate-50/70 flex flex-col items-center justify-center space-y-2 text-center">
+                    <span className="text-[10.5px] font-mono font-bold text-slate-600 self-start">
+                      Profile Picture
+                    </span>
+                    <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                      A
+                    </div>
+                    <button
+                      type="button"
+                      className="px-3.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-bold text-slate-700 shadow-2xs cursor-pointer"
+                    >
+                      Change Photo
+                    </button>
+                    <span className="text-[9.5px] font-mono text-slate-400">JPG, PNG up to 2MB</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: Organization / Team */}
+              <div className="space-y-2.5 pt-2.5 border-t border-slate-100">
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
+                  Organization / Team
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                      Team Name
+                    </label>
+                    <input
+                      type="text"
+                      value={profileTeam}
+                      onChange={(e) => setProfileTeam(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      value={profileLocation}
+                      onChange={(e) => setProfileLocation(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10.5px] font-mono font-bold text-slate-600 mb-0.5">
+                      Bio (Optional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={profileBio}
+                      maxLength={200}
+                      onChange={(e) => setProfileBio(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+                    ></textarea>
+                    <div className="text-right text-[10px] font-mono text-slate-400">
+                      {profileBio.length}/200
                     </div>
                   </div>
-                )}
-
-                {settingsTab === 'storage' && (
-                  <div className="space-y-3">
-                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk'] pb-2 border-b border-slate-100">
-                      Data &amp; Storage Buckets
-                    </h2>
-                    <div className="space-y-2 text-xs">
-                      <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-slate-900">Cloudflare R2 Object Bucket</div>
-                          <div className="text-[10.5px] text-slate-500">Target: vainateya-sonar-swaths</div>
-                        </div>
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold font-mono text-[10px]">
-                          Online
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {settingsTab === 'security' && (
-                  <div className="space-y-3">
-                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk'] pb-2 border-b border-slate-100">
-                      Security &amp; Access Controls
-                    </h2>
-                    <p className="text-xs text-slate-500">
-                      Two-factor authentication and role-based session permissions are managed through MoES NIOT SSO.
-                    </p>
-                  </div>
-                )}
-
-                {settingsTab === 'notifications' && (
-                  <div className="space-y-3">
-                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk'] pb-2 border-b border-slate-100">
-                      Email &amp; In-App Notifications
-                    </h2>
-                    <div className="space-y-2 text-xs">
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
-                        <span className="font-medium text-slate-700">High priority anomaly alerts</span>
-                        <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-                      </div>
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
-                        <span className="font-medium text-slate-700">Survey batch completion emails</span>
-                        <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {settingsTab === 'about' && (
-                  <div className="space-y-2 text-xs">
-                    <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk'] pb-2 border-b border-slate-100">
-                      VAINATEYA System Information
-                    </h2>
-                    <p className="text-slate-600 leading-relaxed text-[11px]">
-                      VAINATEYA Marine Survey &amp; Underwater Debris Detection Platform. Designed for Ministry of Earth Sciences (MoES) and National Institute of Ocean Technology (NIOT).
-                    </p>
-                    <div className="font-mono text-[10px] text-slate-500 pt-1">
-                      Version: 2.4.0-sih2026 &bull; Build: September 2026
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </main>
