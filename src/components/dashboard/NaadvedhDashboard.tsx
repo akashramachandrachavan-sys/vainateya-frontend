@@ -45,7 +45,12 @@ import {
   HelpCircle,
   Code,
   Waves,
-  MoreHorizontal
+  MoreHorizontal,
+  AlertCircle,
+  Target,
+  Maximize2,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 
 export interface NotificationItem {
@@ -404,11 +409,648 @@ const initialNotifications: NotificationItem[] = [
   },
 ];
 
+export interface BatchDetectionObject {
+  id: string;
+  orderNumber: number;
+  name: string;
+  type: string;
+  confidence: number;
+  coordinates: string;
+  size: string;
+  color: 'red' | 'blue' | 'amber';
+  hexColor: string;
+  borderColor: string;
+  bgColor: string;
+  textColor: string;
+  tagColor: string;
+  badgeBg: string;
+  bbox: { top: string; left: string; width: string; height: string };
+  thumb: string;
+}
+
+export interface BatchImageResult {
+  id: string;
+  filename: string;
+  objectsCount: number;
+  priority: 'High' | 'Medium' | 'Low' | 'None';
+  timestamp: string;
+  timeShort: string;
+  size: string;
+  location: string;
+  frequency: string;
+  swath: string;
+  speed: string;
+  timeHud: string;
+  thumb: string;
+  sonarImg: string;
+  detections: BatchDetectionObject[];
+}
+
+const batchSurveyImagesData: BatchImageResult[] = [
+  {
+    id: 'sonar_003.tif',
+    filename: 'sonar_003.tif',
+    objectsCount: 3,
+    priority: 'High',
+    timestamp: '05 Sep 2026, 12:08 PM',
+    timeShort: '12:08 PM',
+    size: '12.4 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '12:08:14',
+    thumb: '/sonar-tile-2.jpg',
+    sonarImg: '/sonar-tile-3.jpg',
+    detections: [
+      {
+        id: 'det-003-1',
+        orderNumber: 1,
+        name: 'Sunken Container',
+        type: 'Sunken Container',
+        confidence: 93,
+        coordinates: '15.1234° N, 73.5678° E',
+        size: '12.4 × 3.8',
+        color: 'red',
+        hexColor: '#ef4444',
+        borderColor: 'border-rose-500',
+        bgColor: 'bg-rose-500/10',
+        textColor: 'text-rose-600',
+        tagColor: 'bg-rose-500',
+        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
+        bbox: { top: '56%', left: '36%', width: '22%', height: '24%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+      {
+        id: 'det-003-2',
+        orderNumber: 2,
+        name: 'Fishing Gear',
+        type: 'Fishing Gear (Possible)',
+        confidence: 87,
+        coordinates: '15.1241° N, 73.5690° E',
+        size: '8.6 × 4.2',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '38%', left: '46%', width: '24%', height: '22%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+      {
+        id: 'det-003-3',
+        orderNumber: 3,
+        name: 'Debris',
+        type: 'Debris (Unknown)',
+        confidence: 76,
+        coordinates: '15.1228° N, 73.5712° E',
+        size: '5.1 × 2.9',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '50%', left: '62%', width: '16%', height: '22%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_017.tif',
+    filename: 'sonar_017.tif',
+    objectsCount: 2,
+    priority: 'Medium',
+    timestamp: '05 Sep 2026, 12:14 PM',
+    timeShort: '12:14 PM',
+    size: '11.8 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '12:14:32',
+    thumb: '/sonar-tile-1.jpg',
+    sonarImg: '/sonar-tile-1.jpg',
+    detections: [
+      {
+        id: 'det-017-1',
+        orderNumber: 1,
+        name: 'Fishing Net Cluster',
+        type: 'Fishing Gear (Cluster)',
+        confidence: 81,
+        coordinates: '15.1250° N, 73.5681° E',
+        size: '7.2 × 3.5',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '42%', left: '40%', width: '20%', height: '22%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+      {
+        id: 'det-017-2',
+        orderNumber: 2,
+        name: 'Metallic Scrap',
+        type: 'Debris (Metallic)',
+        confidence: 72,
+        coordinates: '15.1258° N, 73.5702° E',
+        size: '4.3 × 2.1',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '60%', left: '55%', width: '18%', height: '20%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_028.tif',
+    filename: 'sonar_028.tif',
+    objectsCount: 1,
+    priority: 'Medium',
+    timestamp: '05 Sep 2026, 12:21 PM',
+    timeShort: '12:21 PM',
+    size: '13.1 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '12:21:05',
+    thumb: '/sonar-tile-3.jpg',
+    sonarImg: '/sonar-tile-3.jpg',
+    detections: [
+      {
+        id: 'det-028-1',
+        orderNumber: 1,
+        name: 'Pipe Segment',
+        type: 'Pipeline / Pipe',
+        confidence: 78,
+        coordinates: '15.1262° N, 73.5695° E',
+        size: '15.6 × 1.2',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '35%', left: '30%', width: '38%', height: '18%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_042.tif',
+    filename: 'sonar_042.tif',
+    objectsCount: 4,
+    priority: 'High',
+    timestamp: '05 Sep 2026, 12:37 PM',
+    timeShort: '12:37 PM',
+    size: '14.2 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '12:37:40',
+    thumb: '/sonar-tile-2.jpg',
+    sonarImg: '/sonar-tile-2.jpg',
+    detections: [
+      {
+        id: 'det-042-1',
+        orderNumber: 1,
+        name: 'Sunken Cargo Hull',
+        type: 'Sunken Container / Hull',
+        confidence: 95,
+        coordinates: '15.1270° N, 73.5689° E',
+        size: '18.2 × 5.4',
+        color: 'red',
+        hexColor: '#ef4444',
+        borderColor: 'border-rose-500',
+        bgColor: 'bg-rose-500/10',
+        textColor: 'text-rose-600',
+        tagColor: 'bg-rose-500',
+        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
+        bbox: { top: '48%', left: '30%', width: '28%', height: '26%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+      {
+        id: 'det-042-2',
+        orderNumber: 2,
+        name: 'Ghost Gear Net',
+        type: 'Fishing Gear',
+        confidence: 89,
+        coordinates: '15.1275° N, 73.5710° E',
+        size: '7.8 × 4.0',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '28%', left: '55%', width: '20%', height: '22%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+      {
+        id: 'det-042-3',
+        orderNumber: 3,
+        name: 'Subsea Cable Anomaly',
+        type: 'Cable / Pipeline',
+        confidence: 84,
+        coordinates: '15.1281° N, 73.5670° E',
+        size: '22.0 × 0.8',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '65%', left: '22%', width: '32%', height: '16%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+      {
+        id: 'det-042-4',
+        orderNumber: 4,
+        name: 'Debris Cluster',
+        type: 'Debris (Unknown)',
+        confidence: 71,
+        coordinates: '15.1285° N, 73.5699° E',
+        size: '3.2 × 2.0',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '38%', left: '20%', width: '15%', height: '18%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_056.tif',
+    filename: 'sonar_056.tif',
+    objectsCount: 1,
+    priority: 'Low',
+    timestamp: '05 Sep 2026, 13:02 PM',
+    timeShort: '13:02 PM',
+    size: '10.9 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:02:18',
+    thumb: '/sonar-tile-1.jpg',
+    sonarImg: '/sonar-tile-1.jpg',
+    detections: [
+      {
+        id: 'det-056-1',
+        orderNumber: 1,
+        name: 'Small Acoustic Target',
+        type: 'Debris (Low Hazard)',
+        confidence: 54,
+        coordinates: '15.1292° N, 73.5721° E',
+        size: '2.1 × 1.5',
+        color: 'amber',
+        hexColor: '#10b981',
+        borderColor: 'border-emerald-500',
+        bgColor: 'bg-emerald-500/10',
+        textColor: 'text-emerald-600',
+        tagColor: 'bg-emerald-500',
+        badgeBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+        bbox: { top: '45%', left: '50%', width: '16%', height: '16%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_079.tif',
+    filename: 'sonar_079.tif',
+    objectsCount: 2,
+    priority: 'Medium',
+    timestamp: '05 Sep 2026, 13:18 PM',
+    timeShort: '13:18 PM',
+    size: '12.1 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:18:50',
+    thumb: '/sonar-tile-3.jpg',
+    sonarImg: '/sonar-tile-3.jpg',
+    detections: [
+      {
+        id: 'det-079-1',
+        orderNumber: 1,
+        name: 'Discarded Net',
+        type: 'Fishing Gear',
+        confidence: 82,
+        coordinates: '15.1305° N, 73.5684° E',
+        size: '9.1 × 4.8',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '35%', left: '35%', width: '25%', height: '24%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+      {
+        id: 'det-079-2',
+        orderNumber: 2,
+        name: 'Concrete Sinker',
+        type: 'Concrete Debris',
+        confidence: 71,
+        coordinates: '15.1311° N, 73.5701° E',
+        size: '4.0 × 3.8',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '55%', left: '60%', width: '18%', height: '18%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_083.tif',
+    filename: 'sonar_083.tif',
+    objectsCount: 3,
+    priority: 'High',
+    timestamp: '05 Sep 2026, 13:25 PM',
+    timeShort: '13:25 PM',
+    size: '13.5 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:25:12',
+    thumb: '/sonar-tile-2.jpg',
+    sonarImg: '/sonar-tile-2.jpg',
+    detections: [
+      {
+        id: 'det-083-1',
+        orderNumber: 1,
+        name: 'Pipeline Rupture',
+        type: 'Pipeline / Pipe',
+        confidence: 91,
+        coordinates: '15.1322° N, 73.5690° E',
+        size: '14.0 × 2.0',
+        color: 'red',
+        hexColor: '#ef4444',
+        borderColor: 'border-rose-500',
+        bgColor: 'bg-rose-500/10',
+        textColor: 'text-rose-600',
+        tagColor: 'bg-rose-500',
+        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
+        bbox: { top: '40%', left: '30%', width: '32%', height: '20%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+      {
+        id: 'det-083-2',
+        orderNumber: 2,
+        name: 'Trawl Net',
+        type: 'Fishing Gear',
+        confidence: 85,
+        coordinates: '15.1329° N, 73.5714° E',
+        size: '8.4 × 3.6',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '55%', left: '50%', width: '22%', height: '22%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+      {
+        id: 'det-083-3',
+        orderNumber: 3,
+        name: 'Metal Drum',
+        type: 'Debris (Hazardous)',
+        confidence: 77,
+        coordinates: '15.1335° N, 73.5675° E',
+        size: '2.5 × 2.2',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '25%', left: '20%', width: '14%', height: '14%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_091.tif',
+    filename: 'sonar_091.tif',
+    objectsCount: 1,
+    priority: 'Low',
+    timestamp: '05 Sep 2026, 13:40 PM',
+    timeShort: '13:40 PM',
+    size: '11.2 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:40:02',
+    thumb: '/sonar-tile-1.jpg',
+    sonarImg: '/sonar-tile-1.jpg',
+    detections: [
+      {
+        id: 'det-091-1',
+        orderNumber: 1,
+        name: 'Synthetic Line',
+        type: 'Cable / Rope',
+        confidence: 56,
+        coordinates: '15.1342° N, 73.5708° E',
+        size: '12.0 × 0.4',
+        color: 'amber',
+        hexColor: '#10b981',
+        borderColor: 'border-emerald-500',
+        bgColor: 'bg-emerald-500/10',
+        textColor: 'text-emerald-600',
+        tagColor: 'bg-emerald-500',
+        badgeBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+        bbox: { top: '48%', left: '40%', width: '28%', height: '12%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_095.tif',
+    filename: 'sonar_095.tif',
+    objectsCount: 2,
+    priority: 'Medium',
+    timestamp: '05 Sep 2026, 13:48 PM',
+    timeShort: '13:48 PM',
+    size: '12.8 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:48:22',
+    thumb: '/sonar-tile-3.jpg',
+    sonarImg: '/sonar-tile-3.jpg',
+    detections: [
+      {
+        id: 'det-095-1',
+        orderNumber: 1,
+        name: 'Concrete Caisson',
+        type: 'Concrete Debris',
+        confidence: 75,
+        coordinates: '15.1350° N, 73.5680° E',
+        size: '5.2 × 4.8',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '35%', left: '45%', width: '20%', height: '22%' },
+        thumb: '/sonar-tile-3.jpg',
+      },
+      {
+        id: 'det-095-2',
+        orderNumber: 2,
+        name: 'Unknown Acoustic Shadow',
+        type: 'Debris (Unknown)',
+        confidence: 66,
+        coordinates: '15.1358° N, 73.5702° E',
+        size: '3.6 × 2.4',
+        color: 'amber',
+        hexColor: '#f59e0b',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10',
+        textColor: 'text-amber-600',
+        tagColor: 'bg-amber-500',
+        badgeBg: 'bg-amber-50 text-amber-600 border border-amber-200',
+        bbox: { top: '58%', left: '25%', width: '16%', height: '18%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+    ],
+  },
+  {
+    id: 'sonar_099.tif',
+    filename: 'sonar_099.tif',
+    objectsCount: 2,
+    priority: 'High',
+    timestamp: '05 Sep 2026, 13:55 PM',
+    timeShort: '13:55 PM',
+    size: '14.0 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: '13:55:45',
+    thumb: '/sonar-tile-2.jpg',
+    sonarImg: '/sonar-tile-2.jpg',
+    detections: [
+      {
+        id: 'det-099-1',
+        orderNumber: 1,
+        name: 'Subsea Wellhead Structure',
+        type: 'Industrial / Infrastructure',
+        confidence: 94,
+        coordinates: '15.1365° N, 73.5695° E',
+        size: '10.5 × 6.2',
+        color: 'red',
+        hexColor: '#ef4444',
+        borderColor: 'border-rose-500',
+        bgColor: 'bg-rose-500/10',
+        textColor: 'text-rose-600',
+        tagColor: 'bg-rose-500',
+        badgeBg: 'bg-rose-50 text-rose-600 border border-rose-200',
+        bbox: { top: '44%', left: '35%', width: '26%', height: '24%' },
+        thumb: '/sonar-tile-2.jpg',
+      },
+      {
+        id: 'det-099-2',
+        orderNumber: 2,
+        name: 'Mooring Line Bundle',
+        type: 'Fishing Gear / Line',
+        confidence: 83,
+        coordinates: '15.1372° N, 73.5715° E',
+        size: '16.0 × 1.8',
+        color: 'blue',
+        hexColor: '#3b82f6',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        textColor: 'text-blue-600',
+        tagColor: 'bg-blue-500',
+        badgeBg: 'bg-blue-50 text-blue-600 border border-blue-200',
+        bbox: { top: '62%', left: '50%', width: '24%', height: '18%' },
+        thumb: '/sonar-tile-1.jpg',
+      },
+    ],
+  },
+];
+
+// Generate 90 blank sonar images to complete the 100-batch dataset
+const generatedEmptyBatchImages: BatchImageResult[] = Array.from({ length: 90 }, (_, i) => {
+  const num = (i + 4).toString().padStart(3, '0');
+  const filename = `sonar_${num}.tif`;
+  return {
+    id: filename,
+    filename,
+    objectsCount: 0,
+    priority: 'None' as const,
+    timestamp: `05 Sep 2026, 12:${(10 + (i % 50)).toString().padStart(2, '0')} PM`,
+    timeShort: `12:${(10 + (i % 50)).toString().padStart(2, '0')} PM`,
+    size: '11.5 MB',
+    location: 'Arabian Sea (West Coast)',
+    frequency: '900kHz',
+    swath: '50m',
+    speed: '3kts',
+    timeHud: `12:${(10 + (i % 50)).toString().padStart(2, '0')}:00`,
+    thumb: '/sonar-tile-1.jpg',
+    sonarImg: '/sonar-tile-1.jpg',
+    detections: [],
+  };
+});
+
+const allBatchSurveyImages: BatchImageResult[] = [
+  ...batchSurveyImagesData,
+  ...generatedEmptyBatchImages,
+];
+
 export const NaadvedhDashboard: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<DashboardScreen>('dashboard');
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
   const [notificationsList, setNotificationsList] = useState<NotificationItem[]>(initialNotifications);
   const [newSurveyStep, setNewSurveyStep] = useState<1 | 2 | 3 | 4>(1);
+
+  // Step 4 Batch Results State
+  const [selectedBatchImageId, setSelectedBatchImageId] = useState<string>('sonar_003.tif');
+  const [batchFilterTab, setBatchFilterTab] = useState<'all' | 'detections' | 'no_detections'>('detections');
+  const [batchSearchQuery, setBatchSearchQuery] = useState<string>('');
+  const [batchSortBy, setBatchSortBy] = useState<'priority' | 'time' | 'objects'>('priority');
+  const [batchSelectedImageIds, setBatchSelectedImageIds] = useState<string[]>(['sonar_003.tif']);
+  const [batchImageDisplayMode, setBatchImageDisplayMode] = useState<'detected' | 'original'>('detected');
+  const [batchZoomLevel, setBatchZoomLevel] = useState<number>(100);
+  const [selectedDetectionCardId, setSelectedDetectionCardId] = useState<string>('det-003-1');
+  const [batchPaginationPage, setBatchPaginationPage] = useState<number>(1);
 
   // Survey Details State
   const [surveyName, setSurveyName] = useState<string>('Arabian Sea Survey - Sept 2025');
@@ -429,9 +1071,7 @@ export const NaadvedhDashboard: React.FC = () => {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(95);
 
   // Analysis / Results State
-  const [analysisViewMode, setAnalysisViewMode] = useState<'detected' | 'original'>('detected');
   const [detections] = useState<DetectionItem[]>(initialDetections);
-  const [selectedDetectionId, setSelectedDetectionId] = useState<string>(initialDetections[0].id);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [isSupportedFormatsModalOpen, setIsSupportedFormatsModalOpen] = useState<boolean>(false);
 
@@ -1441,14 +2081,49 @@ export const NaadvedhDashboard: React.FC = () => {
         {/* ========================================================= */}
         {currentScreen === 'new-survey' && (
           <main className="p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl mx-auto w-full">
-            {/* Title & Subtitle */}
-            <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
-                New Survey
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.
-              </p>
+            {/* Title & Subtitle + Actions */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight">
+                  {newSurveyStep === 4 ? 'Survey Results' : 'New Survey'}
+                </h1>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {newSurveyStep === 4
+                    ? 'Batch analysis completed. Review detected objects and explore results across all processed images.'
+                    : 'Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.'}
+                </p>
+              </div>
+
+              {newSurveyStep === 4 && (
+                <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                  <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs shadow-2xs">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="font-bold">Processing Completed</span>
+                      <span className="hidden sm:inline text-slate-400 mx-1.5">|</span>
+                      <span className="block sm:inline text-[10.5px] font-mono text-emerald-700">100 / 100 images processed in 12 min 34 sec</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentScreen('reports')}
+                    className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-slate-500" />
+                    <span>View Report</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleExportCSV}
+                    className="flex items-center space-x-1.5 px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export Results</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 4-Step Stepper Header (Images 2, 3, 4) */}
@@ -2172,143 +2847,863 @@ export const NaadvedhDashboard: React.FC = () => {
             {/* ------------------------------------------------------------- */}
             {/* STEP 4: RESULTS / ANALYSIS STUDIO (Image 5 Minimalist Style) */}
             {/* ------------------------------------------------------------- */}
-            {newSurveyStep === 4 && (
-              <div className="space-y-3">
-                {/* Detection Results Viewport */}
-                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 sm:p-4 space-y-2.5">
-                  {/* Header Action Bar */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
-                          Detection results
+            {/* ------------------------------------------------------------- */}
+            {/* STEP 4: BATCH SURVEY RESULTS STUDIO (Matching Image 1)         */}
+            {/* ------------------------------------------------------------- */}
+            {newSurveyStep === 4 && (() => {
+              // Helper calculations for Batch Results
+              const filteredBatchImages = allBatchSurveyImages
+                .filter(img => {
+                  if (batchFilterTab === 'detections') return img.objectsCount > 0;
+                  if (batchFilterTab === 'no_detections') return img.objectsCount === 0;
+                  return true;
+                })
+                .filter(img =>
+                  img.filename.toLowerCase().includes(batchSearchQuery.toLowerCase())
+                )
+                .sort((a, b) => {
+                  if (batchSortBy === 'priority') {
+                    const priorityRank = { High: 3, Medium: 2, Low: 1, None: 0 };
+                    return priorityRank[b.priority] - priorityRank[a.priority];
+                  }
+                  if (batchSortBy === 'objects') {
+                    return b.objectsCount - a.objectsCount;
+                  }
+                  return a.filename.localeCompare(b.filename);
+                });
+
+              const itemsPerPage = 6;
+              const totalPages = Math.max(1, Math.ceil(filteredBatchImages.length / itemsPerPage));
+              const currentPage = Math.min(batchPaginationPage, totalPages);
+              const paginatedImages = filteredBatchImages.slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              );
+
+              const currentBatchImage =
+                allBatchSurveyImages.find(img => img.id === selectedBatchImageId) ||
+                batchSurveyImagesData[0];
+
+              const currentIndex = filteredBatchImages.findIndex(img => img.id === currentBatchImage.id);
+
+              const handlePrevImage = () => {
+                if (currentIndex > 0) {
+                  const prevImg = filteredBatchImages[currentIndex - 1];
+                  setSelectedBatchImageId(prevImg.id);
+                  if (prevImg.detections.length > 0) {
+                    setSelectedDetectionCardId(prevImg.detections[0].id);
+                  }
+                }
+              };
+
+              const handleNextImage = () => {
+                if (currentIndex < filteredBatchImages.length - 1) {
+                  const nextImg = filteredBatchImages[currentIndex + 1];
+                  setSelectedBatchImageId(nextImg.id);
+                  if (nextImg.detections.length > 0) {
+                    setSelectedDetectionCardId(nextImg.detections[0].id);
+                  }
+                }
+              };
+
+              const toggleImageSelect = (id: string, e: React.MouseEvent) => {
+                e.stopPropagation();
+                setBatchSelectedImageIds(prev =>
+                  prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+                );
+              };
+
+              return (
+                <div className="space-y-3.5">
+                  {/* ========================================================= */}
+                  {/* 1. TOP SUMMARY KPI CARDS (6 Cards matching Image 1)       */}
+                  {/* ========================================================= */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+                    {/* Card 1: Total Images Processed */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                        <ImageIcon className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          100
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          Total Images Processed
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Images with Detections */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shrink-0">
+                        <Target className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          10
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          Images with Detections (10%)
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Total Objects Detected */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                        <Crosshair className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          28
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          Total Objects Detected
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 4: High Priority Objects */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                        <AlertTriangle className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          5
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          High Priority Objects
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 5: Medium Priority Objects */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                        <AlertCircle className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          12
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          Medium Priority Objects
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 6: Low Priority Objects */}
+                    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 flex items-center space-x-3 transition-all hover:shadow-xs hover:border-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                        <CheckCircle2 className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-slate-900 font-['Space_Grotesk'] leading-tight">
+                          11
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-500 leading-tight truncate">
+                          Low Priority Objects
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* 2. MAIN 3-COLUMN STUDIO SECTION                           */}
+                  {/* ========================================================= */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+                    {/* ------------------------------------------------------- */}
+                    {/* LEFT COLUMN: Images List & Filter (lg:col-span-3)       */}
+                    {/* ------------------------------------------------------- */}
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3 flex flex-col space-y-2.5">
+                      {/* Header with Title & Options */}
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                          Images ({allBatchSurveyImages.length})
                         </h3>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                          {detections.length} objects
+                        <button
+                          type="button"
+                          className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                          title="Options"
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Filter Tabs: All / Detections / No Detections */}
+                      <div className="flex items-center p-1 bg-slate-100/90 rounded-lg text-xs font-semibold">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBatchFilterTab('all');
+                            setBatchPaginationPage(1);
+                          }}
+                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'all'
+                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                            : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                          All (100)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBatchFilterTab('detections');
+                            setBatchPaginationPage(1);
+                          }}
+                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'detections'
+                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                            : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                          Detections (10)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBatchFilterTab('no_detections');
+                            setBatchPaginationPage(1);
+                          }}
+                          className={`flex-1 py-1 px-1.5 rounded-md text-center transition-all cursor-pointer ${batchFilterTab === 'no_detections'
+                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                            : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                          No Detections (90)
+                        </button>
+                      </div>
+
+                      {/* Search Bar & Sort Dropdown */}
+                      <div className="flex items-center gap-1.5">
+                        <div className="relative flex-1">
+                          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Search images..."
+                            value={batchSearchQuery}
+                            onChange={e => {
+                              setBatchSearchQuery(e.target.value);
+                              setBatchPaginationPage(1);
+                            }}
+                            className="w-full pl-8 pr-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 bg-slate-50/50"
+                          />
+                        </div>
+
+                        <div className="relative">
+                          <select
+                            value={batchSortBy}
+                            onChange={e => setBatchSortBy(e.target.value as any)}
+                            className="appearance-none pl-2 pr-6 py-1.5 rounded-lg border border-slate-200 text-[11px] font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                          >
+                            <option value="priority">Sort by: Priority</option>
+                            <option value="objects">Sort by: Objects</option>
+                            <option value="time">Sort by: Name</option>
+                          </select>
+                          <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* Image Items List */}
+                      <div className="space-y-1.5 pt-0.5">
+                        {paginatedImages.length === 0 ? (
+                          <div className="py-8 text-center text-xs text-slate-400">
+                            No images match your filter.
+                          </div>
+                        ) : (
+                          paginatedImages.map(item => {
+                            const isSelected = selectedBatchImageId === item.id;
+                            const isChecked = batchSelectedImageIds.includes(item.id);
+
+                            return (
+                              <div
+                                key={item.id}
+                                onClick={() => {
+                                  setSelectedBatchImageId(item.id);
+                                  if (item.detections.length > 0) {
+                                    setSelectedDetectionCardId(item.detections[0].id);
+                                  }
+                                }}
+                                className={`flex items-center gap-2.5 p-2 rounded-xl transition-all cursor-pointer border ${isSelected
+                                  ? 'border-rose-400 bg-rose-50/40 shadow-xs ring-1 ring-rose-300'
+                                  : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/60'
+                                  }`}
+                              >
+                                {/* Checkbox */}
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={e => toggleImageSelect(item.id, e as any)}
+                                  className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                />
+
+                                {/* Thumbnail */}
+                                <div className="w-12 h-10 rounded-md overflow-hidden bg-slate-900 border border-slate-200 shrink-0">
+                                  <img
+                                    src={item.thumb}
+                                    alt={item.filename}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+
+                                {/* Content Details */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between">
+                                    <span className={`text-xs truncate ${isSelected ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'}`}>
+                                      {item.filename}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center justify-between mt-0.5">
+                                    <span className="text-[11px] font-mono text-slate-500">
+                                      {item.objectsCount > 0 ? `${item.objectsCount} objects` : '0 objects'}
+                                    </span>
+
+                                    {item.priority === 'High' && (
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-rose-100/80 text-rose-700 border border-rose-200/80">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                        <span>High</span>
+                                      </span>
+                                    )}
+                                    {item.priority === 'Medium' && (
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
+                                        <span>Medium</span>
+                                      </span>
+                                    )}
+                                    {item.priority === 'Low' && (
+                                      <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
+                                        <span>Low</span>
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Timestamp below when medium/low */}
+                                  {item.timeShort && (
+                                    <div className="text-[9.5px] text-slate-400 font-mono text-right mt-0.5">
+                                      {item.timeShort}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+
+                      {/* Pagination Controls matching Image 1: < 1 2 3 ... 10 > */}
+                      <div className="flex items-center justify-center gap-1 pt-2 border-t border-slate-100 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setBatchPaginationPage(p => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          className="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+
+                        {[1, 2, 3].map(pageNum => (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => setBatchPaginationPage(pageNum)}
+                            className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold cursor-pointer ${currentPage === pageNum
+                              ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                              : 'text-slate-600 hover:bg-slate-100'
+                              }`}
+                          >
+                            {pageNum}
+                          </button>
+                        ))}
+
+                        <span className="text-slate-400 px-1 text-xs">...</span>
+
+                        <button
+                          type="button"
+                          onClick={() => setBatchPaginationPage(10)}
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold cursor-pointer ${currentPage === 10
+                            ? 'bg-blue-600 text-white font-bold shadow-2xs'
+                            : 'text-slate-600 hover:bg-slate-100'
+                            }`}
+                        >
+                          10
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setBatchPaginationPage(p => Math.min(10, p + 1))}
+                          disabled={currentPage === 10}
+                          className="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* ------------------------------------------------------- */}
+                    {/* CENTER COLUMN: Sonar Canvas & Viewport (lg:col-span-5.5)*/}
+                    {/* ------------------------------------------------------- */}
+                    <div className="lg:col-span-6 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 flex flex-col space-y-2.5">
+                      {/* Top Action & Navigation Row */}
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 font-['Space_Grotesk']">
+                            {currentBatchImage.filename}
+                          </h3>
+                          {currentBatchImage.priority === 'High' && (
+                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                              <span>High Priority</span>
+                            </span>
+                          )}
+                          {currentBatchImage.priority === 'Medium' && (
+                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                              <span>Medium Priority</span>
+                            </span>
+                          )}
+                          {currentBatchImage.priority === 'Low' && (
+                            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              <span>Low Priority</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Prev / Next Nav Buttons */}
+                        <div className="flex items-center space-x-1.5">
+                          <button
+                            type="button"
+                            onClick={handlePrevImage}
+                            disabled={currentIndex <= 0}
+                            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                          >
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                            <span>Previous</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleNextImage}
+                            disabled={currentIndex >= filteredBatchImages.length - 1}
+                            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-colors"
+                          >
+                            <span>Next</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Image Sub-Metadata Row */}
+                      <div className="flex flex-wrap items-center gap-3 text-slate-500 text-xs">
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{currentBatchImage.timestamp}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Database className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{currentBatchImage.size}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{currentBatchImage.location}</span>
+                        </div>
+                      </div>
+
+                      {/* Main Sonar Viewport Canvas with Bounding Boxes */}
+                      <div className="relative rounded-xl overflow-hidden border border-slate-900 bg-slate-950 aspect-[16/10] sm:aspect-[16/9] shadow-inner select-none">
+                        <img
+                          src={currentBatchImage.sonarImg}
+                          alt="Side-Scan Sonar Analysis"
+                          className="w-full h-full object-cover select-none transition-transform duration-200"
+                          style={{
+                            transform: `scale(${batchZoomLevel / 100})`,
+                          }}
+                        />
+
+                        {/* Depth Gauge on Left Side (0m, 10m, 20m, 30m, 40m) */}
+                        <div className="absolute left-1.5 top-2 bottom-2 flex flex-col justify-between text-[9.5px] font-mono font-bold text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] pointer-events-none z-10">
+                          <span>0m</span>
+                          <span>10m</span>
+                          <span>20m</span>
+                          <span>30m</span>
+                          <span>40m</span>
+                        </div>
+
+                        {/* Acoustic Nadir Line & Track Label */}
+                        <div className="absolute top-0 bottom-0 left-10 w-px bg-cyan-400/40 border-r border-dashed border-cyan-300/60 pointer-events-none"></div>
+                        <div className="absolute top-2 left-12 px-2 py-0.5 rounded bg-black/80 text-cyan-300 font-mono text-[9px] font-semibold border border-cyan-500/30 backdrop-blur-xs pointer-events-none z-10">
+                          NADIR TRACK - SSS 900 kHz
+                        </div>
+
+                        {/* Top-Right HUD Telemetry Overlay */}
+                        <div className="absolute top-2 right-2 px-2.5 py-1.5 rounded-lg bg-black/85 border border-slate-700 text-slate-200 font-mono text-[9.5px] leading-snug backdrop-blur-xs text-right shadow-xs pointer-events-none z-10">
+                          <div>Time: {currentBatchImage.timeHud}</div>
+                          <div>Freq: {currentBatchImage.frequency}</div>
+                          <div>Swath: {currentBatchImage.swath}</div>
+                          <div>Speed: {currentBatchImage.speed}</div>
+                        </div>
+
+                        {/* Scale Bar at Bottom Right: [ 50 m ] */}
+                        <div className="absolute bottom-3 right-3 px-3 py-1 rounded bg-black/80 border border-slate-700 text-white font-mono text-[9px] flex items-center justify-center space-x-1 pointer-events-none z-10">
+                          <span className="w-1.5 h-1 border-l border-white inline-block"></span>
+                          <span className="w-14 h-0.5 bg-white inline-block"></span>
+                          <span className="px-1 text-slate-200 font-bold">50 m</span>
+                          <span className="w-14 h-0.5 bg-white inline-block"></span>
+                          <span className="w-1.5 h-1 border-r border-white inline-block"></span>
+                        </div>
+
+                        {/* Bounding Boxes for Detections */}
+                        {batchImageDisplayMode === 'detected' && (
+                          <>
+                            {currentBatchImage.detections.map(det => {
+                              const isCardSelected = selectedDetectionCardId === det.id;
+
+                              // Coordinate mapping based on orderNumber for sonar_003.tif
+                              let boxStyle: React.CSSProperties = {
+                                top: '58%',
+                                left: '16%',
+                                width: '28%',
+                                height: '24%',
+                              };
+
+                              if (det.orderNumber === 1) {
+                                // Sunken container (red)
+                                boxStyle = { top: '55%', left: '16%', width: '28%', height: '25%' };
+                              } else if (det.orderNumber === 2) {
+                                // Fishing gear (blue)
+                                boxStyle = { top: '25%', left: '38%', width: '28%', height: '28%' };
+                              } else if (det.orderNumber === 3) {
+                                // Debris (amber)
+                                boxStyle = { top: '48%', left: '68%', width: '20%', height: '28%' };
+                              }
+
+                              const boxBorderColor =
+                                det.color === 'red'
+                                  ? 'border-rose-500'
+                                  : det.color === 'blue'
+                                    ? 'border-blue-500'
+                                    : 'border-amber-500';
+
+                              const boxBgColor =
+                                det.color === 'red'
+                                  ? 'bg-rose-500/15'
+                                  : det.color === 'blue'
+                                    ? 'bg-blue-500/15'
+                                    : 'bg-amber-500/15';
+
+                              const tagBg =
+                                det.color === 'red'
+                                  ? 'bg-rose-500 text-white'
+                                  : det.color === 'blue'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-amber-500 text-white';
+
+                              return (
+                                <div
+                                  key={det.id}
+                                  onClick={() => setSelectedDetectionCardId(det.id)}
+                                  className={`absolute border-2 transition-all cursor-pointer ${boxBorderColor} ${boxBgColor} ${isCardSelected ? 'ring-2 ring-white shadow-lg' : ''
+                                    }`}
+                                  style={boxStyle}
+                                >
+                                  <span
+                                    className={`absolute -top-5 left-0 px-2 py-0.5 rounded text-[9.5px] font-mono font-bold shadow-xs whitespace-nowrap ${tagBg}`}
+                                  >
+                                    {det.orderNumber}. {det.name} ({det.confidence}%)
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
+
+                      {/* Bottom Toolbar: Mode Switcher & Zoom Controls */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-1">
+                        {/* Mode Switcher */}
+                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg text-xs font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => setBatchImageDisplayMode('original')}
+                            className={`px-3 py-1 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'original'
+                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                              : 'text-slate-600 hover:text-slate-900'
+                              }`}
+                          >
+                            Original Image
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBatchImageDisplayMode('detected')}
+                            className={`px-3 py-1 rounded-md transition-all cursor-pointer ${batchImageDisplayMode === 'detected'
+                              ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                              : 'text-slate-600 hover:text-slate-900'
+                              }`}
+                          >
+                            Detected Objects
+                          </button>
+                        </div>
+
+                        {/* Zoom & Inspect Tools */}
+                        <div className="flex items-center space-x-1 text-slate-600">
+                          <button
+                            type="button"
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            title="Inspect"
+                          >
+                            <Search className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBatchZoomLevel(z => Math.max(50, z - 10))}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            title="Zoom Out"
+                          >
+                            <ZoomOut className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="text-xs font-mono font-bold px-1 text-slate-700">
+                            {batchZoomLevel}%
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setBatchZoomLevel(z => Math.min(200, z + 10))}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            title="Zoom In"
+                          >
+                            <ZoomIn className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBatchZoomLevel(100)}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                            title="Fullscreen"
+                          >
+                            <Maximize2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ------------------------------------------------------- */}
+                    {/* RIGHT COLUMN: Detections in This Image (lg:col-span-3.5)*/}
+                    {/* ------------------------------------------------------- */}
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 flex flex-col space-y-2.5">
+                      {/* Header */}
+                      <h3 className="text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        Detections in This Image ({currentBatchImage.detections.length})
+                      </h3>
+
+                      {/* List of Detection Cards matching Image 1 */}
+                      <div className="space-y-2.5">
+                        {currentBatchImage.detections.length === 0 ? (
+                          <div className="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-slate-200/60">
+                            No objects detected in this image.
+                          </div>
+                        ) : (
+                          currentBatchImage.detections.map(det => {
+                            const isSelected = selectedDetectionCardId === det.id;
+
+                            const accentStripeColor =
+                              det.color === 'red'
+                                ? 'bg-rose-500'
+                                : det.color === 'blue'
+                                  ? 'bg-blue-500'
+                                  : 'bg-amber-500';
+
+                            const confidenceTextColor =
+                              det.color === 'red'
+                                ? 'text-rose-600'
+                                : det.color === 'blue'
+                                  ? 'text-blue-600'
+                                  : 'text-amber-600';
+
+                            return (
+                              <div
+                                key={det.id}
+                                onClick={() => setSelectedDetectionCardId(det.id)}
+                                className={`rounded-xl border transition-all cursor-pointer overflow-hidden p-2.5 ${isSelected
+                                  ? 'border-blue-300 bg-blue-50/30 shadow-2xs ring-1 ring-blue-200'
+                                  : 'border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                                  }`}
+                              >
+                                {/* Card Title with colored accent bar & confidence */}
+                                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                  <div className="flex items-center space-x-1.5">
+                                    <span className={`w-1.5 h-3.5 rounded-full ${accentStripeColor}`}></span>
+                                    <h4 className="text-xs font-bold text-slate-900">
+                                      {det.orderNumber}. {det.name}
+                                    </h4>
+                                  </div>
+                                  <span className={`text-xs font-black font-mono ${confidenceTextColor}`}>
+                                    {det.confidence}%
+                                  </span>
+                                </div>
+
+                                {/* Body with Thumbnail and Metadata Table */}
+                                <div className="flex items-center gap-3 pt-2">
+                                  {/* Cropped Detection Thumbnail */}
+                                  <div className="w-14 h-14 rounded-lg bg-black border border-slate-200 overflow-hidden shrink-0">
+                                    <img
+                                      src={
+                                        det.orderNumber === 1
+                                          ? '/sonar-tile-2.jpg'
+                                          : det.orderNumber === 2
+                                            ? '/sonar-tile-3.jpg'
+                                            : '/sonar-tile-1.jpg'
+                                      }
+                                      alt={det.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+
+                                  {/* Key-Value Details */}
+                                  <div className="flex-1 min-w-0 space-y-0.5 text-[11px]">
+                                    <div className="flex items-center justify-between text-slate-500">
+                                      <span className="text-[10.5px]">Type</span>
+                                      <span className="font-semibold text-slate-800 truncate max-w-[110px]">
+                                        {det.type}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-slate-500">
+                                      <span className="text-[10.5px]">Coordinates</span>
+                                      <span className="font-mono text-[10px] text-slate-700 truncate max-w-[110px]">
+                                        {det.coordinates}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-slate-500">
+                                      <span className="text-[10.5px]">Size (m)</span>
+                                      <span className="font-mono text-[10.5px] text-slate-700">
+                                        {det.size}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-slate-500">
+                                      <span className="text-[10.5px]">Confidence</span>
+                                      <span className="font-mono font-bold text-emerald-600 text-[10.5px]">
+                                        {det.confidence}%
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Right Chevron */}
+                                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* 3. BOTTOM ANALYTICS & DISTRIBUTION PANEL                  */}
+                  {/* ========================================================= */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+                    {/* Distribution Card: 100 Blocks Grid (lg:col-span-8) */}
+                    <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-3">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        Detection Distribution Across All Images
+                      </h3>
+
+                      {/* 100-Block Visualization (2 rows of 50 blocks) */}
+                      <div className="grid grid-flow-row grid-cols-25 sm:grid-cols-50 gap-1 overflow-x-auto py-1">
+                        {allBatchSurveyImages.map(img => {
+                          let blockColor = 'bg-slate-200 hover:bg-slate-300';
+                          if (img.priority === 'High') {
+                            blockColor = 'bg-rose-500 hover:bg-rose-600';
+                          } else if (img.priority === 'Medium') {
+                            blockColor = 'bg-amber-500 hover:bg-amber-600';
+                          } else if (img.priority === 'Low') {
+                            blockColor = 'bg-emerald-500 hover:bg-emerald-600';
+                          }
+
+                          const isCurrent = img.id === selectedBatchImageId;
+
+                          return (
+                            <div
+                              key={img.id}
+                              onClick={() => {
+                                setSelectedBatchImageId(img.id);
+                                if (img.detections.length > 0) {
+                                  setSelectedDetectionCardId(img.detections[0].id);
+                                }
+                              }}
+                              className={`h-4.5 rounded-xs transition-all cursor-pointer ${blockColor} ${isCurrent ? 'ring-2 ring-blue-600 ring-offset-1 scale-110 z-10' : ''
+                                }`}
+                              title={`${img.filename}: ${img.objectsCount} objects (${img.priority})`}
+                            />
+                          );
+                        })}
+                      </div>
+
+                      {/* Legend & Footnote matching Image 1 */}
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1 text-xs text-slate-500">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1.5">
+                            <span className="w-2.5 h-2.5 rounded-xs bg-rose-500"></span>
+                            <span className="text-[11px] font-medium text-slate-600">
+                              Images with detections (10)
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-1.5">
+                            <span className="w-2.5 h-2.5 rounded-xs bg-slate-300"></span>
+                            <span className="text-[11px] font-medium text-slate-600">
+                              Images without detections (90)
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-[10.5px] font-mono text-slate-400">
+                          Each block represents one image
                         </span>
                       </div>
-                      <p className="text-[10.5px] font-mono text-slate-400 mt-0.5">
-                        {selectedFiles[0]?.name || 'a-try-1.jpeg'} &bull; 05 Sep 2026 at 12:08 PM
-                      </p>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={handleExportCSV}
-                        className="flex items-center space-x-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                      >
-                        <Download className="w-3 h-3 text-slate-500" />
-                        <span>Report</span>
-                      </button>
+                    {/* Priority Breakdown Card: Progress Bars (lg:col-span-4)   */}
+                    <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-3.5 space-y-3">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
+                        Priority Breakdown (28 objects)
+                      </h3>
 
-                      <button
-                        onClick={() => window.print()}
-                        className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold shadow-xs cursor-pointer"
-                      >
-                        <Printer className="w-3 h-3" />
-                        <span>Print</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* View Switcher: Detected image vs Original image */}
-                  <div className="flex items-center space-x-1.5">
-                    <button
-                      onClick={() => setAnalysisViewMode('detected')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'detected'
-                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                        : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-                        }`}
-                    >
-                      Detected image
-                    </button>
-                    <button
-                      onClick={() => setAnalysisViewMode('original')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${analysisViewMode === 'original'
-                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                        : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-                        }`}
-                    >
-                      Original image
-                    </button>
-                  </div>
-
-                  {/* Main Sonar Viewport with Interactive Bounding Box */}
-                  <div className="relative rounded-xl overflow-hidden border border-slate-300 bg-black aspect-16/9 max-h-[320px]">
-                    <img
-                      src="/sonar-tile-3.jpg"
-                      alt="Acoustic detection inspection"
-                      className="w-full h-full object-cover select-none"
-                    />
-
-                    {/* Bounding Box 1: Ghost Net or Container */}
-                    {analysisViewMode === 'detected' && (
-                      <>
-                        <div
-                          onClick={() => setSelectedDetectionId('DET-001')}
-                          className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-001'
-                            ? 'border-cyan-400 bg-cyan-400/10 shadow-[0_0_12px_rgba(34,211,238,0.5)]'
-                            : 'border-blue-500 bg-blue-500/10'
-                            }`}
-                          style={{ top: '24%', left: '46%', width: '22%', height: '34%' }}
-                        >
-                          <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-500 text-white shadow-xs">
-                            1. Sunken Container &bull; 88%
-                          </span>
+                      <div className="space-y-2.5 pt-1 text-xs">
+                        {/* High Priority Bar */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-slate-700 text-xs">High Priority</span>
+                            <span className="font-mono font-bold text-slate-900 text-xs">5 (18%)</span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full bg-rose-500 rounded-full" style={{ width: '18%' }}></div>
+                          </div>
                         </div>
 
-                        <div
-                          onClick={() => setSelectedDetectionId('DET-002')}
-                          className={`absolute border-2 transition-all cursor-pointer ${selectedDetectionId === 'DET-002'
-                            ? 'border-rose-400 bg-rose-400/10 shadow-[0_0_12px_rgba(244,63,94,0.5)]'
-                            : 'border-rose-500 bg-rose-500/10'
-                            }`}
-                          style={{ top: '65%', left: '20%', width: '18%', height: '22%' }}
-                        >
-                          <span className="absolute -top-5 left-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-500 text-white shadow-xs">
-                            2. Ghost Net &bull; 93%
-                          </span>
+                        {/* Medium Priority Bar */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-slate-700 text-xs">Medium Priority</span>
+                            <span className="font-mono font-bold text-slate-900 text-xs">12 (43%)</span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full bg-amber-500 rounded-full" style={{ width: '43%' }}></div>
+                          </div>
                         </div>
-                      </>
-                    )}
 
-                    {/* Acoustic Nadir Line indicator */}
-                    <div className="absolute top-0 bottom-0 left-12 w-0.5 bg-cyan-400/40 border-r border-dashed border-cyan-200/50"></div>
-                    <div className="absolute bottom-2 left-2 px-1.5 py-0.2 rounded bg-black/70 text-cyan-300 font-mono text-[9px]">
-                      NADIR TRACK &bull; SSS 900 kHz
-                    </div>
-                  </div>
-
-                  {/* Detected Object Details Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-                    {detections.map(d => (
-                      <div
-                        key={d.id}
-                        onClick={() => setSelectedDetectionId(d.id)}
-                        className={`p-2 rounded-lg border transition-all cursor-pointer ${selectedDetectionId === d.id
-                          ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
-                          : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                          }`}
-                      >
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[9.5px] font-mono font-bold text-slate-500">
-                            {d.id}
-                          </span>
-                          <span
-                            className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded"
-                            style={{ color: d.color, backgroundColor: `${d.color}15` }}
-                          >
-                            {d.confidence}%
-                          </span>
+                        {/* Low Priority Bar */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-slate-700 text-xs">Low Priority</span>
+                            <span className="font-mono font-bold text-slate-900 text-xs">11 (39%)</span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '39%' }}></div>
+                          </div>
                         </div>
-                        <h4 className="text-xs font-bold text-slate-900 truncate">{d.type}</h4>
-                        <p className="text-[10px] text-slate-500 truncate">{d.lat}</p>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </main>
         )}
 
