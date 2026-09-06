@@ -40,7 +40,6 @@ import {
   ChevronRight,
   Database,
   HelpCircle,
-  Code,
   MoreHorizontal,
   AlertCircle,
   Target,
@@ -3236,6 +3235,55 @@ export const NaadvedhDashboard: React.FC = () => {
               </div>
             </div>
 
+            {/* Survey Statistics */}
+            <div className="space-y-1.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
+                Survey Statistics
+              </h4>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <ImageIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">5</div>
+                    <div className="text-[10px] text-slate-500">Images Processed</div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <Crosshair className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">12</div>
+                    <div className="text-[10px] text-slate-500">Total Detections</div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">2</div>
+                    <div className="text-[10px] text-slate-500">High Priority</div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">9</div>
+                    <div className="text-[10px] text-slate-500">Verified</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Top Grid: Map Viewport (Left) + Detections List (Right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
               {/* Left Column (7 cols): Map Box */}
@@ -3401,113 +3449,6 @@ export const NaadvedhDashboard: React.FC = () => {
                   </button>
                 </div>
               </div>
-            </div>
-
-            {/* Bottom Row: Survey Statistics (Left) + Export Results (Right) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-              {/* Left Column (8 cols): Survey Statistics */}
-              <div className="lg:col-span-8 space-y-1.5">
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-['Space_Grotesk']">
-                  Survey Statistics
-                </h4>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                      <ImageIcon className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-extrabold text-slate-900 font-mono">5</div>
-                      <div className="text-[10px] text-slate-500">Images Processed</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                      <Crosshair className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-extrabold text-slate-900 font-mono">12</div>
-                      <div className="text-[10px] text-slate-500">Total Detections</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-extrabold text-slate-900 font-mono">2</div>
-                      <div className="text-[10px] text-slate-500">High Priority</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs p-2 sm:p-2.5 flex items-center space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-extrabold text-slate-900 font-mono">9</div>
-                      <div className="text-[10px] text-slate-500">Verified</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column (4 cols): Export Results */}
-              <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 space-y-1.5 flex flex-col justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 font-['Space_Grotesk']">
-                    Export Results
-                  </h4>
-                  <p className="text-[10px] text-slate-500">
-                    Download detections with location, classification and confidence scores.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-1.5 pt-1">
-                  <button
-                    type="button"
-                    onClick={handleExportCSV}
-                    className="flex items-center justify-center space-x-1 px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[10.5px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                  >
-                    <Code className="w-3 h-3 text-slate-500" />
-                    <span>JSON</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleExportCSV}
-                    className="flex items-center justify-center space-x-1 px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[10.5px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                  >
-                    <FileSpreadsheet className="w-3 h-3 text-emerald-600" />
-                    <span>CSV</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => window.print()}
-                    className="flex items-center justify-center space-x-1 px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-[10.5px] font-semibold text-slate-700 shadow-2xs cursor-pointer"
-                  >
-                    <Printer className="w-3 h-3 text-blue-600" />
-                    <span>PDF</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Back Button */}
-            <div className="pt-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentScreen('new-survey');
-                  setNewSurveyStep(4);
-                }}
-                className="text-xs font-bold text-slate-700 hover:text-blue-600 flex items-center space-x-1.5 px-3 py-1 rounded-lg border border-slate-200 bg-white shadow-2xs cursor-pointer transition-colors"
-              >
-                <span>&larr; Back to Results</span>
-              </button>
             </div>
           </main>
         )}
