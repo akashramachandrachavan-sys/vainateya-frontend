@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
 import confetti from 'canvas-confetti';
 import {
@@ -281,6 +281,16 @@ export const NaadvedhDashboard: React.FC = () => {
     };
     loadSurveyAssets();
   }, [activeSurveyId]);
+
+  // Current formatted date for Dashboard overview (e.g. "Sun, 6 Sep 2026")
+  const formattedToday = useMemo(() => {
+    const d = new Date();
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const day = d.getDate();
+    const month = d.toLocaleDateString('en-US', { month: 'short' });
+    const year = d.getFullYear();
+    return `${dayName}, ${day} ${month} ${year}`;
+  }, []);
 
   // Derived Survey Catalog Data from Backend
   const surveyCatalogData: SurveyCatalogItem[] = backendSurveys.map((srv, idx) => ({
@@ -798,8 +808,8 @@ export const NaadvedhDashboard: React.FC = () => {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-[#F8FAFC] text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* 1. Minimalist White Sidebar (Narrower by ~10px for more workspace) */}
-      <aside className="w-52 sm:w-[228px] bg-white border-r border-slate-200 text-slate-700 flex flex-col justify-between shrink-0 select-none z-30">
+      {/* 1. Minimalist White Sidebar (Narrowed by 10px for more workspace) */}
+      <aside className="w-[198px] sm:w-[218px] bg-white border-r border-slate-200 text-slate-700 flex flex-col justify-between shrink-0 select-none z-30">
         <div>
           {/* Logo & Brand Header */}
           <div className="p-3.5 sm:p-4 flex items-center space-x-2.5 border-b border-slate-100">
@@ -1077,7 +1087,7 @@ export const NaadvedhDashboard: React.FC = () => {
               </div>
 
               <div className="text-[11px] font-mono text-slate-500 font-medium bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs">
-                Tue, 23 Sep 2025
+                {formattedToday}
               </div>
             </div>
 
@@ -1242,125 +1252,70 @@ export const NaadvedhDashboard: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="divide-y divide-slate-100 space-y-0.5">
-                  {/* Survey 1 */}
-                  <div
-                    onClick={() => {
-                      setCurrentScreen('new-survey');
-                      setNewSurveyStep(4);
-                    }}
-                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <img
-                        src="/sonar-tile-1.jpg"
-                        alt="Arabian Sea Survey"
-                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
-                          Arabian Sea Survey
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-mono">
-                          23 Sep 2025 &bull; 24 images
-                        </p>
-                      </div>
+                {surveyCatalogData.length === 0 ? (
+                  <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-400 mb-2">
+                      <FolderKanban className="w-5 h-5" />
                     </div>
-                    <div className="text-right shrink-0">
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Completed
-                      </span>
-                      <div className="text-[9px] text-slate-500 font-mono mt-0.5">5 detections</div>
-                    </div>
+                    <p className="text-xs font-bold text-slate-800">No Surveys Yet</p>
+                    <p className="text-[11px] text-slate-400 max-w-[220px] mt-0.5">
+                      No surveys recorded yet. Start a new survey to view recent scans here.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCurrentScreen('new-survey');
+                        setNewSurveyStep(1);
+                      }}
+                      className="mt-3 inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-colors cursor-pointer shadow-xs"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Start New Survey</span>
+                    </button>
                   </div>
-
-                  {/* Survey 2 */}
-                  <div
-                    onClick={() => {
-                      setCurrentScreen('new-survey');
-                      setNewSurveyStep(3);
-                    }}
-                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <img
-                        src="/sonar-tile-2.jpg"
-                        alt="Mumbai Coast Survey"
-                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
-                          Mumbai Coast Survey
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-mono">
-                          20 Sep 2025 &bull; 18 images
-                        </p>
+                ) : (
+                  <div className="divide-y divide-slate-100 space-y-0.5">
+                    {surveyCatalogData.slice(0, 4).map((survey) => (
+                      <div
+                        key={survey.id}
+                        onClick={() => {
+                          setSelectedCatalogSurveyId(survey.id);
+                          setActiveSurveyId(survey.id);
+                          setCurrentScreen('new-survey');
+                          setNewSurveyStep(4);
+                        }}
+                        className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
+                      >
+                        <div className="flex items-center space-x-2.5 min-w-0">
+                          <div className="w-10 h-8 rounded-md bg-slate-900 border border-slate-200 shrink-0 flex items-center justify-center text-blue-400 font-mono text-[9px] font-bold">
+                            {survey.number}
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
+                              {survey.name}
+                            </h4>
+                            <p className="text-[10px] text-slate-400 font-mono">
+                              {survey.date} &bull; {survey.images} images
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[9px] font-bold font-mono border ${survey.status === 'Completed'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : survey.status === 'Processing'
+                                ? 'bg-sky-50 text-sky-700 border-sky-200'
+                                : 'bg-slate-100 text-slate-600 border-slate-200'
+                              }`}
+                          >
+                            {survey.status}
+                          </span>
+                          <div className="text-[9px] text-slate-500 font-mono mt-0.5">{survey.detections} detections</div>
+                        </div>
                       </div>
-                    </div>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-sky-50 text-sky-700 border border-sky-200 shrink-0">
-                      Processing
-                    </span>
+                    ))}
                   </div>
-
-                  {/* Survey 3 */}
-                  <div
-                    onClick={() => {
-                      setCurrentScreen('new-survey');
-                      setNewSurveyStep(4);
-                    }}
-                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <img
-                        src="/sonar-tile-3.jpg"
-                        alt="Goa Patch Survey"
-                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
-                          Goa Patch Survey
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-mono">
-                          18 Sep 2025 &bull; 32 images
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Completed
-                      </span>
-                      <div className="text-[9px] text-slate-500 font-mono mt-0.5">3 detections</div>
-                    </div>
-                  </div>
-
-                  {/* Survey 4 */}
-                  <div
-                    onClick={() => {
-                      setCurrentScreen('new-survey');
-                      setNewSurveyStep(1);
-                    }}
-                    className="py-1.5 px-2 flex items-center justify-between hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <img
-                        src="/sonar-survey-sample.png"
-                        alt="Ratnagiri Survey"
-                        className="w-10 h-8 object-cover rounded-md border border-slate-200 shrink-0 group-hover:opacity-90"
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
-                          Ratnagiri Survey
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-mono">
-                          14 Sep 2025 &bull; 27 images
-                        </p>
-                      </div>
-                    </div>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
-                      Not Started
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>          </main>
         )}
