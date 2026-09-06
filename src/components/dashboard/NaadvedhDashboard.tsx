@@ -491,6 +491,46 @@ export const NaadvedhDashboard: React.FC = () => {
     };
   });
 
+  // Dynamic batch summary statistics for Step 4 (Results)
+  const batchSummaryStats = useMemo(() => {
+    const totalImages = allBatchSurveyImages.length;
+    const imagesWithDets = allBatchSurveyImages.filter(img => img.detections.length > 0).length;
+    const imagesWithDetsPercent = totalImages > 0 ? Math.round((imagesWithDets / totalImages) * 100) : 0;
+    const imagesWithoutDets = Math.max(0, totalImages - imagesWithDets);
+
+    const totalObjects = allBatchSurveyImages.reduce((acc, img) => acc + img.detections.length, 0);
+    const highPriority = allBatchSurveyImages.reduce(
+      (acc, img) => acc + img.detections.filter(d => d.color === 'red').length,
+      0
+    );
+    const medPriority = allBatchSurveyImages.reduce(
+      (acc, img) => acc + img.detections.filter(d => d.color === 'amber').length,
+      0
+    );
+    const lowPriority = allBatchSurveyImages.reduce(
+      (acc, img) => acc + img.detections.filter(d => d.color === 'blue').length,
+      0
+    );
+
+    const highPriorityPercent = totalObjects > 0 ? Math.round((highPriority / totalObjects) * 100) : 0;
+    const medPriorityPercent = totalObjects > 0 ? Math.round((medPriority / totalObjects) * 100) : 0;
+    const lowPriorityPercent = totalObjects > 0 ? Math.round((lowPriority / totalObjects) * 100) : 0;
+
+    return {
+      totalImages,
+      imagesWithDets,
+      imagesWithDetsPercent,
+      imagesWithoutDets,
+      totalObjects,
+      highPriority,
+      highPriorityPercent,
+      medPriority,
+      medPriorityPercent,
+      lowPriority,
+      lowPriorityPercent,
+    };
+  }, [allBatchSurveyImages]);
+
   // Timer for live processing simulation
   useEffect(() => {
     let timer: number | undefined;
@@ -1366,33 +1406,35 @@ export const NaadvedhDashboard: React.FC = () => {
         {currentScreen === 'new-survey' && (
           <main className={`w-full mx-auto ${newSurveyStep === 4 ? 'px-3.5 py-2 space-y-2 max-w-[1600px]' : 'p-3.5 sm:p-4 lg:p-5 space-y-3 max-w-7xl'}`}>
             {/* Title & Subtitle + Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h1 className={`${newSurveyStep === 4 ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'} font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight leading-tight`}>
                   {newSurveyStep === 4 ? 'Survey Results' : 'New Survey'}
                 </h1>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  {newSurveyStep === 4
-                    ? 'Batch analysis completed. Review detected objects and explore results across all processed images.'
-                    : 'Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.'}
-                </p>
+                {newSurveyStep !== 4 && (
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Upload side-scan sonar imagery to detect and classify underwater debris and anomalies.
+                  </p>
+                )}
               </div>
 
               {newSurveyStep === 4 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] shadow-2xs">
+                <div className="flex items-center space-x-2 shrink-0">
+                  <div className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] shadow-2xs whitespace-nowrap">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <div>
+                    <div className="flex items-center space-x-1.5">
                       <span className="font-bold">Processing Completed</span>
-                      <span className="hidden sm:inline text-slate-400 mx-1.5">|</span>
-                      <span className="block sm:inline text-[10px] font-mono text-emerald-700">100 / 100 images processed in 12 min 34 sec</span>
+                      <span className="text-slate-300">|</span>
+                      <span className="text-[10px] font-mono text-emerald-700">
+                        {batchSummaryStats.totalImages} / {batchSummaryStats.totalImages} images processed
+                      </span>
                     </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setIsReportModalOpen(true)}
-                    className="flex items-center space-x-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                    className="flex items-center space-x-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer whitespace-nowrap"
                   >
                     <FileText className="w-3 h-3 text-slate-500" />
                     <span>Generate Report</span>
@@ -1401,7 +1443,7 @@ export const NaadvedhDashboard: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleExportCSV}
-                    className="flex items-center space-x-1.5 px-3.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer"
+                    className="flex items-center space-x-1.5 px-3.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer whitespace-nowrap"
                   >
                     <Download className="w-3 h-3" />
                     <span>Export Results</span>
@@ -2224,7 +2266,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          100
+                          {batchSummaryStats.totalImages}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Total Images Processed
@@ -2239,10 +2281,10 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          10
+                          {batchSummaryStats.imagesWithDets}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
-                          Images with Detections (10%)
+                          Images with Detections ({batchSummaryStats.imagesWithDetsPercent}%)
                         </p>
                       </div>
                     </div>
@@ -2254,7 +2296,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          28
+                          {batchSummaryStats.totalObjects}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Total Objects Detected
@@ -2269,7 +2311,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          5
+                          {batchSummaryStats.highPriority}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           High Priority Objects
@@ -2284,7 +2326,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          12
+                          {batchSummaryStats.medPriority}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Medium Priority Objects
@@ -2299,7 +2341,7 @@ export const NaadvedhDashboard: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="text-base sm:text-lg font-black text-slate-900 font-['Space_Grotesk'] leading-none">
-                          11
+                          {batchSummaryStats.lowPriority}
                         </div>
                         <p className="text-[10px] font-medium text-slate-500 leading-tight truncate mt-0.5">
                           Low Priority Objects
@@ -2344,7 +2386,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
-                            All (100)
+                            All ({batchSummaryStats.totalImages})
                           </button>
                           <button
                             type="button"
@@ -2357,7 +2399,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
-                            Detections (10)
+                            Detections ({batchSummaryStats.imagesWithDets})
                           </button>
                           <button
                             type="button"
@@ -2370,7 +2412,7 @@ export const NaadvedhDashboard: React.FC = () => {
                               : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
-                            No Detections (90)
+                            No Detections ({batchSummaryStats.imagesWithoutDets})
                           </button>
                         </div>
 
@@ -3133,13 +3175,13 @@ export const NaadvedhDashboard: React.FC = () => {
                           <div className="flex items-center space-x-1.5">
                             <span className="w-2 h-2 rounded-[1px] bg-rose-500"></span>
                             <span className="text-[10.5px] font-medium text-slate-600">
-                              Images with detections (10)
+                              Images with detections ({batchSummaryStats.imagesWithDets})
                             </span>
                           </div>
                           <div className="flex items-center space-x-1.5">
                             <span className="w-2 h-2 rounded-[1px] bg-slate-300"></span>
                             <span className="text-[10.5px] font-medium text-slate-600">
-                              Images without detections (90)
+                              Images without detections ({batchSummaryStats.imagesWithoutDets})
                             </span>
                           </div>
                         </div>
@@ -3153,7 +3195,7 @@ export const NaadvedhDashboard: React.FC = () => {
                     {/* Priority Breakdown Card: Progress Bars (lg:col-span-4)   */}
                     <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3 space-y-1.5">
                       <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-['Space_Grotesk']">
-                        Priority Breakdown (28 objects)
+                        Priority Breakdown ({batchSummaryStats.totalObjects} objects)
                       </h3>
 
                       <div className="space-y-1.5 pt-0.5 text-xs">
@@ -3161,10 +3203,12 @@ export const NaadvedhDashboard: React.FC = () => {
                         <div className="space-y-0.5">
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="font-medium text-slate-700">High Priority</span>
-                            <span className="font-mono font-bold text-slate-900">5 (18%)</span>
+                            <span className="font-mono font-bold text-slate-900">
+                              {batchSummaryStats.highPriority} ({batchSummaryStats.highPriorityPercent}%)
+                            </span>
                           </div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full bg-rose-500 rounded-full" style={{ width: '18%' }}></div>
+                            <div className="h-full bg-rose-500 rounded-full" style={{ width: `${batchSummaryStats.highPriorityPercent}%` }}></div>
                           </div>
                         </div>
 
@@ -3172,10 +3216,12 @@ export const NaadvedhDashboard: React.FC = () => {
                         <div className="space-y-0.5">
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="font-medium text-slate-700">Medium Priority</span>
-                            <span className="font-mono font-bold text-slate-900">12 (43%)</span>
+                            <span className="font-mono font-bold text-slate-900">
+                              {batchSummaryStats.medPriority} ({batchSummaryStats.medPriorityPercent}%)
+                            </span>
                           </div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full bg-amber-500 rounded-full" style={{ width: '43%' }}></div>
+                            <div className="h-full bg-amber-500 rounded-full" style={{ width: `${batchSummaryStats.medPriorityPercent}%` }}></div>
                           </div>
                         </div>
 
@@ -3183,10 +3229,12 @@ export const NaadvedhDashboard: React.FC = () => {
                         <div className="space-y-0.5">
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="font-medium text-slate-700">Low Priority</span>
-                            <span className="font-mono font-bold text-slate-900">11 (39%)</span>
+                            <span className="font-mono font-bold text-slate-900">
+                              {batchSummaryStats.lowPriority} ({batchSummaryStats.lowPriorityPercent}%)
+                            </span>
                           </div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '39%' }}></div>
+                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${batchSummaryStats.lowPriorityPercent}%` }}></div>
                           </div>
                         </div>
                       </div>
