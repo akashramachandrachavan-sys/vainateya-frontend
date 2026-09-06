@@ -1,14 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { NaadvedhDashboard } from './components/dashboard/NaadvedhDashboard';
+import { Dashboard } from './components/dashboard/Dashboard';
 
 const rootElement = document.getElementById('dashboard-root');
 
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <NaadvedhDashboard />
+      <Dashboard />
     </StrictMode>,
   );
 }
