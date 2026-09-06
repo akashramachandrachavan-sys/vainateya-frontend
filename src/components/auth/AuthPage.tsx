@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { UserRole } from '../../types';
+import { apiService } from '../../services/api';
 import {
   Anchor,
   ArrowLeft,
@@ -47,7 +48,7 @@ export const AuthPage: React.FC = () => {
     window.history.replaceState(null, '', newUrl);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
@@ -64,16 +65,33 @@ export const AuthPage: React.FC = () => {
 
     setIsLoading(true);
 
-    // Simulate authentication process
-    setTimeout(() => {
-      setIsLoading(false);
-      setSuccessMessage(isSignUp ? 'Account registered successfully! Redirecting...' : 'Authenticated successfully! Redirecting...');
+    try {
+      if (isSignUp) {
+        const res = await apiService.signup({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+          role,
+          organization: organization.trim() || 'VAINATEYA',
+        });
+        setSuccessMessage(`Welcome aboard, ${res.user.name}! Account registered successfully. Redirecting...`);
+      } else {
+        const res = await apiService.signin({
+          email: email.trim(),
+          password,
+        });
+        setSuccessMessage(`Welcome back, ${res.user.name}! Authenticated successfully. Redirecting...`);
+      }
 
-      // Redirect to Naadvedh dashboard
+      // Redirect to dashboard with real logged-in session
       setTimeout(() => {
         window.location.href = '/dashboard.html';
-      }, 700);
-    }, 700);
+      }, 600);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Authentication failed. Please verify your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const roleOptions: { role: UserRole; desc: string; icon: typeof Waves }[] = [

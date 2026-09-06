@@ -17,6 +17,7 @@ import type {
 import type { ApiSurvey, ApiDetection, SystemMetrics } from '../../../services/api';
 
 interface DashboardOverviewViewProps {
+  operatorName?: string;
   formattedToday: string;
   backendMetrics: SystemMetrics | null;
   backendSurveys: ApiSurvey[];
@@ -33,6 +34,7 @@ interface DashboardOverviewViewProps {
 }
 
 export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
+  operatorName,
   formattedToday,
   backendMetrics,
   backendSurveys,
@@ -47,20 +49,22 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
   setSelectedCatalogSurveyId,
   setActiveSurveyId,
 }) => {
+  const firstName = operatorName ? operatorName.split(' ')[0] : 'Akash';
+
   return (
     <main className="p-3.5 sm:p-4 lg:p-5 space-y-3.5 max-w-7xl mx-auto w-full">
       {/* Header Greeting & Date */}
-      <div className="flex flex-col sm:row items-start sm:items-center justify-between gap-1.5">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight">
-            Welcome back, Akash!
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 w-full text-left">
+        <div className="text-left">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-['Space_Grotesk'] tracking-tight text-left">
+            Welcome back, {firstName}!
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5 text-left">
             Monitor surveys, review detections, and contribute to cleaner oceans.
           </p>
         </div>
 
-        <div className="text-[11px] font-mono text-slate-500 font-medium bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs">
+        <div className="text-[11px] font-mono text-slate-500 font-medium bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs shrink-0 self-start sm:self-auto">
           {formattedToday}
         </div>
       </div>

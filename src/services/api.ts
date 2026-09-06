@@ -1,6 +1,6 @@
 /**
  * NAADVEDH / VAINATEYA Marine Sonar Intelligence API Service
- * Connects frontend to the FastAPI backend.
+ * Connects frontend to the FastAPI backend with real JWT authentication.
  */
 
 const API_BASE = '/api';
@@ -116,7 +116,168 @@ export interface HealthCheckResponse {
   database: string;
 }
 
+// Authentication Interfaces
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  organization: string;
+  phone?: string | null;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: AuthUser;
+}
+
+export interface SigninPayload {
+  email: string;
+  password: string;
+}
+
+export interface SignupPayload {
+  name: string;
+  email: string;
+  password: string;
+  role?: string;
+  organization?: string;
+  phone?: string;
+}
+
+// Local Storage for Auth State
+const TOKEN_KEY = 'vainateya_auth_token';
+const USER_KEY = 'vainateya_auth_user';
+
+export const authStorage = {
+  getToken(): string | null {
+    try {
+      return localStorage.getItem(TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+
+  setToken(token: string): void {
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+    } catch { }
+  },
+
+  getUser(): AuthUser | null {
+    try {
+      const raw = localStorage.getItem(USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  setUser(user: AuthUser): void {
+    try {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } catch { }
+  },
+
+  clear(): void {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    } catch { }
+  },
+};
+
+function getAuthHeaders(extraHeaders: Record<string, string> = {}): Record<string, string> {
+  const token = authStorage.getToken();
+  const headers: Record<string, string> = { ...extraHeaders };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 export const apiService = {
+  // Auth
+  async signin(payload: SigninPayload): Promise<AuthResponse> {
+    const res = await fetch(`${API_BASE}/auth/signin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      let errDetail = 'Invalid email or password.';
+      try {
+        const errJson = await res.json();
+        if (errJson.detail) errDetail = errJson.detail;
+      } catch { }
+      throw new Error(errDetail);
+    }
+
+    const data: AuthResponse = await res.json();
+    authStorage.setToken(data.access_token);
+    authStorage.setUser(data.user);
+    return data;
+  },
+
+  async signup(payload: SignupPayload): Promise<AuthResponse> {
+    const res = await fetch(`${API_BASE}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      let errDetail = 'Failed to create account.';
+      try {
+        const errJson = await res.json();
+        if (errJson.detail) errDetail = errJson.detail;
+      } catch { }
+      throw new Error(errDetail);
+    }
+
+    const data: AuthResponse = await res.json();
+    authStorage.setToken(data.access_token);
+    authStorage.setUser(data.user);
+    return data;
+  },
+
+  async getMe(): Promise<AuthUser | null> {
+    const token = authStorage.getToken();
+    if (!token) return null;
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) {
+        if (res.status === 401) {
+          authStorage.clear();
+        }
+        return null;
+      }
+      const user: AuthUser = await res.json();
+      authStorage.setUser(user);
+      return user;
+    } catch {
+      return authStorage.getUser();
+    }
+  },
+
+  logout(): void {
+    authStorage.clear();
+  },
+
+  getCurrentUser(): AuthUser | null {
+    return authStorage.getUser();
+  },
+
+  isAuthenticated(): boolean {
+    return !!authStorage.getToken();
+  },
+
   // Health
   async getHealth(): Promise<HealthCheckResponse> {
     const res = await fetch(`${API_BASE}/health`);
@@ -126,20 +287,26 @@ export const apiService = {
 
   // System Metrics
   async getMetrics(): Promise<SystemMetrics> {
-    const res = await fetch(`${API_BASE}/metrics`);
+    const res = await fetch(`${API_BASE}/metrics`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Metrics failed: ${res.statusText}`);
     return res.json();
   },
 
   // Surveys
   async getSurveys(): Promise<ApiSurvey[]> {
-    const res = await fetch(`${API_BASE}/surveys`);
+    const res = await fetch(`${API_BASE}/surveys`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Failed to load surveys: ${res.statusText}`);
     return res.json();
   },
 
   async getSurvey(id: string): Promise<ApiSurvey> {
-    const res = await fetch(`${API_BASE}/surveys/${id}`);
+    const res = await fetch(`${API_BASE}/surveys/${id}`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Failed to load survey ${id}: ${res.statusText}`);
     return res.json();
   },
@@ -147,7 +314,7 @@ export const apiService = {
   async createSurvey(payload: CreateSurveyPayload): Promise<ApiSurvey> {
     const res = await fetch(`${API_BASE}/surveys`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`Failed to create survey: ${res.statusText}`);
@@ -156,7 +323,9 @@ export const apiService = {
 
   // Sonar Files
   async getSurveyFiles(surveyId: string): Promise<ApiSonarFile[]> {
-    const res = await fetch(`${API_BASE}/surveys/${surveyId}/files`);
+    const res = await fetch(`${API_BASE}/surveys/${surveyId}/files`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Failed to load files for survey ${surveyId}: ${res.statusText}`);
     return res.json();
   },
@@ -166,6 +335,7 @@ export const apiService = {
     formData.append('file', file);
     const res = await fetch(`${API_BASE}/surveys/${surveyId}/files`, {
       method: 'POST',
+      headers: getAuthHeaders(),
       body: formData,
     });
     if (!res.ok) throw new Error(`Failed to upload file ${file.name}: ${res.statusText}`);
@@ -176,6 +346,7 @@ export const apiService = {
   async triggerAnalysis(surveyId: string): Promise<AnalysisTriggerResponse> {
     const res = await fetch(`${API_BASE}/surveys/${surveyId}/analyze`, {
       method: 'POST',
+      headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error(`Failed to trigger analysis: ${res.statusText}`);
     return res.json();
@@ -188,13 +359,17 @@ export const apiService = {
     if (status) params.append('status', status);
 
     const qs = params.toString() ? `?${params.toString()}` : '';
-    const res = await fetch(`${API_BASE}/detections${qs}`);
+    const res = await fetch(`${API_BASE}/detections${qs}`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Failed to load detections: ${res.statusText}`);
     return res.json();
   },
 
   async getDetection(id: string): Promise<ApiDetection> {
-    const res = await fetch(`${API_BASE}/detections/${id}`);
+    const res = await fetch(`${API_BASE}/detections/${id}`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error(`Failed to load detection ${id}: ${res.statusText}`);
     return res.json();
   },
@@ -202,7 +377,7 @@ export const apiService = {
   async verifyDetection(detectionId: string, payload: VerifyDetectionPayload): Promise<ApiDetection> {
     const res = await fetch(`${API_BASE}/detections/${detectionId}/verify`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`Failed to verify detection: ${res.statusText}`);

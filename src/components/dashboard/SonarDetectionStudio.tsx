@@ -3,7 +3,6 @@ import { SAMPLE_SONAR_SCANS, CATEGORY_DETAILS } from '../../data/sampleSonarData
 import { ProceduralSonarCanvas } from './ProceduralSonarCanvas';
 import { ShadowGeometryCard } from './ShadowGeometryCard';
 import type { SonarScan } from '../../types';
-import confetti from 'canvas-confetti';
 import {
   UploadCloud,
   Download,
@@ -75,12 +74,6 @@ export const SonarDetectionStudio: React.FC<Props> = ({ onNavigateToMap }) => {
       setScans([newScan, ...scans]);
       setSelectedScanId(newScan.id);
       setSelectedDetectionId(newScan.detections[0].id);
-
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.8 }
-      });
     };
     reader.readAsDataURL(file);
   };
@@ -90,11 +83,6 @@ export const SonarDetectionStudio: React.FC<Props> = ({ onNavigateToMap }) => {
     setIsSimulatingInference(true);
     setTimeout(() => {
       setIsSimulatingInference(false);
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
     }, 900);
   };
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
-import confetti from 'canvas-confetti';
 import {
   LayoutDashboard,
   Map as MapIcon,
@@ -18,6 +17,7 @@ import {
 
 import {
   apiService,
+  authStorage,
   type ApiSurvey,
   type ApiSonarFile,
   type ApiDetection,
@@ -110,12 +110,13 @@ export const Dashboard: React.FC = () => {
   const [surveyTabFilter, setSurveyTabFilter] = useState<'all' | 'completed' | 'processing' | 'high_priority' | 'archived'>('all');
   const [selectedCatalogSurveyId, setSelectedCatalogSurveyId] = useState<string>('');
 
-  // Settings Screen state
-  const [profileFullName, setProfileFullName] = useState<string>('Akash Chavan');
-  const [profileRole] = useState<string>('Marine Operator');
-  const [profileEmail, setProfileEmail] = useState<string>('akash1@gmail.com');
-  const [profileOrg, setProfileOrg] = useState<string>('VAINATEYA');
-  const [profilePhone, setProfilePhone] = useState<string>('+91 98765 43210');
+  // Settings & Authenticated User Profile State
+  const initialAuthUser = authStorage.getUser();
+  const [profileFullName, setProfileFullName] = useState<string>(initialAuthUser?.name || 'Akash Chavan');
+  const [profileRole, setProfileRole] = useState<string>(initialAuthUser?.role || 'Marine Operator');
+  const [profileEmail, setProfileEmail] = useState<string>(initialAuthUser?.email || 'akash.ramachandra.chavan@gmail.com');
+  const [profileOrg, setProfileOrg] = useState<string>(initialAuthUser?.organization || 'VAINATEYA');
+  const [profilePhone, setProfilePhone] = useState<string>(initialAuthUser?.phone || '+91 98765 43210');
   const [profileTeam, setProfileTeam] = useState<string>('Marine Survey Team');
   const [profileLocation, setProfileLocation] = useState<string>('India');
   const [profileBio, setProfileBio] = useState<string>('Working towards cleaner oceans and safer coastlines through AI-powered marine survey analysis.');
@@ -127,9 +128,20 @@ export const Dashboard: React.FC = () => {
   const fullMapRef = useRef<HTMLDivElement | null>(null);
   const fullMapInstance = useRef<L.Map | null>(null);
 
-  // Load real surveys, metrics, and detections from backend on mount
+  // Load real user profile, surveys, metrics, and detections from backend on mount
   const loadBackendData = async () => {
     try {
+      // Sync latest authenticated user profile
+      apiService.getMe().then(user => {
+        if (user) {
+          setProfileFullName(user.name);
+          setProfileRole(user.role);
+          setProfileEmail(user.email);
+          setProfileOrg(user.organization);
+          if (user.phone) setProfilePhone(user.phone);
+        }
+      }).catch(() => { });
+
       const [surveys, metrics, dets] = await Promise.all([
         apiService.getSurveys().catch(() => []),
         apiService.getMetrics().catch(() => null),
@@ -620,7 +632,6 @@ export const Dashboard: React.FC = () => {
         setProcessingProgress(100);
         setActiveStage(5);
         setIsProcessingComplete(true);
-        confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
       }, 4500);
 
       return () => {
@@ -911,7 +922,6 @@ export const Dashboard: React.FC = () => {
       setProcessingProgress(100);
       setActiveStage(5);
       setIsProcessingComplete(true);
-      confetti({ particleCount: 45, spread: 70, origin: { y: 0.6 } });
     } catch (err) {
       console.error('Processing error:', err);
       setProcessingProgress(100);
@@ -1075,19 +1085,23 @@ export const Dashboard: React.FC = () => {
           {/* Sidebar Footer: User Info & Logout */}
           <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
             <div>
-              <div className="text-xs font-bold text-slate-900">Akash Chavan</div>
+              <div className="text-xs font-bold text-slate-900 truncate">{profileFullName}</div>
               <div className="text-[11px] text-slate-400 font-mono truncate">
-                akash.ramachandra.chavan@gmail.com
+                {profileEmail}
               </div>
             </div>
 
-            <a
-              href="/auth.html?mode=signin"
-              className="inline-flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-rose-600 transition-colors"
+            <button
+              type="button"
+              onClick={() => {
+                apiService.logout();
+                window.location.href = '/auth.html?mode=signin';
+              }}
+              className="inline-flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-rose-600 transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Log out</span>
-            </a>
+            </button>
           </div>
         </aside>
 
@@ -1241,11 +1255,11 @@ export const Dashboard: React.FC = () => {
 
               <div className="flex items-center space-x-2.5 pl-3 border-l border-slate-200 cursor-pointer group">
                 <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                  A
+                  {profileFullName ? profileFullName.charAt(0).toUpperCase() : 'A'}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <div className="text-xs font-bold text-slate-900 leading-tight">Akash Chavan</div>
-                  <div className="text-[10px] font-mono text-slate-500 leading-tight">Marine Operator</div>
+                  <div className="text-xs font-bold text-slate-900 leading-tight">{profileFullName}</div>
+                  <div className="text-[10px] font-mono text-slate-500 leading-tight">{profileRole}</div>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
               </div>
@@ -1255,6 +1269,7 @@ export const Dashboard: React.FC = () => {
           {/* SCREEN 1: DASHBOARD OVERVIEW */}
           {currentScreen === 'dashboard' && (
             <DashboardOverviewView
+              operatorName={profileFullName}
               formattedToday={formattedToday}
               backendMetrics={backendMetrics}
               backendSurveys={backendSurveys}

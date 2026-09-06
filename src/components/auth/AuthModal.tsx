@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { UserProfile, UserRole } from '../../types';
+import { apiService } from '../../services/api';
 import { Anchor, Mail, Lock, User, Building, ArrowRight, Sparkles } from 'lucide-react';
 
 interface Props {
@@ -22,24 +23,53 @@ export const AuthModal: React.FC<Props> = ({
   const [organization, setOrganization] = useState<string>('National Institute of Oceanography');
   const [role, setRole] = useState<UserRole>('Marine Scientist');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
     if (!email || !password || (isSignUp && !name)) {
       setErrorMessage('Please complete all required fields.');
       return;
     }
 
-    const user: UserProfile = {
-      name: isSignUp ? name : (name || 'Dr. Aryan Sharma'),
-      email,
-      role,
-      organization: organization || 'Indian Coast Guard Hydrographic Unit',
-    };
+    setIsLoading(true);
 
-    onSuccess(user);
+    try {
+      if (isSignUp) {
+        const res = await apiService.signup({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+          role,
+          organization: organization.trim() || 'VAINATEYA',
+        });
+        onSuccess({
+          name: res.user.name,
+          email: res.user.email,
+          role: res.user.role as UserRole,
+          organization: res.user.organization,
+        });
+      } else {
+        const res = await apiService.signin({
+          email: email.trim(),
+          password,
+        });
+        onSuccess({
+          name: res.user.name,
+          email: res.user.email,
+          role: res.user.role as UserRole,
+          organization: res.user.organization,
+        });
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Authentication failed. Please verify your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 1-Click Fast Demo Login for Hackathon Judges & Evaluators
@@ -200,9 +230,10 @@ export const AuthModal: React.FC<Props> = ({
 
           <button
             type="submit"
-            className="w-full mt-2 flex items-center justify-center space-x-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-blue-500/25"
+            disabled={isLoading}
+            className="w-full mt-2 flex items-center justify-center space-x-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-blue-500/25 cursor-pointer disabled:cursor-not-allowed"
           >
-            <span>{isSignUp ? 'Register & Initialize Dashboard' : 'Authenticate & Enter'}</span>
+            <span>{isLoading ? 'Verifying Credentials...' : isSignUp ? 'Register & Initialize Dashboard' : 'Authenticate & Enter'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
