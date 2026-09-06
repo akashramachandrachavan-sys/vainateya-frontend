@@ -347,9 +347,39 @@ export const NaadvedhDashboard: React.FC = () => {
       category: cat,
       color,
       markerType,
-      thumb: '/sonar-tile-1.jpg',
+      thumb: activeSurveyFiles.find(f => f.id === d.file_id)?.url || (activeSurveyFiles.length > 0 && activeSurveyFiles[0].url ? activeSurveyFiles[0].url : '/sonar-tile-1.jpg'),
     };
   });
+
+  // Dynamic Survey Statistics for the Detection Map Screen
+  const mapSurveyStats = useMemo(() => {
+    const currentSurvey = backendSurveys.find(s => s.name === selectedMapSurvey);
+
+    let imagesProcessed = 0;
+    let totalDetections = 0;
+    let highPriority = 0;
+    let verified = 0;
+
+    if (currentSurvey) {
+      imagesProcessed = currentSurvey.file_count ?? activeSurveyFiles.length;
+      totalDetections = currentSurvey.detection_count ?? detailedDetections.length;
+      highPriority = currentSurvey.high_priority_count ?? detailedDetections.filter(d => d.markerType === 'red').length;
+      verified = currentSurvey.confirmed_count ?? detailedDetections.filter(d => d.status === 'Verified').length;
+    } else {
+      // "All Surveys"
+      imagesProcessed = backendMetrics?.total_files ?? (backendSurveys.length > 0 ? backendSurveys.reduce((acc, s) => acc + (s.file_count || 0), 0) : activeSurveyFiles.length);
+      totalDetections = backendMetrics?.total_detections ?? (backendSurveys.length > 0 ? backendSurveys.reduce((acc, s) => acc + (s.detection_count || 0), 0) : detailedDetections.length);
+      highPriority = backendMetrics?.high_priority_count ?? detailedDetections.filter(d => d.markerType === 'red').length;
+      verified = backendMetrics?.confirmed_count ?? detailedDetections.filter(d => d.status === 'Verified').length;
+    }
+
+    return {
+      imagesProcessed,
+      totalDetections,
+      highPriority,
+      verified,
+    };
+  }, [backendSurveys, selectedMapSurvey, backendMetrics, activeSurveyFiles.length, detailedDetections]);
 
   // Derived DetectionItem list
   const detections: DetectionItem[] = activeDetections.map(d => ({
@@ -525,11 +555,13 @@ export const NaadvedhDashboard: React.FC = () => {
       maxZoom: 18,
     }).addTo(map);
 
-    const surveyPoints: [number, number, string][] = [
-      [17.4, 72.1, 'Arabian Sea Survey - 24 images'],
-      [16.8, 72.8, 'Ratnagiri Deep Shelf'],
-      [15.8, 73.1, 'Goa Patch North'],
-    ];
+    const surveyPoints: [number, number, string][] = backendSurveys
+      .filter(s => typeof s.latitude === 'number' && typeof s.longitude === 'number')
+      .map(s => [
+        s.latitude as number,
+        s.longitude as number,
+        `${s.name} - ${s.file_count || 0} images`
+      ]);
 
     surveyPoints.forEach(([lat, lng, name]) => {
       const icon = L.divIcon({
@@ -540,13 +572,16 @@ export const NaadvedhDashboard: React.FC = () => {
         iconSize: [14, 14],
         iconAnchor: [7, 7],
       });
-      L.marker([lat, lng], { icon }).bindPopup(`<b>${name}</b><br/>Status: Completed`).addTo(map);
+      L.marker([lat, lng], { icon }).bindPopup(`<b>${name}</b><br/>Status: Active Survey`).addTo(map);
     });
 
-    const highPriorityPoints: [number, number, string][] = [
-      [16.9, 72.5, 'Target DET-001 (Ghost Net)'],
-      [15.6, 73.4, 'Target DET-002 (Sunken Container)'],
-    ];
+    const highPriorityPoints: [number, number, string][] = activeDetections
+      .filter(d => (d.priority === 'HIGH' || d.priority === 'CRITICAL') && d.location && typeof d.location.latitude === 'number')
+      .map(d => [
+        d.location.latitude,
+        d.location.longitude,
+        `Target ${d.code || d.id} (${d.class_name})`
+      ]);
 
     highPriorityPoints.forEach(([lat, lng, label]) => {
       const icon = L.divIcon({
@@ -571,7 +606,7 @@ export const NaadvedhDashboard: React.FC = () => {
         dashMapInstance.current = null;
       }
     };
-  }, [currentScreen]);
+  }, [currentScreen, backendSurveys, activeDetections]);
 
   // Initialize Detection Map (Full Map Screen)
   useEffect(() => {
@@ -612,14 +647,13 @@ export const NaadvedhDashboard: React.FC = () => {
       }).addTo(map);
     }
 
-    const detMarkers = [
-      { lat: 17.4, lng: 72.4, label: '#1 Pipeline/Pipe', color: '#10b981', id: 'det-1' },
-      { lat: 17.8, lng: 72.7, label: '#2 Unknown Anomaly', color: '#ef4444', id: 'det-2' },
-      { lat: 16.2, lng: 73.1, label: '#3 Fishing Gear', color: '#3b82f6', id: 'det-3' },
-      { lat: 17.1, lng: 72.8, label: '', color: '#10b981', id: 'det-4' },
-      { lat: 15.8, lng: 73.3, label: '', color: '#10b981', id: 'det-5' },
-      { lat: 16.6, lng: 72.9, label: '', color: '#f59e0b', id: 'det-extra' },
-    ];
+    const detMarkers = detailedDetections.map((det) => ({
+      lat: det.rawLat,
+      lng: det.rawLng,
+      label: `${det.number} ${det.name}`,
+      color: det.color,
+      id: det.id,
+    }));
 
     detMarkers.forEach((m) => {
       const html = m.label
@@ -647,6 +681,12 @@ export const NaadvedhDashboard: React.FC = () => {
         .addTo(map);
     });
 
+    const validCoords = detMarkers.filter(m => typeof m.lat === 'number' && typeof m.lng === 'number' && !isNaN(m.lat) && !isNaN(m.lng) && m.lat !== 0 && m.lng !== 0);
+    if (validCoords.length > 0) {
+      const group = L.featureGroup(validCoords.map(m => L.marker([m.lat, m.lng])));
+      map.fitBounds(group.getBounds().pad(0.3), { maxZoom: 10 });
+    }
+
     fullMapInstance.current = map;
 
     return () => {
@@ -655,7 +695,7 @@ export const NaadvedhDashboard: React.FC = () => {
         fullMapInstance.current = null;
       }
     };
-  }, [currentScreen, mapLayerMode]);
+  }, [currentScreen, mapLayerMode, detailedDetections]);
 
   const handleRemoveFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
@@ -3177,7 +3217,14 @@ export const NaadvedhDashboard: React.FC = () => {
               <div className="relative">
                 <select
                   value={selectedMapSurvey}
-                  onChange={(e) => setSelectedMapSurvey(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedMapSurvey(val);
+                    const found = backendSurveys.find(s => s.name === val);
+                    if (found) {
+                      setActiveSurveyId(found.id);
+                    }
+                  }}
                   className="appearance-none flex items-center pl-8 pr-7 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="All Surveys">All Surveys</option>
@@ -3202,7 +3249,9 @@ export const NaadvedhDashboard: React.FC = () => {
                     <ImageIcon className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-sm font-extrabold text-slate-900 font-mono">5</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">
+                      {mapSurveyStats.imagesProcessed}
+                    </div>
                     <div className="text-[10px] text-slate-500">Images Processed</div>
                   </div>
                 </div>
@@ -3212,7 +3261,9 @@ export const NaadvedhDashboard: React.FC = () => {
                     <Crosshair className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-sm font-extrabold text-slate-900 font-mono">12</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">
+                      {mapSurveyStats.totalDetections}
+                    </div>
                     <div className="text-[10px] text-slate-500">Total Detections</div>
                   </div>
                 </div>
@@ -3222,7 +3273,9 @@ export const NaadvedhDashboard: React.FC = () => {
                     <AlertTriangle className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-sm font-extrabold text-slate-900 font-mono">2</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">
+                      {mapSurveyStats.highPriority}
+                    </div>
                     <div className="text-[10px] text-slate-500">High Priority</div>
                   </div>
                 </div>
@@ -3232,7 +3285,9 @@ export const NaadvedhDashboard: React.FC = () => {
                     <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-sm font-extrabold text-slate-900 font-mono">9</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">
+                      {mapSurveyStats.verified}
+                    </div>
                     <div className="text-[10px] text-slate-500">Verified</div>
                   </div>
                 </div>
@@ -3340,69 +3395,83 @@ export const NaadvedhDashboard: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
-                  {detailedDetections.map((det) => (
-                    <div
-                      key={det.id}
-                      onClick={() => {
-                        setSelectedMapDetectionId(det.id);
-                        fullMapInstance.current?.flyTo([det.rawLat, det.rawLng], 9, { duration: 0.8 });
-                      }}
-                      className={`p-1.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${selectedMapDetectionId === det.id
-                        ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
-                        : 'bg-slate-50/70 border-slate-200/70 hover:bg-slate-50'
-                        }`}
-                    >
-                      <div className="flex items-center space-x-2 min-w-0">
-                        <img
-                          src={det.thumb}
-                          alt={det.name}
-                          className="w-7 h-7 rounded-md object-cover border border-slate-200 shrink-0 bg-black"
-                        />
-                        <div className="min-w-0">
-                          <div className="flex items-center space-x-1">
-                            <span className="text-[10px] font-mono font-bold text-slate-400">{det.number}</span>
-                            <span className="text-xs font-bold text-slate-900 truncate">{det.name}</span>
-                          </div>
-                          <div className="text-[9px] font-mono text-slate-500 truncate">
-                            {det.lat}, {det.lng}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-1.5 shrink-0">
-                        <span
-                          className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold border ${det.status === 'Verified'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-amber-50 text-amber-700 border-amber-200'
+                {detailedDetections.length === 0 ? (
+                  <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                      <Crosshair className="w-4 h-4" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-700">No Detections Found</p>
+                    <p className="text-[10px] text-slate-400 max-w-[190px] mt-0.5">
+                      No geolocated detections recorded for this survey yet.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
+                      {detailedDetections.map((det) => (
+                        <div
+                          key={det.id}
+                          onClick={() => {
+                            setSelectedMapDetectionId(det.id);
+                            fullMapInstance.current?.flyTo([det.rawLat, det.rawLng], 9, { duration: 0.8 });
+                          }}
+                          className={`p-1.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${selectedMapDetectionId === det.id
+                            ? 'bg-blue-50/50 border-blue-300 shadow-2xs'
+                            : 'bg-slate-50/70 border-slate-200/70 hover:bg-slate-50'
                             }`}
                         >
-                          {det.confidence}% {det.status}
-                        </span>
-                        <ChevronRight className="w-3 h-3 text-slate-400" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                          <div className="flex items-center space-x-2 min-w-0">
+                            <img
+                              src={det.thumb}
+                              alt={det.name}
+                              className="w-7 h-7 rounded-md object-cover border border-slate-200 shrink-0 bg-black"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center space-x-1">
+                                <span className="text-[10px] font-mono font-bold text-slate-400">{det.number}</span>
+                                <span className="text-xs font-bold text-slate-900 truncate">{det.name}</span>
+                              </div>
+                              <div className="text-[9px] font-mono text-slate-500 truncate">
+                                {det.lat}, {det.lng}
+                              </div>
+                            </div>
+                          </div>
 
-                {/* Pagination */}
-                <div className="pt-1.5 border-t border-slate-100 flex items-center justify-center space-x-1 text-[11px] font-mono text-slate-600">
-                  <button type="button" aria-label="Previous page" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 cursor-pointer">
-                    <ChevronLeft className="w-3 h-3" />
-                  </button>
-                  <button type="button" className="w-5 h-5 flex items-center justify-center rounded bg-blue-600 text-white font-bold cursor-pointer">
-                    1
-                  </button>
-                  <button type="button" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 cursor-pointer">
-                    2
-                  </button>
-                  <button type="button" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 cursor-pointer">
-                    3
-                  </button>
-                  <button type="button" aria-label="Next page" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 cursor-pointer">
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
-                </div>
+                          <div className="flex items-center space-x-1.5 shrink-0">
+                            <span
+                              className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold border ${det.status === 'Verified'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-amber-50 text-amber-700 border-amber-200'
+                                }`}
+                            >
+                              {det.confidence}% {det.status}
+                            </span>
+                            <ChevronRight className="w-3 h-3 text-slate-400" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-center space-x-1 text-[11px] font-mono text-slate-600">
+                      <button type="button" aria-label="Previous page" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 cursor-pointer">
+                        <ChevronLeft className="w-3 h-3" />
+                      </button>
+                      <button type="button" className="w-5 h-5 flex items-center justify-center rounded bg-blue-600 text-white font-bold cursor-pointer">
+                        1
+                      </button>
+                      <button type="button" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 cursor-pointer">
+                        2
+                      </button>
+                      <button type="button" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 cursor-pointer">
+                        3
+                      </button>
+                      <button type="button" aria-label="Next page" className="w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 cursor-pointer">
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </main>
