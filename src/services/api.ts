@@ -3,7 +3,9 @@
  * Connects frontend to the FastAPI backend with real JWT authentication.
  */
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL
+  ? `${(import.meta.env.VITE_API_BASE_URL as string).replace(/\/+$/, '')}/api`
+  : '/api';
 
 export interface BoundingBox {
   x: number;
