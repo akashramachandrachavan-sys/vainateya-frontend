@@ -40,6 +40,15 @@ app.include_router(surveys.router, prefix=settings.API_V1_STR)
 app.include_router(detections.router, prefix=settings.API_V1_STR)
 app.include_router(analysis.router, prefix=settings.API_V1_STR)
 
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": "NAADVEDH Sonar AI Backend",
+        "version": settings.VERSION,
+        "docs": "/docs"
+    }
+
 @app.get("/api/health")
 def health_check():
     return {
