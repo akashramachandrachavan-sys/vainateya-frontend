@@ -21,5 +21,21 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 .vercel
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.db
+*.sqlite3
+backend/storage/sonar_images/*
+backend/storage/reports/*
+!backend/storage/sonar_images/.gitkeep
+!backend/storage/reports/.gitkeep
