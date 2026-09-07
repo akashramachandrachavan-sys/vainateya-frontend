@@ -29,11 +29,13 @@ def signup(payload: UserCreate, db: Session = Depends(get_db)):
             detail="Password must be at least 6 characters long."
         )
 
+    user_name = (payload.name or payload.full_name or "Marine Operator").strip()
+
     # Check if user already exists -> update password & profile seamlessly
     existing_user = db.query(User).filter(User.email.ilike(email_clean)).first()
     if existing_user:
         existing_user.hashed_password = hash_password(payload.password)
-        existing_user.name = payload.name.strip()
+        existing_user.name = user_name
         if payload.role:
             existing_user.role = payload.role
         if payload.organization:
@@ -54,7 +56,7 @@ def signup(payload: UserCreate, db: Session = Depends(get_db)):
     # Hash password & create user record
     hashed = hash_password(payload.password)
     user = User(
-        name=payload.name.strip(),
+        name=user_name,
         email=email_clean,
         hashed_password=hashed,
         role=payload.role or "Marine Scientist",

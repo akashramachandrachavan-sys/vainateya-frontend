@@ -132,7 +132,8 @@ class SystemMetrics(BaseModel):
 
 # Auth & User Schemas
 class UserCreate(BaseModel):
-    name: str
+    name: Optional[str] = None
+    full_name: Optional[str] = None
     email: str
     password: str
     role: Optional[str] = "Marine Scientist"
