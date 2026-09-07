@@ -211,6 +211,9 @@ export const apiService = {
 
     if (!res.ok) {
       let errDetail = 'Invalid email or password.';
+      if (res.status === 502 || res.status === 503 || res.status === 504) {
+        throw new Error('Backend server is waking up from idle state (takes ~25-30s). Please wait a few seconds and try again.');
+      }
       try {
         const errJson = await res.json();
         if (errJson.detail) errDetail = errJson.detail;
@@ -233,6 +236,9 @@ export const apiService = {
 
     if (!res.ok) {
       let errDetail = 'Failed to create account.';
+      if (res.status === 502 || res.status === 503 || res.status === 504) {
+        throw new Error('Backend server is waking up from idle state (takes ~25-30s). Please wait a few seconds and try again.');
+      }
       try {
         const errJson = await res.json();
         if (errJson.detail) errDetail = errJson.detail;

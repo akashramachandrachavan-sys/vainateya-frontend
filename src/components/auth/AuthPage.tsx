@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { UserRole } from '../../types';
 import { apiService } from '../../services/api';
 import {
@@ -20,6 +20,11 @@ import {
 } from 'lucide-react';
 
 export const AuthPage: React.FC = () => {
+  // Silently wake up Render backend if it's sleeping
+  useEffect(() => {
+    apiService.getHealth().catch(() => { });
+  }, []);
+
   // Read initial mode from URL search query: ?mode=signin or ?mode=signup
   const [isSignUp, setIsSignUp] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
